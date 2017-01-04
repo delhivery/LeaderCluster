@@ -42,7 +42,7 @@ public class Coordinate implements Comparable<Coordinate> {
             throw new InvalidDataException("Invalid Longitude: " + lng);
     }
 
-    public String geometry() {
+    public String wktGeometry() {
         return "POINT(" + lng + " " + lat + ")";
     }
 
