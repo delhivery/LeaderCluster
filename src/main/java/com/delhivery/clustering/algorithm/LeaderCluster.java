@@ -1,5 +1,6 @@
 package com.delhivery.clustering.algorithm;
 
+import com.delhivery.clustering.exceptions.ClusteringException;
 import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.utils.Coordinate;
 import com.delhivery.clustering.utils.DistanceCalculator;
@@ -49,8 +50,10 @@ public class LeaderCluster<T extends Cluster<T,V>, V extends Clusterable<V>> {
      * @param cluster - cluster to be added into
      * @param member - element to be added
      * @return true if successful, else false
+     * @throws InvalidDataException coordinate creation error
+     * @throws ClusteringException any error in clustering
      */
-    private boolean addToCluster(T cluster, V member) throws InvalidDataException{
+    private boolean addToCluster(T cluster, V member) throws InvalidDataException, ClusteringException{
 
         if (calculator.getDistance(cluster.getCoordinate(), member.getCoordinate()) <= radius) {
 
@@ -73,7 +76,8 @@ public class LeaderCluster<T extends Cluster<T,V>, V extends Clusterable<V>> {
             if (verifyCluster(cluster, newClusterCoord)) {
                 cluster.setWeight(newWeight);
                 cluster.setCoordinate(newClusterCoord);
-                cluster.addMember(member);
+                if(!cluster.addMember(member))
+                    throw new ClusteringException("Failed to add member to cluster");
                 clusters.add(cluster);
                 return true;
             }
@@ -102,8 +106,10 @@ public class LeaderCluster<T extends Cluster<T,V>, V extends Clusterable<V>> {
     /**
      * Performs the actual clustering operation
      * @return a collection of clusters
+     * @throws InvalidDataException incorrect lat, longs sent to Coordinate
+     * @throws ClusteringException any error in clustering
      */
-    public Collection<T> cluster() throws InvalidDataException{
+    public Collection<T> cluster() throws InvalidDataException, ClusteringException{
 
         logger.info("Clustering Started");
         while(!toBeClustered.isEmpty()){
