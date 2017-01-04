@@ -35,5 +35,5 @@ public interface Clusterable<T> extends Comparable<T>{
      * Returns the {@link Clusterable} object's weight
      * @return weight
      */
-    int getWeight();
+    double getWeight();
 }

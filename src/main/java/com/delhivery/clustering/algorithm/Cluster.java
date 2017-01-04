@@ -60,7 +60,7 @@ public interface Cluster<T, V extends Clusterable<V>> extends Comparable<T> {
      * Returnbs all the current members of the cluster
      * @return a collection of Clusterable objects which are members of the cluster
      */
-    Collection<V> getAllMembers();
+    Collection<V> getMembers();
 
     /**
      * Adds a new member to the cluster

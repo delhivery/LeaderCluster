@@ -17,9 +17,39 @@
 
 package com.delhivery.clustering.spatialClustering;
 
+import com.delhivery.clustering.algorithm.Clusterable;
+import com.delhivery.clustering.utils.Coordinate;
+
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public class SpatialClusters {
+public class SpatialPoint implements Clusterable<SpatialPoint> {
+
+    private Coordinate coordinate;
+    private double weight = 1.0;
+
+    public SpatialPoint(Coordinate coordinate, double weight){
+        this.coordinate = coordinate;
+        this.weight = weight;
+    }
+
+    @Override
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
+    }
+
+    @Override
+    public int compareTo(SpatialPoint spatialPoint) {
+        if (coordinate.compareTo(spatialPoint.coordinate) == 0)
+            return 0;
+        else {
+            return new Double(weight).compareTo(spatialPoint.weight);
+        }
+    }
 }
