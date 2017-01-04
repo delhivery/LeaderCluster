@@ -4,8 +4,8 @@ Java Leader Cluster
 ##Introduction
 Leader Cluster is a simple clustering algorithm and is as described in the
 book "Clustering Algorithms" by John A. Hartigan (pg. 74, §3.2), published
-by Wiley. This project is inspired by a similar implementation in R's Leader
-Cluster package.
+by Wiley. This project is inspired by a similar implementation in R's [Leader
+Cluster](https://cran.r-project.org/web/packages/leaderCluster/index.html) package.
 
 In Java Leader Cluster, we have modified the original leader cluster to create
 clusters of fixed size in a single pass over the data points.
@@ -37,3 +37,6 @@ There are two ways to use it:-
  the spatialClustering package
  - You can implement the interfaces given in algorithm package and integrate
  Leader Cluster Algorithm into your project
+
+##Usage
+For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)
