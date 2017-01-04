@@ -24,9 +24,7 @@ import com.delhivery.clustering.utils.DistanceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -39,7 +37,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private PriorityQueue<T> clusters = new PriorityQueue<T>();
+    private PriorityQueue<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
@@ -57,9 +55,11 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     public LeaderClusterAlgorithm(ClusterFactory<T> factory, Collection<V> toBeClustered,
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
-        this.toBeClustered = new PriorityQueue<>(toBeClustered);
+        this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Comparator.reverseOrder());
+        this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
+        clusters = new PriorityQueue<T>(toBeClustered.size(), Comparator.reverseOrder());
     }
 
     /**

@@ -52,4 +52,9 @@ public class SpatialPoint implements Clusterable<SpatialPoint> {
             return new Double(weight).compareTo(spatialPoint.weight);
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("{ Coordinate: %s, Weight: %f }", coordinate.toString(), weight);
+    }
 }

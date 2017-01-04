@@ -19,6 +19,7 @@ package com.delhivery.clustering.spatialClustering;
 
 import com.delhivery.clustering.algorithm.Cluster;
 import com.delhivery.clustering.utils.Coordinate;
+import com.google.gson.Gson;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,5 +66,11 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     @Override
     public int compareTo(SpatialCluster spatialCluster) {
         return new Double(weight).compareTo(spatialCluster.weight);
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
