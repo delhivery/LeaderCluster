@@ -55,11 +55,11 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     public LeaderClusterAlgorithm(ClusterFactory<T> factory, Collection<V> toBeClustered,
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
-        this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Comparator.reverseOrder());
+        this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
         this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
-        clusters = new PriorityQueue<T>(toBeClustered.size(), Comparator.reverseOrder());
+        clusters = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
     }
 
     /**
