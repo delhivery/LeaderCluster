@@ -1,12 +1,12 @@
 /*
- * This file is part of the LeaderCluster distribution.
+ * This file is part of the JavaLeaderCluster distribution.
  * Copyright (c) 2017 Delhivery India Pvt. Ltd.
  *
- * LeaderCluster is a free software: you can redistribute it and/or modify
+ * JavaLeaderCluster is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, version 3.
  *
- * LeaderCluster is distributed in the hope that it will be useful, but
+ * JavaLeaderCluster is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
@@ -34,8 +34,8 @@ public class LeaderCluster {
     /**
      * Clusters using Haversine Distance calculator
      * @param data collection of spatial data points to be clustered
-     * @param radius
-     * @return
+     * @param radius cluster radius in meters
+     * @return a collections of clusters
      * @throws ClusteringException
      * @throws InvalidDataException
      */
@@ -50,11 +50,11 @@ public class LeaderCluster {
     }
 
     /**
-     *
-     * @param data
-     * @param radius
-     * @param calculator
-     * @return
+     * Clusters using a custom Distance calculator
+     * @param data collection of spatial data points to be clustered
+     * @param radius cluster radius in meters
+     * @param calculator custom distance calculator
+     * @return a collections of clusters
      * @throws ClusteringException
      * @throws InvalidDataException
      */

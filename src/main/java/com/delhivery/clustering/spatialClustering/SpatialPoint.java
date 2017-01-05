@@ -1,12 +1,12 @@
 /*
- * This file is part of the LeaderCluster distribution.
+ * This file is part of the JavaLeaderCluster distribution.
  * Copyright (c) 2017 Delhivery India Pvt. Ltd.
  *
- * LeaderCluster is a free software: you can redistribute it and/or modify
+ * JavaLeaderCluster is a free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, version 3.
  *
- * LeaderCluster is distributed in the hope that it will be useful, but
+ * JavaLeaderCluster is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
@@ -26,12 +26,24 @@ import com.delhivery.clustering.utils.Coordinate;
  */
 public class SpatialPoint implements Clusterable<SpatialPoint> {
 
+    private String id;
     private Coordinate coordinate;
     private double weight = 1.0;
 
     public SpatialPoint(Coordinate coordinate, double weight){
         this.coordinate = coordinate;
         this.weight = weight;
+        this.id = coordinate.toString();
+    }
+
+    public SpatialPoint(String id, Coordinate coordinate, double weight){
+        this.id = id;
+        this.coordinate = coordinate;
+        this.weight = weight;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -55,6 +67,6 @@ public class SpatialPoint implements Clusterable<SpatialPoint> {
 
     @Override
     public String toString() {
-        return String.format("{ Coordinate: %s, Weight: %f }", coordinate.toString(), weight);
+        return String.format("{ id :%s Coordinate: %s, Weight: %f }", id, coordinate.toString(), weight);
     }
 }

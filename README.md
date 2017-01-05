@@ -13,7 +13,7 @@ clusters of fixed size in a single pass over the data points.
 ##Input
 It requires two basic inputs:-
 - Data points comprising of their coordinates and weights
-- Radius of the cluster
+- Radius of the cluster in meters
 Optionally you can also provide your own distance calculator, by default,
 it uses Haversine distance calculator.
 
@@ -39,11 +39,18 @@ After, that, clone the project to a folder and use command:-
 to build the project
 
 ##How to use
-There are two ways to use it:-
+There are three ways to use it:-
  - You can directly use it as a tool for clustering spatial points by using
  the spatialClustering package
  - You can implement the interfaces given in algorithm package and integrate
  Leader Cluster Algorithm into your project
+ - You can use it as a standalone runnable jar to cluster points given in a input csv file.
+
+ Steps to use runnable jar are:
+ After mvn install, a unnable jar is created in the target folder. You can use it by the following command:-
+ - java -jar target/JavaLeaderCluster-1.0.one-jar.jar <path-to-input-csv> <radius-of-cluster-in-meters>
+ Example:
+ - java -jar target/JavaLeaderCluster-1.0.one-jar.jar sampleInput.csv 500
 
 ##Usage
 For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)

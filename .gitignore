@@ -17,3 +17,6 @@ hs_err_pid*
 
 #target files
 target/*
+
+#data files
+*.csv

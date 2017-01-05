@@ -15,13 +15,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.delhivery.clustering.utils;
+package com.delhivery.clustering.instance;
+
+import com.delhivery.clustering.exceptions.ClusteringException;
+import com.delhivery.clustering.exceptions.InvalidDataException;
+import com.delhivery.clustering.spatialClustering.LeaderCluster;
+import com.delhivery.clustering.spatialClustering.SpatialPoint;
+
+import java.util.Collection;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
- *         Date: 4/1/17
+ *         Date: 5/1/17
  */
-public interface DistanceCalculator {
+public class GenerateClusters {
 
-    int getDistance(Coordinate source, Coordinate destination);
+    public static void main(String[] args) throws InvalidDataException, ClusteringException{
+        String inputCsv = args[0];
+        int radius = Integer.parseInt(args[1]);
+
+        CsvHandler handler = new CsvHandler();
+        Collection<SpatialPoint> data = handler.readInput(inputCsv);
+        handler.writeOutput(LeaderCluster.cluster(data, radius));
+    }
+
 }
