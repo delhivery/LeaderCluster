@@ -49,7 +49,7 @@ There are three ways to use it:-
 
 ##Using runnable jar
  After mvn install, a runnable jar is created in the target folder. You can use it by the following command:-
- - java -jar target/JavaLeaderCluster-1.0.one-jar.jar <path-to-input-csv> <radius-of-cluster-in-meters>
+ - java -jar target/JavaLeaderCluster-1.0.one-jar.jar "path-to-input-csv" radius-of-cluster-in-meters
  - Example: java -jar target/JavaLeaderCluster-1.0.one-jar.jar sampleInput.csv 500
 
 ##Usage
