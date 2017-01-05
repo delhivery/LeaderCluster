@@ -14,3 +14,6 @@ hs_err_pid*
 #intelliJ idea files
 .idea/*
 *.iml
+
+#target files
+target/*

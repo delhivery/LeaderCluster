@@ -31,6 +31,13 @@ cluster
 - Before each iteration, all the existing clusters are sorted in decreasing
 order of their weights to ensure that we create clusters of greater weights
 
+##How to build
+You need to have Apache Maven installed, if you don't have it, then use command:-
+- apt-get install maven
+After, that, clone the project to a folder and use command:-
+- mvn install
+to build the project
+
 ##How to use
 There are two ways to use it:-
  - You can directly use it as a tool for clustering spatial points by using
