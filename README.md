@@ -14,6 +14,7 @@ clusters of fixed size in a single pass over the data points.
 It requires two basic inputs:-
 - Data points comprising of their coordinates and weights
 - Radius of the cluster in meters
+
 Optionally you can also provide your own distance calculator, by default,
 it uses Haversine distance calculator.
 
@@ -32,11 +33,11 @@ cluster
 order of their weights to ensure that we create clusters of greater weights
 
 ##How to build
-You need to have Apache Maven installed, if you don't have it, then use command:-
+You need to have Apache Maven installed. To install, use command:-
 - apt-get install maven
-After, that, clone the project to a folder and use command:-
+
+After, that, clone the project to a folder and to build the project, use command:-
 - mvn install
-to build the project
 
 ##How to use
 There are three ways to use it:-
@@ -46,11 +47,10 @@ There are three ways to use it:-
  Leader Cluster Algorithm into your project
  - You can use it as a standalone runnable jar to cluster points given in a input csv file.
 
- Steps to use runnable jar are:
- After mvn install, a unnable jar is created in the target folder. You can use it by the following command:-
+##Using runnable jar
+ After mvn install, a runnable jar is created in the target folder. You can use it by the following command:-
  - java -jar target/JavaLeaderCluster-1.0.one-jar.jar <path-to-input-csv> <radius-of-cluster-in-meters>
- Example:
- - java -jar target/JavaLeaderCluster-1.0.one-jar.jar sampleInput.csv 500
+ - Example: java -jar target/JavaLeaderCluster-1.0.one-jar.jar sampleInput.csv 500
 
 ##Usage
 For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)
