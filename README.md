@@ -33,10 +33,13 @@ cluster
 order of their weights to ensure that we create clusters of greater weights
 
 ##How to build
-You need to have Apache Maven installed. To install, use command:-
-- apt-get install maven
+Requirements:-
+- Java 8: sudo apt-get install openjdk-8-jdk
+- Apache Maven: sudo apt-get install maven
+- Set environmental variable JAVA_HOME
 
-After, that, clone the project to a folder and to build the project, use command:-
+After, that, clone the project to a folder and to build the project, use commands:-
+- cd LeaderCluster
 - mvn install
 
 ##How to use
