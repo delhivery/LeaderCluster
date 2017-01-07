@@ -21,7 +21,7 @@ package com.delhivery.clustering.algorithm;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public interface ClusterFactory<E extends Cluster> {
+public interface ClusterGenerator<E extends Cluster> {
 
     /**
      * Creates new clusters of {@link Cluster}

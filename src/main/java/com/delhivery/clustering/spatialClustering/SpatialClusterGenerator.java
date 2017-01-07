@@ -17,13 +17,13 @@
 
 package com.delhivery.clustering.spatialClustering;
 
-import com.delhivery.clustering.algorithm.ClusterFactory;
+import com.delhivery.clustering.algorithm.ClusterGenerator;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public class SpatialClusterFactory implements ClusterFactory<SpatialCluster>{
+public class SpatialClusterGenerator implements ClusterGenerator<SpatialCluster> {
 
     @Override
     public SpatialCluster create() {

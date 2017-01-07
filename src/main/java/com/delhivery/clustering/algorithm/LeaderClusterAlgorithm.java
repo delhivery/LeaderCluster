@@ -44,7 +44,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     //all elements to be clustered
     private PriorityQueue<V> toBeClustered;
     //for creating a new cluster
-    private ClusterFactory<T> factory;
+    private ClusterGenerator<T> factory;
 
     /**
      * Constructor for leader cluster class
@@ -52,7 +52,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param toBeClustered - elements to be clustered
      * @param radius - max allowed radius of any cluster
      */
-    public LeaderClusterAlgorithm(ClusterFactory<T> factory, Collection<V> toBeClustered,
+    public LeaderClusterAlgorithm(ClusterGenerator<T> factory, Collection<V> toBeClustered,
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
         this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
