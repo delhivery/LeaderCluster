@@ -34,9 +34,9 @@ order of their weights to ensure that we create clusters of greater weights
 
 ##How to build
 Requirements:-
-- Java 8: sudo apt-get install openjdk-8-jdk
-- Apache Maven: sudo apt-get install maven
-- Set environmental variable JAVA_HOME
+- Java 8: `sudo apt-get install openjdk-8-jdk`
+- Apache Maven: `sudo apt-get install maven`
+- Set the environment variable `JAVA_HOME`
 
 After, that, clone the project to a folder and to build the project, use commands:-
 - cd LeaderCluster
@@ -51,9 +51,9 @@ There are three ways to use it:-
  - You can use it as a standalone runnable jar to cluster points given in a input csv file.
 
 ##Using runnable jar
- After mvn install, a runnable jar is created in the target folder. You can use it by the following command:-
- - java -jar target/JavaLeaderCluster-1.0.one-jar.jar "path-to-input-csv" radius-of-cluster-in-meters
- - Example: java -jar target/JavaLeaderCluster-1.0.one-jar.jar sampleInput.csv 500
+ After mvn install, a runnable jar is created in the target folder. You can use it as shown below:
+ 
+    java -jar target/JavaLeaderCluster-1.0.one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters>
 
 ##Usage
 For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)
