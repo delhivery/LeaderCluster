@@ -20,6 +20,7 @@ package com.delhivery.clustering.instance;
 import com.delhivery.clustering.exceptions.ClusteringException;
 import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.spatialClustering.LeaderCluster;
+import com.delhivery.clustering.spatialClustering.SpatialCluster;
 import com.delhivery.clustering.spatialClustering.SpatialPoint;
 
 import java.util.Collection;
@@ -36,7 +37,12 @@ public class GenerateClusters {
 
         CsvHandler handler = new CsvHandler();
         Collection<SpatialPoint> data = handler.readInput(inputCsv);
-        handler.writeOutput(LeaderCluster.cluster(data, radius));
+        Collection<SpatialCluster> output = LeaderCluster.cluster(data, radius);
+
+        for(SpatialCluster cluster: output)
+            cluster.generateConvexHull();
+
+        handler.writeOutput(output);
     }
 
 }

@@ -18,11 +18,14 @@
 package com.delhivery.clustering.spatialClustering;
 
 import com.delhivery.clustering.algorithm.Cluster;
+import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.utils.Coordinate;
 import com.google.gson.Gson;
+import com.vividsolutions.jts.algorithm.ConvexHull;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -33,6 +36,7 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     private Coordinate coordinate;
     private double weight;
     private Set<SpatialPoint> members = new HashSet<>();
+    private List<Coordinate> chull;
 
     @Override
     public Coordinate getCoordinate() {
@@ -61,6 +65,32 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     @Override
     public boolean addMember(SpatialPoint member) {
         return members.add(member);
+    }
+
+    /**
+     * Generates convex hull of the cluster
+     * @throws InvalidDataException
+     */
+    public void generateConvexHull() throws InvalidDataException{
+        List<com.vividsolutions.jts.geom.Coordinate> clientCoords = new ArrayList<>();
+
+        for (SpatialPoint point: members){
+            Coordinate coordinate = point.getCoordinate();
+            clientCoords.add(new com.vividsolutions.jts.geom.Coordinate(coordinate.lng, coordinate.lat));
+        }
+        ConvexHull convexHull = new ConvexHull(clientCoords
+                .toArray(new com.vividsolutions.jts.geom.Coordinate[clientCoords.size()]),new GeometryFactory());
+        Geometry polygon = convexHull.getConvexHull();
+
+        chull = new LinkedList<>();
+        for(com.vividsolutions.jts.geom.Coordinate coordinate: polygon.getCoordinates()){
+            Coordinate coord = new Coordinate(coordinate.y, coordinate.x);
+            chull.add(coord);
+        }
+    }
+
+    public List<Coordinate> getChull() {
+        return chull;
     }
 
     @Override

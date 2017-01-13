@@ -21,6 +21,7 @@ import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.spatialClustering.SpatialCluster;
 import com.delhivery.clustering.spatialClustering.SpatialPoint;
 import com.delhivery.clustering.utils.Coordinate;
+import com.google.gson.Gson;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class CsvHandler {
 
         try {
             writer = new CSVWriter(new FileWriter(fileName));
-            String[] record = {"Centroid Latitude", "Centroid Longitude", "Weight", "Members"};
+            String[] record = {"Centroid Latitude", "Centroid Longitude", "Weight", "Members", "Convex Hull"};
             writer.writeNext(record);
 
             for (SpatialCluster cluster : clusters) {
@@ -111,6 +112,8 @@ public class CsvHandler {
                     record[3] += member.getId() + ",";
 
                 record[3] = record[3].substring(0, record[3].length()-1);
+
+                record[4] = new Gson().toJson(cluster.getChull());
 
                 writer.writeNext(record, false);
             }
