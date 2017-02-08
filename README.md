@@ -34,7 +34,7 @@ order of their weights to ensure that we create clusters of greater weights
 
 ##How to build
 Requirements:-
-- Java 8: `sudo apt-get install openjdk-8-jdk`
+- Java 8 (Ubuntu 16.04): `sudo apt-get install openjdk-8-jdk`
 - Apache Maven: `sudo apt-get install maven`
 - Set the environment variable `JAVA_HOME`
 

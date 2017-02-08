@@ -83,6 +83,13 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j-simple.version}</version>
         </dependency>
+        <!-- for Rest APIs-->
+        <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
         <!-- for providing convex hulls of clusters -->
         <dependency>
             <groupId>com.vividsolutions</groupId>
