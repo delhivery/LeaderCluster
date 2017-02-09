@@ -1,4 +1,4 @@
-Java Leader Cluster
+Java Leader Cluster v1.0
 ===================
 
 ##Introduction
@@ -9,6 +9,13 @@ Cluster](https://cran.r-project.org/web/packages/leaderCluster/index.html) packa
 
 In Java Leader Cluster, we have modified the original leader cluster to create
 clusters of fixed size in a single pass over the data points.
+
+##What's New
+- Allows clustering based on road distances, either using 
+[Google Distance API](https://developers.google.com/maps/documentation/distance-matrix/intro)
+or 
+[OSRM HTTP API](https://github.com/Project-OSRM/osrm-backend/blob/2ed6b181c8e80b7d17991ffe29726ecb130785f6/docs/http.md)
+- Just specify the URL in Config.java in Utils package
 
 ##Input
 It requires two basic inputs:-
@@ -55,6 +62,11 @@ There are three ways to use it:-
  After mvn install, a runnable jar is created in the target folder. You can use it as shown below:
  
     java -jar target/JavaLeaderCluster-1.0.one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters>
+
+Advanced Usage:
+- You can specify the distance calculator - either one of haversine, osrm or google as:
+
+	java -jar target/JavaLeaderCluster-1.0.one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters> <distance-calculator-name>
 
 ##Usage
 For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)
