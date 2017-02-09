@@ -1,7 +1,5 @@
 package com.delhivery.clustering.utils;
 
-import com.delhivery.clustering.exceptions.InvalidDataException;
-
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 8/2/17

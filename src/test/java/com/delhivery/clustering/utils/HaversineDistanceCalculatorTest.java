@@ -21,8 +21,6 @@ import com.delhivery.clustering.exceptions.InvalidDataException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17

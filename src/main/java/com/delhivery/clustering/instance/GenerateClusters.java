@@ -22,8 +22,11 @@ import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.spatialClustering.LeaderCluster;
 import com.delhivery.clustering.spatialClustering.SpatialCluster;
 import com.delhivery.clustering.spatialClustering.SpatialPoint;
+import com.delhivery.clustering.utils.DistanceCalculatorFactory;
 
 import java.util.Collection;
+
+import static com.delhivery.clustering.utils.DistanceCalculatorFactory.DistanceType.HAVERSINE;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -35,9 +38,17 @@ public class GenerateClusters {
         String inputCsv = args[0];
         int radius = Integer.parseInt(args[1]);
 
+        DistanceCalculatorFactory.DistanceType distanceType;
+
+        if(args.length == 3)
+            distanceType = DistanceCalculatorFactory.DistanceType.valueOf(args[2].toUpperCase());
+        else
+            distanceType = HAVERSINE;
+
         CsvHandler handler = new CsvHandler();
         Collection<SpatialPoint> data = handler.readInput(inputCsv);
-        Collection<SpatialCluster> output = LeaderCluster.cluster(data, radius);
+        Collection<SpatialCluster> output = LeaderCluster.cluster(data, radius, DistanceCalculatorFactory
+                                                                                        .getCalculator(distanceType));
 
         for(SpatialCluster cluster: output)
             cluster.generateConvexHull();
