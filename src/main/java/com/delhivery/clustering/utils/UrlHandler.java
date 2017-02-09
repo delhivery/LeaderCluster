@@ -16,7 +16,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 8/2/17
  */
-public class UrlHandler {
+class UrlHandler {
 
     private static Logger logger = LoggerFactory.getLogger(UrlHandler.class);
 
@@ -33,7 +33,7 @@ public class UrlHandler {
      * @return output of the API request
      * @throws NullPointerException just in case of no output
      */
-    public static String processUrl(String link, String apikey) throws NullPointerException {
+    static String processUrl(String link, String apikey) throws NullPointerException {
         String output = null;
         boolean UrlProcessed = false;
         int attempts = 0;
@@ -91,7 +91,7 @@ public class UrlHandler {
      * @param site any website
      * @return True if internet is connected
      */
-    public static boolean testInet(String site) {
+    private static boolean testInet(String site) {
 
         Socket sock = new Socket();
         InetSocketAddress addr = new InetSocketAddress(site, 80);
@@ -140,7 +140,7 @@ public class UrlHandler {
      * @param host server to be checked
      * @return true or false
      */
-    public static boolean isServerListening(String host){
+    static boolean isServerListening(String host){
         HttpResponse<String> response;
         try {
             response = Unirest.get(host).asString();
