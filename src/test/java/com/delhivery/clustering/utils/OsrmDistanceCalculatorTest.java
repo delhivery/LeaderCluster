@@ -13,11 +13,11 @@ public class OsrmDistanceCalculatorTest {
     @Test
     public void getDistanceTest() throws InvalidDataException {
 
-        Coordinate p1 = new Coordinate(28.234, 78.123);
-        Coordinate p2 = new Coordinate(29.123, 78.234);
+        Coordinate p1 = new Coordinate(28.454812, 77.070350);
+        Coordinate p2 = new Coordinate(28.452029, 77.067657);
 
         int distance = new OsrmDistanceCalculator().getDistance(p1, p2);
 
-        Assert.assertEquals(158200, distance, 100.);
+        Assert.assertEquals(406, distance, 10.);
     }
 }

@@ -3,13 +3,16 @@ package com.delhivery.clustering.utils;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Optional;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
@@ -26,52 +29,88 @@ class UrlHandler {
     }
 
     /**
-     * Allows getting data from a HTTP API with optional apikey authorization
+     * Allows getting data from a HTTP API with apikey authorization
      *
      * @param link HTTP URL link
      * @param apikey optional authentication apikey
      * @return output of the API request
      * @throws NullPointerException just in case of no output
      */
-    static String processUrl(String link, String apikey) throws NullPointerException {
-        String output = null;
+    public static Optional<String> processUrl(String link, String apikey)
+            throws NullPointerException {
+
+        GetRequest request = Unirest.get(link)
+                .header("content-type", "application/json")
+                .header("accept", "application/json")
+                .header("authorization", apikey)
+                .header("cache-control", "no-cache");
+
+        return getUrlResponse(request);
+    }
+
+    /**
+     * Allows getting data from a HTTP API without authorization
+     *
+     * @param link HTTP URL link
+     * @return output of the API request
+     * @throws NullPointerException just in case of no output
+     */
+    public static Optional<String> processUrl(String link) throws NullPointerException {
+
+        GetRequest request = Unirest.get(link)
+                .header("content-type", "application/json")
+                .header("accept", "application/json")
+                .header("cache-control", "no-cache");
+
+        return getUrlResponse(request);
+    }
+
+    /**
+     * Allows getting data from a HTTP API with apikey authorization
+     *
+     * @param link HTTP URL link
+     * @return output of the API request
+     * @throws NullPointerException just in case of no output
+     */
+    public static Optional<String> processUrl(String link, String username, String password)
+            throws NullPointerException {
+
+        GetRequest request = Unirest.get(link)
+                .header("content-type", "application/json")
+                .header("accept", "application/json")
+                .header("cache-control", "no-cache")
+                .basicAuth(username, password);
+
+        return getUrlResponse(request);
+    }
+
+    private static Optional<String> getUrlResponse(GetRequest request) {
+        String output = null, error = null;
         boolean UrlProcessed = false;
         int attempts = 0;
 
         while (!UrlProcessed) {
 
             try {
-                HttpResponse<String> response;
-                if (apikey != null) {
-                    response = Unirest.get(link)
-                            .header("content-type", "application/json")
-                            .header("accept", "application/json")
-                            .header("authorization", apikey)
-                            .header("cache-control", "no-cache")
-                            .asString();
-                } else {
-                    response = Unirest.get(link)
-                            .header("content-type", "application/json")
-                            .header("accept", "application/json")
-                            .header("cache-control", "no-cache")
-                            .asString();
-                }
+                HttpResponse<String> response = request.asString();
 
                 if (response.getStatus() == HTTP_OK)
                     output = response.getBody();
+                else if(response.getStatus() == HTTP_BAD_REQUEST)
+                    error = response.getBody();
 
                 UrlProcessed = true;
 
             }catch(UnirestException exception){
 
-                logger.error("API-Exception", exception);
+                logger.error("UnirestException", exception);
 
             } catch (Exception exception) {
 
                 logger.error("IOException: ", exception);
 
                 if (!UrlHandler.testInet("google.com"))
-                    throw new RuntimeException("FLP> No Internet Connection!");
+                    throw new RuntimeException("No Internet Connection!");
             }
             attempts++;
             //Limit the number of attempts to 3
@@ -79,10 +118,7 @@ class UrlHandler {
                 break;
         }
 
-        if (output == null)
-            throw new NullPointerException("Nothing to return");
-
-        return output;
+        return Optional.ofNullable(output != null? output : error);
     }
 
     /**

@@ -26,15 +26,16 @@ class GoogleDistanceCalculator implements DistanceCalculator {
         HaversineDistanceCalculator calculator = new HaversineDistanceCalculator();
 
         while (distance == -1) {
-            try {
 
-                DecimalFormat df = new DecimalFormat(".######");
+            DecimalFormat df = new DecimalFormat(".######");
 
-                String link = GOOGLE_URL + "?origins=" + df.format(source.lat) + "," + df.format(source.lng) +
-                        "&destinations="+ df.format(destination.lat) + "," + df.format(destination.lng) +
-                        "&language=en&sensor=false&key=" + GOOGLE_KEY;
+            String link = GOOGLE_URL + "?origins=" + df.format(source.lat) + "," + df.format(source.lng) +
+                    "&destinations="+ df.format(destination.lat) + "," + df.format(destination.lng) +
+                    "&language=en&sensor=false&key=" + GOOGLE_KEY;
 
-                String output = UrlHandler.processUrl(link, null);
+            String output = UrlHandler.processUrl(link).orElse(null);
+
+            if(output != null) {
                 // Find distance from returned JSON
                 JsonParser parser = new JsonParser();
                 distance = (int) (parser.parse(output)
@@ -45,9 +46,7 @@ class GoogleDistanceCalculator implements DistanceCalculator {
                         .get(0).getAsJsonObject()
                         .get("distance").getAsJsonObject()
                         .get("value").getAsDouble());
-
-            } catch (NullPointerException exception) {
-
+            }else {
                 logger.warn("FLP> Could not calculate road distance for " + source + " to " + destination);
                 //If OSRM does not return result, then use Haversine distance * multiplier
                 distance = (int) Math.round(AERIAL_TO_ROAD_MULTIPLIER * calculator.getDistance(source, destination));

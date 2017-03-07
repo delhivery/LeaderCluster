@@ -12,11 +12,11 @@ public class GoogleDistanceCalculatorTest {
     @Test
     public void getDistanceTest() throws InvalidDataException {
 
-        Coordinate p1 = new Coordinate(28.234, 78.123);
-        Coordinate p2 = new Coordinate(29.123, 78.234);
+        Coordinate p1 = new Coordinate(28.454812, 77.070350);
+        Coordinate p2 = new Coordinate(28.452029, 77.067657);
 
         int distance = new GoogleDistanceCalculator().getDistance(p1, p2);
 
-        Assert.assertEquals(128000, distance, 1000.);
+        Assert.assertEquals(406, distance, 10.);
     }
 }
