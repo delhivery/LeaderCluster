@@ -15,7 +15,7 @@ clusters of fixed size in a single pass over the data points.
 [Google Distance API](https://developers.google.com/maps/documentation/distance-matrix/intro)
 or 
 [OSRM HTTP API](https://github.com/Project-OSRM/osrm-backend/blob/2ed6b181c8e80b7d17991ffe29726ecb130785f6/docs/http.md)
-- Just specify the URL in Config.java in Utils package
+- Just specify the URL, basic Auth for OSRM (optional) and/or Google Key in config/CONFIG.ini
 
 ##Input
 It requires two basic inputs:-
