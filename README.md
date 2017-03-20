@@ -48,7 +48,7 @@ Requirements:-
 After, that, clone the project to a folder and to build the project, use commands:
 
     cd LeaderCluster
-    mvn install
+    sudo mvn install
 
 ##How to use
 There are three ways to use it:-

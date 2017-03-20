@@ -37,7 +37,7 @@ class Config {
 
         try {
 
-            fileStream = new FileInputStream("config/CONFIG.ini");
+            fileStream = new FileInputStream("/etc/leaderCluster/config/CONFIG.ini");
             settings.load(fileStream);
 
         } catch (FileNotFoundException exception) {

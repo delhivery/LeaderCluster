@@ -179,11 +179,11 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <outputDirectory>/etc/leaderCluster/</outputDirectory>
                             <includeEmptyDirs>false</includeEmptyDirs>
                             <resources>
                                 <resource>
-                                    <targetPath>${basedir}/target/config</targetPath>
+                                    <targetPath>/etc/leaderCluster/config</targetPath>
                                     <directory>config</directory>
                                     <filtering>false</filtering>
                                 </resource>
