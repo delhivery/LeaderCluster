@@ -31,7 +31,7 @@ import java.util.Collection;
  * @param <T>
  * @param <V>
  */
-public interface Cluster<T, V extends Clusterable<V>> extends Comparable<T> {
+public interface Cluster<T, V extends Clusterable> extends Comparable<T> {
 
     /**
      * Sets cluster's centroid's coordinates

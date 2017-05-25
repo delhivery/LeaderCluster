@@ -21,11 +21,11 @@ package com.delhivery.clustering.algorithm;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public interface ClusterGenerator<E extends Cluster> {
+public interface ClusterGenerator<T extends Cluster<T, V>, V extends Clusterable> {
 
     /**
      * Creates new clusters of {@link Cluster}
      * @return a new cluster
      */
-    E create();
+    T create();
 }

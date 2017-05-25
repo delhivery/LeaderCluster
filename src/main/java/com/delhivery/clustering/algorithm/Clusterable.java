@@ -23,7 +23,7 @@ import com.delhivery.clustering.utils.Coordinate;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public interface Clusterable<T> extends Comparable<T>{
+public interface Clusterable extends Comparable<Clusterable> {
 
     /**
      * Returns the coordinate of the {@link Clusterable} object

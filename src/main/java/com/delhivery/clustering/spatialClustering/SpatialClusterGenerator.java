@@ -23,7 +23,7 @@ import com.delhivery.clustering.algorithm.ClusterGenerator;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public class SpatialClusterGenerator implements ClusterGenerator<SpatialCluster> {
+public class SpatialClusterGenerator implements ClusterGenerator {
 
     @Override
     public SpatialCluster create() {

@@ -35,7 +35,7 @@ import java.util.PriorityQueue;
  *  Generic version of Leader Cluster Algorithm
  */
 
-public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterable<V>> {
+public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterable> {
 
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
@@ -47,7 +47,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     //all elements to be clustered
     private PriorityQueue<V> toBeClustered;
     //for creating a new cluster
-    private ClusterGenerator<T> factory;
+    private ClusterGenerator<T, V> factory;
 
     /**
      * Constructor for leader cluster class
@@ -55,7 +55,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param toBeClustered - elements to be clustered
      * @param radius - max allowed radius of any cluster
      */
-    public LeaderClusterAlgorithm(ClusterGenerator<T> factory, Collection<V> toBeClustered,
+    public LeaderClusterAlgorithm(ClusterGenerator<T, V> factory, Collection<V> toBeClustered,
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
         this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());

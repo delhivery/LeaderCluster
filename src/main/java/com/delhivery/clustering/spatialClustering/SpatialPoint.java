@@ -24,7 +24,7 @@ import com.delhivery.clustering.utils.Coordinate;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public class SpatialPoint implements Clusterable<SpatialPoint> {
+public class SpatialPoint implements Clusterable {
 
     private String id;
     private Coordinate coordinate;
@@ -57,7 +57,8 @@ public class SpatialPoint implements Clusterable<SpatialPoint> {
     }
 
     @Override
-    public int compareTo(SpatialPoint spatialPoint) {
+    public int compareTo(Clusterable clusterable) {
+        SpatialPoint spatialPoint = (SpatialPoint) clusterable;
         if (coordinate.compareTo(spatialPoint.coordinate) == 0)
             return 0;
         else {
