@@ -26,9 +26,9 @@ import com.delhivery.clustering.utils.Coordinate;
  */
 public class SpatialPoint implements Clusterable {
 
-    private String id = "undefined";
-    private Coordinate coordinate = null;
-    private double weight = 1.0;
+    protected String id = "undefined";
+    protected Coordinate coordinate = null;
+    protected double weight = 1.0;
 
     public SpatialPoint(){}
 

@@ -33,10 +33,10 @@ import java.util.*;
  */
 public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
 
-    private Coordinate coordinate;
-    private double weight;
-    private Set<SpatialPoint> members = new HashSet<>();
-    private List<Coordinate> chull;
+    protected Coordinate coordinate;
+    protected double weight;
+    protected Set<SpatialPoint> members = new HashSet<>();
+    protected List<Coordinate> chull;
 
     public SpatialCluster(){}
 
