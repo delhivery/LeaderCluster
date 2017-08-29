@@ -38,6 +38,8 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     private Set<SpatialPoint> members = new HashSet<>();
     private List<Coordinate> chull;
 
+    public SpatialCluster(){}
+
     @Override
     public Coordinate getCoordinate() {
         return coordinate;
