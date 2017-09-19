@@ -12,7 +12,7 @@ import java.util.Properties;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 8/2/17
  */
-class Config {
+public class Config {
 
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
 
