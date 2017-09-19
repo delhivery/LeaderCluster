@@ -85,11 +85,11 @@ Add this project as a submodule or place the jar file in the libs folder, and th
              <id>install-external</id>
              <phase>clean</phase>
              <configuration>
-                 <file>${basedir}/path/to/JavaLeaderCluster-1.0.jar</file>
+                 <file>${basedir}/path/to/JavaLeaderCluster-1.1.jar</file>
                  <repositoryLayout>default</repositoryLayout>
                  <groupId>com.delhivery</groupId>
                  <artifactId>JavaLeaderCluster</artifactId>
-                 <version>1.0</version>
+                 <version>1.1</version>
                  <packaging>jar</packaging>
                  <generatePom>true</generatePom>
              </configuration>
