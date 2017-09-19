@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
-import static com.delhivery.clustering.utils.Config.OSRM_PWD;
-import static com.delhivery.clustering.utils.Config.OSRM_URL;
-import static com.delhivery.clustering.utils.Config.OSRM_USER;
+import static com.delhivery.clustering.utils.Config.*;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -35,7 +33,7 @@ class OsrmDistanceCalculator implements DistanceCalculator {
                 String link = OSRM_URL + df.format(source.lng) + "," + df.format(source.lat) + ";" +
                         df.format(destination.lng) + "," + df.format(destination.lat);
 
-                String output = null;
+                String output;
 
                 if(OSRM_USER.length() > 0)
                     output = UrlHandler.processUrl(link, OSRM_USER, OSRM_PWD).orElse(null);
@@ -58,7 +56,7 @@ class OsrmDistanceCalculator implements DistanceCalculator {
 
                 }
                 else {
-                    logger.warn("FLP> Could not calculate road distance for " + source + " to " + destination);
+                    logger.error("FLP> Could not calculate road distance for " + source + " to " + destination);
 
                     //If OSRM does not return result, then use Haversine distance
                     distance = calculator.getDistance(source, destination);

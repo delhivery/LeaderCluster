@@ -18,13 +18,33 @@ class Config {
 
     private static final Properties CONFIG = loadConfigFile();
 
-    static final String OSRM_URL = CONFIG.getProperty("OSRM_URL", "http://localhost:5000/route/v1/driving/");
-    static final String OSRM_USER = CONFIG.getProperty("OSRM_USER", ""); //optional
-    static final String OSRM_PWD = CONFIG.getProperty("OSRM_PWD", ""); //optional
+    static String OSRM_URL = CONFIG.getProperty("OSRM_URL", "http://localhost:5000/route/v1/driving/");
+    static String OSRM_USER = CONFIG.getProperty("OSRM_USER", ""); //optional
+    static String OSRM_PWD = CONFIG.getProperty("OSRM_PWD", ""); //optional
 
-    static final String GOOGLE_URL = CONFIG.getProperty("GOOGLE_URL",
+    static String GOOGLE_URL = CONFIG.getProperty("GOOGLE_URL",
                                                         "https://maps.googleapis.com/maps/api/distancematrix/json");
-    static final String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", ""); //get from file
+    static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", ""); //get from file
+
+    public static void setOsrmUrl(String osrmUrl) {
+        OSRM_URL = osrmUrl;
+    }
+
+    public static void setOsrmUser(String osrmUser) {
+        OSRM_USER = osrmUser;
+    }
+
+    public static void setOsrmPwd(String osrmPwd) {
+        OSRM_PWD = osrmPwd;
+    }
+
+    public static void setGoogleUrl(String googleUrl) {
+        GOOGLE_URL = googleUrl;
+    }
+
+    public static void setGoogleKey(String googleKey) {
+        GOOGLE_KEY = googleKey;
+    }
 
     /**
      * Reads a CONFIG file and converts it into a Properties object
@@ -37,16 +57,16 @@ class Config {
 
         try {
 
-            fileStream = new FileInputStream("/etc/leaderCluster/config/CONFIG.ini");
+            fileStream = new FileInputStream("config/CONFIG.ini");
             settings.load(fileStream);
 
         } catch (FileNotFoundException exception) {
 
-            logger.error("Settings File not found.", exception);
+            logger.error("Config File not found.", exception);
 
         } catch (IOException exception) {
 
-            logger.error("Settings File I/O problem. IOException: ", exception);
+            logger.error("Config File I/O problem. IOException: ", exception);
 
         } finally {
 
