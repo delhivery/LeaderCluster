@@ -15,18 +15,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.delhivery.clustering.spatialClustering;
+package com.delhivery.clustering.algorithm;
 
-import com.delhivery.clustering.algorithm.ClusterGenerator;
+import com.delhivery.clustering.utils.Coordinate;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public class SpatialClusterGenerator implements ClusterGenerator<SpatialCluster, SpatialPoint> {
+public interface Generator<T extends Cluster<T, V>, V extends Clusterable> {
 
-    @Override
-    public SpatialCluster create() {
-        return new SpatialCluster();
-    }
+    /**
+     * Creates new clusters of {@link Cluster}
+     * @return a new cluster
+     */
+    T createCluster();
+
+    /**
+     * Creates replacement clusterable data-points
+     * @param coordinate point's coordinate
+     * @param weight point's weight
+     * @return clusterable point
+     */
+    V createClusterable(Coordinate coordinate, double weight);
 }

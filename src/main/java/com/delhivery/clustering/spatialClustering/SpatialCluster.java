@@ -117,4 +117,9 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
         Gson gson = new Gson();
         return gson.toJson(this);
     }
+
+    @Override
+    public void resetMembers() {
+        members = new HashSet<>();
+    }
 }

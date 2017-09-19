@@ -67,4 +67,9 @@ public interface Cluster<T, V extends Clusterable> extends Comparable<T> {
      * @param member a clusterable object
      */
     boolean addMember(V member);
+
+    /**
+     * Resets the members collection
+     */
+    void resetMembers();
 }

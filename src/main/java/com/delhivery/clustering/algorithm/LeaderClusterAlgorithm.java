@@ -47,7 +47,9 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     //all elements to be clustered
     private PriorityQueue<V> toBeClustered;
     //for creating a new cluster
-    private ClusterGenerator<T, V> factory;
+    private Generator<T, V> factory;
+
+    private DataCleaner<T, V> dataCleaner;
 
     /**
      * Constructor for leader cluster class
@@ -55,11 +57,15 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param toBeClustered - elements to be clustered
      * @param radius - max allowed radius of any cluster
      */
-    public LeaderClusterAlgorithm(ClusterGenerator<T, V> factory, Collection<V> toBeClustered,
+    public LeaderClusterAlgorithm(Generator<T, V> factory, Collection<V> toBeClustered,
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
+
+        dataCleaner = new DataCleaner<>(toBeClustered, factory);
+        dataCleaner.uniqify();
+
         this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
-        this.toBeClustered.addAll(toBeClustered);
+        this.toBeClustered.addAll(dataCleaner.getOutput());
         this.radius = radius;
         this.calculator = calculator;
         clusters = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
@@ -156,7 +162,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             }
 
             // if no clusters exist or if unassignedMember was not able to be
-            // added to any of the existing clusters, then create a cluster
+            // added to any of the existing clusters, then createCluster a cluster
             // with the unassignedMember
             if (clusters.isEmpty())
                 clusters.add(createNewCluster(unassignedMember));
@@ -166,7 +172,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
 
-        return clusters;
+        return dataCleaner.expandClusters(clusters);
     }
 
     /**
@@ -176,7 +182,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      */
     private T createNewCluster(V firstMember){
 
-        T cluster = factory.create();
+        T cluster = factory.createCluster();
         cluster.addMember(firstMember);
         cluster.setWeight(firstMember.getWeight());
         cluster.setCoordinate(firstMember.getCoordinate());
