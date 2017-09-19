@@ -90,11 +90,11 @@ public class CsvHandler {
 
     /**
      * Writes the output to a file
+     * @param fileName based on user input
      * @param clusters Spatial clusters
      */
-    public void writeOutput(Collection<SpatialCluster> clusters){
+    public void writeOutput(String fileName, Collection<SpatialCluster> clusters){
         CSVWriter writer = null;
-        String fileName = "output.csv";
 
         try {
             writer = new CSVWriter(new FileWriter(fileName));
