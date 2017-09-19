@@ -26,6 +26,8 @@ public class Config {
                                                         "https://maps.googleapis.com/maps/api/distancematrix/json");
     static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", ""); //get from file
 
+    static final double AERIAL_TO_ROAD_MULTIPLIER = 1.5;
+
     public static void setOsrmUrl(String osrmUrl) {
         OSRM_URL = osrmUrl;
     }

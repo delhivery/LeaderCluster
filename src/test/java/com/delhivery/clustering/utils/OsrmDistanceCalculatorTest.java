@@ -16,7 +16,7 @@ public class OsrmDistanceCalculatorTest {
         Coordinate p1 = new Coordinate(28.454812, 77.070350);
         Coordinate p2 = new Coordinate(28.452029, 77.067657);
 
-        int distance = new OsrmDistanceCalculator().getDistance(p1, p2);
+        int distance = new OsrmDistanceCalculator(1000).getDistance(p1, p2);
 
         Assert.assertEquals(406, distance, 10.);
     }

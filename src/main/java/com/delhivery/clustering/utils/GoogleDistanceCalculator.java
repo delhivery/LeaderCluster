@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
+import static com.delhivery.clustering.utils.Config.AERIAL_TO_ROAD_MULTIPLIER;
 import static com.delhivery.clustering.utils.Config.GOOGLE_KEY;
 import static com.delhivery.clustering.utils.Config.GOOGLE_URL;
 
@@ -17,15 +18,20 @@ class GoogleDistanceCalculator implements DistanceCalculator {
 
     private static Logger logger = LoggerFactory.getLogger(GoogleDistanceCalculator.class);
 
-    private static final double AERIAL_TO_ROAD_MULTIPLIER = 1.5;
+    private int radius;
+
+    public GoogleDistanceCalculator(int radius) {
+        this.radius = radius;
+    }
 
     @Override
     public int getDistance(Coordinate source, Coordinate destination) {
 
-        int distance =-1;
+        int distance;
         HaversineDistanceCalculator calculator = new HaversineDistanceCalculator();
+        distance = calculator.getDistance(source, destination);
 
-        while (distance == -1) {
+        if (distance < radius) {
 
             DecimalFormat df = new DecimalFormat(".######");
 
@@ -48,8 +54,9 @@ class GoogleDistanceCalculator implements DistanceCalculator {
                         .get("value").getAsDouble());
             }else {
                 logger.warn("FLP> Could not calculate road distance for " + source + " to " + destination);
-                //If OSRM does not return result, then use Haversine distance * multiplier
-                distance = (int) Math.round(AERIAL_TO_ROAD_MULTIPLIER * calculator.getDistance(source, destination));
+
+                //If google does not return result, then use Haversine distance * multiplier
+                distance = (int) Math.round(AERIAL_TO_ROAD_MULTIPLIER * distance);
             }
         }
 

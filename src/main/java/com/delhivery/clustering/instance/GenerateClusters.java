@@ -48,12 +48,14 @@ public class GenerateClusters {
         CsvHandler handler = new CsvHandler();
         Collection<SpatialPoint> data = handler.readInput(inputCsv);
         Collection<SpatialCluster> output = LeaderCluster.cluster(data, radius, DistanceCalculatorFactory
-                                                                                        .getCalculator(distanceType));
+                .getCalculator(distanceType, radius));
 
         for(SpatialCluster cluster: output)
             cluster.generateConvexHull();
 
-        handler.writeOutput(output);
+        String outputFile = inputCsv.substring(0,inputCsv.length()-4) + "_output.csv";
+
+        handler.writeOutput(outputFile, output);
     }
 
 }

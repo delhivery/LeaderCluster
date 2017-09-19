@@ -33,12 +33,24 @@ import java.util.*;
  */
 public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
 
+    protected String id = null;
     protected Coordinate coordinate;
     protected double weight;
     protected Set<SpatialPoint> members = new HashSet<>();
     protected List<Coordinate> chull;
 
     public SpatialCluster(){}
+
+    public String getId() {
+        if(id == null)
+            createId();
+        return id;
+    }
+
+    private void createId() {
+        SpatialPoint maxPoint = Collections.max(members, Comparator.comparing(SpatialPoint::getWeight));
+        id = maxPoint.getId();
+    }
 
     @Override
     public Coordinate getCoordinate() {

@@ -16,16 +16,16 @@ public class DistanceCalculatorFactory {
      * @param type type of distance
      * @return distance calculator object
      */
-    public static DistanceCalculator getCalculator(DistanceType type){
+    public static DistanceCalculator getCalculator(DistanceType type, int radius){
 
         DistanceCalculator calculator = null;
 
         switch(type){
             case HAVERSINE: calculator = new HaversineDistanceCalculator();
                 break;
-            case OSRM: calculator = new OsrmDistanceCalculator();
+            case OSRM: calculator = new OsrmDistanceCalculator(radius);
                 break;
-            case GOOGLE: calculator = new GoogleDistanceCalculator();
+            case GOOGLE: calculator = new GoogleDistanceCalculator(radius);
                 break;
         }
 

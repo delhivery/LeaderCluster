@@ -90,30 +90,31 @@ public class CsvHandler {
 
     /**
      * Writes the output to a file
+     * @param fileName based on user input
      * @param clusters Spatial clusters
      */
-    public void writeOutput(Collection<SpatialCluster> clusters){
+    public void writeOutput(String fileName, Collection<SpatialCluster> clusters){
         CSVWriter writer = null;
-        String fileName = "output.csv";
 
         try {
             writer = new CSVWriter(new FileWriter(fileName));
-            String[] record = {"Centroid Latitude", "Centroid Longitude", "Weight", "Members", "Convex Hull"};
+            String[] record = {"Cluster Id", "Centroid Latitude", "Centroid Longitude", "Weight", "Members", "Convex Hull"};
             writer.writeNext(record);
 
             for (SpatialCluster cluster : clusters) {
 
-                record[0] = Double.toString(cluster.getCoordinate().lat);
-                record[1] = Double.toString(cluster.getCoordinate().lng);
-                record[2] = Double.toString(cluster.getWeight());
-                record[3] = "";
+                record[0] = cluster.getId();
+                record[1] = Double.toString(cluster.getCoordinate().lat);
+                record[2] = Double.toString(cluster.getCoordinate().lng);
+                record[3] = Double.toString(cluster.getWeight());
+                record[4] = "";
 
                 for(SpatialPoint member : cluster.getMembers())
-                    record[3] += member.getId() + ",";
+                    record[4] += member.getId() + ",";
 
-                record[3] = record[3].substring(0, record[3].length()-1);
+                record[4] = record[4].substring(0, record[4].length()-1);
 
-                record[4] = new Gson().toJson(cluster.getChull());
+                record[5] = new Gson().toJson(cluster.getChull());
 
                 writer.writeNext(record, false);
             }
