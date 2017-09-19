@@ -53,7 +53,7 @@ public class GenerateClusters {
         for(SpatialCluster cluster: output)
             cluster.generateConvexHull();
 
-        String outputFile = inputCsv.split(".")[0] + "_output.csv";
+        String outputFile = inputCsv.substring(0,inputCsv.length()-4) + "_output.csv";
 
         handler.writeOutput(outputFile, output);
     }
