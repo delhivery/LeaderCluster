@@ -17,16 +17,20 @@ class OsrmDistanceCalculator implements DistanceCalculator {
 
     private static final int VERY_HIGH_DISTANCE = 100000; //100km
     private Logger logger = LoggerFactory.getLogger(OsrmDistanceCalculator.class);
+    private int radius = VERY_HIGH_DISTANCE;
+
+    public OsrmDistanceCalculator(int radius) {
+        this.radius = radius;
+    }
 
     @Override
     public int getDistance(Coordinate source, Coordinate destination) {
 
-        int distance = -1;
-
         HaversineDistanceCalculator calculator = new HaversineDistanceCalculator();
+        int distance = calculator.getDistance(source, destination);
 
         if (UrlHandler.isServerListening(OSRM_URL)) {
-            while (distance == -1) {
+            if (distance < radius) {
 
                 DecimalFormat df = new DecimalFormat(".######");
 
@@ -57,17 +61,13 @@ class OsrmDistanceCalculator implements DistanceCalculator {
                 }
                 else {
                     logger.error("FLP> Could not calculate road distance for " + source + " to " + destination);
-
-                    //If OSRM does not return result, then use Haversine distance
-                    distance = calculator.getDistance(source, destination);
+                    distance *= AERIAL_TO_ROAD_MULTIPLIER;
                 }
             }
         }
         else{
             logger.warn("OSRM server is not running; Cannot get distances");
-
-            //If OSRM is not running, then use Haversine distance
-            distance = calculator.getDistance(source, destination);
+            distance *= AERIAL_TO_ROAD_MULTIPLIER;
         }
 
         return distance;
