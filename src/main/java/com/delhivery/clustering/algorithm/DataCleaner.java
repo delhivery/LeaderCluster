@@ -24,6 +24,9 @@ public class DataCleaner<T extends Cluster<T,V>, V extends Clusterable> {
         this.factory = factory;
     }
 
+    /**
+     * Removes duplicates and tracks them for expanding later
+     */
     public void uniqify(){
         createCoordToPointMap();
 
@@ -39,6 +42,9 @@ public class DataCleaner<T extends Cluster<T,V>, V extends Clusterable> {
         logger.info("reduced size from:{} to:{}", input.size(), output.size());
     }
 
+    /**
+     * Creates a mapping of coord string to coordinates
+     */
     private void createCoordToPointMap(){
         for(V point: input) {
             String coordinateAsKey = point.getCoordinate().toString();
@@ -53,6 +59,12 @@ public class DataCleaner<T extends Cluster<T,V>, V extends Clusterable> {
         }
     }
 
+    /**
+     * expnads teh leader cluster output by appending duplicates
+     * that were removed during the uniqify process
+     * @param clusters
+     * @return
+     */
     public Collection<T> expandClusters(Collection<T> clusters) {
 
         for (T cluster : clusters) {
