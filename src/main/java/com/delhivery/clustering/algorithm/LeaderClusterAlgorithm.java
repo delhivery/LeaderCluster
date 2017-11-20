@@ -24,10 +24,7 @@ import com.delhivery.clustering.utils.DistanceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -45,7 +42,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     //max allowed radius of the cluster
     private int radius;
     //all elements to be clustered
-    private PriorityQueue<V> toBeClustered;
+    private List<V> toBeClustered;
     //for creating a new cluster
     private Generator<T, V> factory;
 
@@ -64,8 +61,9 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
         dataCleaner = new DataCleaner<>(toBeClustered, factory);
         dataCleaner.uniqify();
 
-        this.toBeClustered = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
+        this.toBeClustered = new ArrayList<>();
         this.toBeClustered.addAll(dataCleaner.getOutput());
+        this.toBeClustered.sort(Collections.reverseOrder());
         this.radius = radius;
         this.calculator = calculator;
         clusters = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
@@ -144,9 +142,8 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());
 
-        while(!toBeClustered.isEmpty()){
+        for(V unassignedMember: toBeClustered){
 
-            V unassignedMember = toBeClustered.poll();
             Collection<T> tracker = new LinkedList<>();
 
             // this step checks if unassignedMember can be added to
