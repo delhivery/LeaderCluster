@@ -24,4 +24,5 @@ package com.delhivery.clustering.utils;
 public interface DistanceCalculator {
 
     int getDistance(Coordinate source, Coordinate destination);
+
 }

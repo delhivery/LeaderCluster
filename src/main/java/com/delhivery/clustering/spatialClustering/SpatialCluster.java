@@ -86,14 +86,15 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
      * @throws InvalidDataException
      */
     public void generateConvexHull() throws InvalidDataException{
-        List<com.vividsolutions.jts.geom.Coordinate> clientCoords = new ArrayList<>();
+        com.vividsolutions.jts.geom.Coordinate[] clientCoords = new com.vividsolutions.jts.geom.Coordinate[members.size()];
 
+        int i = 0;
         for (SpatialPoint point: members){
             Coordinate coordinate = point.getCoordinate();
-            clientCoords.add(new com.vividsolutions.jts.geom.Coordinate(coordinate.lng, coordinate.lat));
+            clientCoords[i++] = new com.vividsolutions.jts.geom.Coordinate(coordinate.lng, coordinate.lat);
         }
-        ConvexHull convexHull = new ConvexHull(clientCoords
-                .toArray(new com.vividsolutions.jts.geom.Coordinate[clientCoords.size()]),new GeometryFactory());
+
+        ConvexHull convexHull = new ConvexHull(clientCoords, new GeometryFactory());
         Geometry polygon = convexHull.getConvexHull();
 
         chull = new LinkedList<>();
@@ -109,12 +110,17 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
 
     @Override
     public int compareTo(SpatialCluster spatialCluster) {
-        return new Double(weight).compareTo(spatialCluster.weight);
+        return Double.compare(weight, spatialCluster.weight);
     }
 
     @Override
     public String toString() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    @Override
+    public void resetMembers() {
+        members = new HashSet<>();
     }
 }

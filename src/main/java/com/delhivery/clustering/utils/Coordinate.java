@@ -20,6 +20,7 @@ package com.delhivery.clustering.utils;
 import com.delhivery.clustering.exceptions.InvalidDataException;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -91,5 +92,10 @@ public class Coordinate implements Comparable<Coordinate> {
             return 0;
 
         return -1;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat,lng);
     }
 }

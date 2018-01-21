@@ -183,7 +183,7 @@ class UrlHandler {
             if(response.getStatus()!=502)
                 return true;
         }catch(UnirestException exception){
-            logger.error("API-Exception", exception);
+            return false;
         }
         return false;
     }

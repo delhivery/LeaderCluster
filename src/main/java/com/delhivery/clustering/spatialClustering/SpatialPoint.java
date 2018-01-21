@@ -64,12 +64,22 @@ public class SpatialPoint implements Clusterable {
         if (coordinate.compareTo(spatialPoint.coordinate) == 0)
             return 0;
         else {
-            return new Double(weight).compareTo(spatialPoint.weight);
+            return Double.compare(weight, spatialPoint.weight);
         }
     }
 
     @Override
     public String toString() {
         return String.format("{ id :%s Coordinate: %s, Weight: %f }", id, coordinate.toString(), weight);
+    }
+
+    @Override
+    public int hashCode() {
+        return coordinate.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof SpatialPoint && ((SpatialPoint) o).compareTo(this) == 0;
     }
 }

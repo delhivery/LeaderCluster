@@ -20,3 +20,6 @@ target/*
 
 #data files
 *.csv
+
+#config file
+config/*
