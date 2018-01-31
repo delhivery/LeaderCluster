@@ -40,9 +40,9 @@ public class LeaderClusterTest {
 
         Set<SpatialPoint> data = new HashSet<>();
 
-        for (double i = 0; i < 10000; i++){
-            double lat = i%2 == 0 ? 28 + i/1000 : 28 - i/1000;
-            double lng = i%2 == 0 ? 77 - i/1000 : 77 + i/1000;
+        for (double i = 0; i < 100000; i++){
+            double lat = i%2 == 0 ? 28 + i/10000 : 28 - i/10000;
+            double lng = i%2 == 0 ? 77 - i/10000 : 77 + i/10000;
             SpatialPoint point = new SpatialPoint(new Coordinate(lat, lng), i%2 == 0 ? 2*i + 1: 3*i - 2);
             data.add(point);
         }
@@ -57,7 +57,7 @@ public class LeaderClusterTest {
         SpatialCluster prevCluster = null;
 
         //check number of clusters
-        Assert.assertEquals(3334, clusters.size());
+        Assert.assertEquals(3004, clusters.size());
 
         for(SpatialCluster cluster : clusters){
 
