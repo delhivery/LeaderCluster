@@ -40,7 +40,7 @@ public class LeaderClusterTest {
 
         Set<SpatialPoint> data = new HashSet<>();
 
-        for (double i = 0; i < 100; i++){
+        for (double i = 0; i < 10000; i++){
             double lat = i%2 == 0 ? 28 + i/1000 : 28 - i/1000;
             double lng = i%2 == 0 ? 77 - i/1000 : 77 + i/1000;
             SpatialPoint point = new SpatialPoint(new Coordinate(lat, lng), i%2 == 0 ? 2*i + 1: 3*i - 2);
@@ -48,10 +48,17 @@ public class LeaderClusterTest {
         }
 
         int clusterRadius = 500;
+
+        long start = System.currentTimeMillis();
         Collection<SpatialCluster> clusters = LeaderCluster.cluster(data, clusterRadius);
+        System.out.println("Time Taken:" + (System.currentTimeMillis() - start));
 
         DistanceCalculator calculator = new HaversineDistanceCalculator();
         SpatialCluster prevCluster = null;
+
+        //check number of clusters
+        Assert.assertEquals(3334, clusters.size());
+
         for(SpatialCluster cluster : clusters){
 
             //checks decreasing order
