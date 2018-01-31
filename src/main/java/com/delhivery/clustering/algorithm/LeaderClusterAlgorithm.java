@@ -37,7 +37,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private PriorityQueue<T> clusters;
+    private TreeSet<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
@@ -66,7 +66,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
         this.toBeClustered.sort(Collections.reverseOrder());
         this.radius = radius;
         this.calculator = calculator;
-        clusters = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
+        clusters = new TreeSet<>(Collections.reverseOrder());
     }
 
     /**
@@ -144,27 +144,22 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         for(V unassignedMember: toBeClustered){
 
-            Collection<T> tracker = new LinkedList<>();
+            boolean addedToExistingCluster = false;
 
             // this step checks if unassignedMember can be added to
             // any of the existing clusters
-            while (!clusters.isEmpty()) {
-
-                T cluster = clusters.poll();
-
-                if (addToCluster(cluster, unassignedMember))
+            for(T cluster: clusters) {
+                if (addToCluster(cluster, unassignedMember)) {
+                    addedToExistingCluster = true;
                     break;
-
-                tracker.add(cluster);
+                }
             }
 
             // if no clusters exist or if unassignedMember was not able to be
             // added to any of the existing clusters, then createCluster a cluster
             // with the unassignedMember
-            if (clusters.isEmpty())
+            if (!addedToExistingCluster)
                 clusters.add(createNewCluster(unassignedMember));
-
-            clusters.addAll(tracker);
         }
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
