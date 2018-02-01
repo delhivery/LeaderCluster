@@ -40,10 +40,13 @@ public class LeaderClusterTest {
 
         Set<SpatialPoint> data = new HashSet<>();
 
-        for (double i = 0; i < 100000; i++){
-            double lat = i%2 == 0 ? 28 + i/10000 : 28 - i/10000;
-            double lng = i%2 == 0 ? 77 - i/10000 : 77 + i/10000;
-            SpatialPoint point = new SpatialPoint(new Coordinate(lat, lng), i%2 == 0 ? 2*i + 1: 3*i - 2);
+        int numPoints = 10000, divisor = 1000;
+
+        for (double i = 0; i < numPoints; i++){
+            double lat = i%2 == 0 ? 28 + i/divisor : 28 - i/divisor;
+            double lng = i%2 == 0 ? 77 - i/divisor : 77 + i/divisor;
+            double weight = i%2 == 0 ? 2*i + 1: 3*i - 2;
+            SpatialPoint point = new SpatialPoint(new Coordinate(lat, lng), weight);
             data.add(point);
         }
 
@@ -57,7 +60,9 @@ public class LeaderClusterTest {
         SpatialCluster prevCluster = null;
 
         //check number of clusters
-        Assert.assertEquals(3004, clusters.size());
+        Assert.assertEquals(3334, clusters.size());
+
+        int counter = 0;
 
         for(SpatialCluster cluster : clusters){
 
@@ -80,6 +85,7 @@ public class LeaderClusterTest {
                 //checks if each member is within the specified radius from the cluster centroid
                 Assert.assertTrue(clusterRadius >= calculator.getDistance(cluster.getCoordinate(),
                         member.getCoordinate()));
+                counter++;
             }
 
             //checks weight of cluster = sum of weights of its members
@@ -88,5 +94,8 @@ public class LeaderClusterTest {
             //checks coordinate of cluster is weighted sum of the coordinates of its members
             Assert.assertEquals(cluster.getCoordinate().toString(), new Coordinate(lat, lng).toString());
         }
+
+        //check if all data points were clustered
+        Assert.assertEquals(numPoints, counter);
     }
 }
