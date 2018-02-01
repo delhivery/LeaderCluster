@@ -10,7 +10,8 @@ Cluster](https://cran.r-project.org/web/packages/leaderCluster/index.html) packa
 In Java Leader Cluster, we have modified the original leader cluster to create
 clusters of fixed size in a single pass over the data points.
 
-## What's New  
+## What's New
+- Faster Binary Tree Based (TreeSet) Implementation
 - Allows clustering based on road distances, either using 
 [Google Distance API](https://developers.google.com/maps/documentation/distance-matrix/intro)
 or 
@@ -61,17 +62,17 @@ There are three ways to use it:-
 Using runnable jar  
  After mvn install, a runnable jar is created in the target folder. You can use it as shown below:
  
-    java -jar target/JavaLeaderCluster-1.1.jar /path/to/input.csv <radius-of-cluster-in-meters>
+    java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters>
 
 ## Advanced Usage:
 - You can specify the distance calculator - either one of haversine, osrm or google as:
 
 ``` 
-java -jar target/JavaLeaderCluster-1.1.jar /path/to/input.csv <radius-of-cluster-in-meters> <distance-calculator-name>
+java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters> <distance-calculator-name>
 ```
 
 ## Usage  
-For a sample use case, please look at [LeaderClusterTest.java](https://github.com/delhivery/LeaderCluster/blob/master/src/test/java/com/delhivery/clustering/spatialClustering/LeaderClusterTest.java)
+For a sample use case, please look at LeaderClusterTest.java in unit tests
 
 ## Using with another java project  
 Add this project as a submodule or place the jar file in the libs folder, and then include this in your project's pom.xml
