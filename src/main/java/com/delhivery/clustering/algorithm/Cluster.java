@@ -36,13 +36,13 @@ public interface Cluster<T, V extends Clusterable> extends Comparable<T> {
     /**
      * Sets cluster's centroid's coordinates
      */
-    void setCoordinate(Coordinate coordinate);
+    T setCoordinate(Coordinate coordinate);
 
     /**
      * Sets the weight of the cluster which is a function of the weights of its members
      * @param weight new weight of the cluster
      */
-    void setWeight(double weight);
+    T setWeight(double weight);
 
     /**
      * Returns centroid's coordinates
@@ -66,7 +66,7 @@ public interface Cluster<T, V extends Clusterable> extends Comparable<T> {
      * Adds a new member to the cluster
      * @param member a clusterable object
      */
-    boolean addMember(V member);
+    T addMember(V member);
 
     /**
      * Resets the members collection

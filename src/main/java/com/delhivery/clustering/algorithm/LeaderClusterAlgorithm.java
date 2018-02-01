@@ -104,8 +104,6 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             if (verifyCluster(cluster, newClusterCoord)) {
                 cluster.setWeight(newWeight);
                 cluster.setCoordinate(newClusterCoord);
-                if(!cluster.addMember(member))
-                    throw new ClusteringException("Failed to add member to cluster");
                 return true;
             }
         }
