@@ -168,7 +168,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param firstMember first element to be added
      * @return a newly created cluster on
      */
-    private T createNewCluster(V firstMember){
+    private T createNewCluster(V firstMember) throws ClusteringException{
 
         T cluster = factory.createCluster();
         cluster.addMember(firstMember);
