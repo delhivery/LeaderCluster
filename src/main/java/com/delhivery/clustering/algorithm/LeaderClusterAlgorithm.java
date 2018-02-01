@@ -42,7 +42,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     //max allowed radius of the cluster
     private int radius;
     //all elements to be clustered
-    private List<V> toBeClustered;
+    private List<V> toBeClustered = new ArrayList<>();
     //for creating a new cluster
     private Generator<T, V> factory;
 
@@ -58,12 +58,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
 
-        dataCleaner = new DataCleaner<>(toBeClustered, factory);
-        dataCleaner.uniqify();
-
-        this.toBeClustered = new ArrayList<>();
-        this.toBeClustered.addAll(dataCleaner.getOutput());
-        this.toBeClustered.sort(Collections.reverseOrder());
+        this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
         clusters = new TreeSet<>(Collections.reverseOrder());
@@ -136,6 +131,13 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      */
     public Collection<T> cluster() throws InvalidDataException, ClusteringException{
 
+        dataCleaner = new DataCleaner<>(toBeClustered, factory);
+        dataCleaner.uniqify();
+
+        this.toBeClustered = new ArrayList<>();
+        this.toBeClustered.addAll(dataCleaner.getOutput());
+        this.toBeClustered.sort(Collections.reverseOrder());
+
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());
 
         for(V unassignedMember: toBeClustered){
@@ -168,7 +170,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param firstMember first element to be added
      * @return a newly created cluster on
      */
-    private T createNewCluster(V firstMember) throws ClusteringException{
+    private T createNewCluster(V firstMember) throws ClusteringException {
 
         T cluster = factory.createCluster();
         cluster.addMember(firstMember);

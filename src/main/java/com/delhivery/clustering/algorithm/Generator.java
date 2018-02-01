@@ -38,5 +38,5 @@ public interface Generator<T extends Cluster<T, V>, V extends Clusterable> {
      * @param weight point's weight
      * @return clusterable point
      */
-    V createClusterable(Coordinate coordinate, double weight);
+    V createClusterable(Coordinate coordinate, double weight) throws ClusteringException;
 }
