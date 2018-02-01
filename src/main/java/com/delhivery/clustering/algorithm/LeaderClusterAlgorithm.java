@@ -95,6 +95,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             double newWeight = memberWeight + oldClusterWeight;
             Coordinate p1 = cluster.getCoordinate();
             Coordinate p2 = member.getCoordinate();
+
             double newClusterLat = (p1.lat * oldClusterWeight + p2.lat * memberWeight) / newWeight;
             double newClusterLon = (p1.lng * oldClusterWeight + p2.lng * memberWeight) / newWeight;
             Coordinate newClusterCoord = new Coordinate(newClusterLat, newClusterLon);
@@ -102,8 +103,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             // this step checks if addition of a new data point violates cluster conditions
             // for any of the existing points, if they do, point is not added to the cluster
             if (verifyCluster(cluster, newClusterCoord)) {
-                cluster.setWeight(newWeight);
-                cluster.setCoordinate(newClusterCoord);
+                cluster.addMember(member).setWeight(newWeight).setCoordinate(newClusterCoord);
                 return true;
             }
         }
@@ -172,8 +172,8 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         T cluster = factory.createCluster();
         cluster.addMember(firstMember);
-        cluster.setWeight(firstMember.getWeight());
-        cluster.setCoordinate(firstMember.getCoordinate());
+        cluster.setWeight(firstMember.getWeight())
+                .setCoordinate(firstMember.getCoordinate());
 
         return cluster;
     }

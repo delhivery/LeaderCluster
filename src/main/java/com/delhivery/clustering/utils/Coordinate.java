@@ -18,6 +18,8 @@
 package com.delhivery.clustering.utils;
 
 import com.delhivery.clustering.exceptions.InvalidDataException;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
@@ -71,6 +73,18 @@ public class Coordinate implements Comparable<Coordinate> {
         final double MIN_LNG = -180.0;
 
         return Double.compare(lng, MAX_LNG) <= 0 && Double.compare(lng, MIN_LNG) >= 0;
+    }
+
+    public com.vividsolutions.jts.geom.Coordinate getAsJtsCoordinate() {
+        return new com.vividsolutions.jts.geom.Coordinate(lng, lat);
+    }
+
+    public Double[] getAsDoubleArray(){
+        return new Double[]{lat, lng};
+    }
+
+    public Point getAsJtsPoint(){
+        return new GeometryFactory().createPoint(getAsJtsCoordinate());
     }
 
     @Override
