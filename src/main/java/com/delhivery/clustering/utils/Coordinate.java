@@ -87,6 +87,14 @@ public class Coordinate implements Comparable<Coordinate> {
         return new GeometryFactory().createPoint(getAsJtsCoordinate());
     }
 
+    /**
+     * Returns Point in WKT format
+     * @return WKT String
+     */
+    public String geometry() {
+        return "POINT(" + lng + " " + lat + ")";
+    }
+
     @Override
     public String toString() {
         DecimalFormat decimalFormat = new DecimalFormat(".######");
