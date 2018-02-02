@@ -168,7 +168,10 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
 
-        return dataCleaner.expandClusters(clusters);
+        if(uniqify)
+            return dataCleaner.expandClusters(clusters);
+        else
+            return clusters;
     }
 
     /**
