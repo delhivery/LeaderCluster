@@ -45,6 +45,8 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private List<V> toBeClustered = new ArrayList<>();
     //for creating a new cluster
     private Generator<T, V> factory;
+    // check if duplicates removal is disabled, by defaults it uniqifies
+    private boolean uniqify = true;
 
     private DataCleaner<T, V> dataCleaner;
 
@@ -55,12 +57,13 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param radius - max allowed radius of any cluster
      */
     public LeaderClusterAlgorithm(Generator<T, V> factory, Collection<V> toBeClustered,
-                                  DistanceCalculator calculator, int radius){
+                                  DistanceCalculator calculator, int radius, boolean uniqify){
         this.factory = factory;
 
         this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
+        this.uniqify = uniqify;
         clusters = new TreeSet<>(Collections.reverseOrder());
     }
 
@@ -131,11 +134,14 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      */
     public Collection<T> cluster() throws InvalidDataException, ClusteringException{
 
-        dataCleaner = new DataCleaner<>(toBeClustered, factory);
-        dataCleaner.uniqify();
+        if(uniqify) {
+            dataCleaner = new DataCleaner<>(toBeClustered, factory);
+            dataCleaner.uniqify();
 
-        this.toBeClustered = new ArrayList<>();
-        this.toBeClustered.addAll(dataCleaner.getOutput());
+            this.toBeClustered = new ArrayList<>();
+            this.toBeClustered.addAll(dataCleaner.getOutput());
+        }
+
         this.toBeClustered.sort(Collections.reverseOrder());
 
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());

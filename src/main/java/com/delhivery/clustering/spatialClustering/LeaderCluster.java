@@ -44,7 +44,7 @@ public class LeaderCluster {
 
         LeaderClusterAlgorithm<SpatialCluster, SpatialPoint> clusterAlgorithm =
                 new LeaderClusterAlgorithm<>(new SpatialGenerator(), data,
-                        new HaversineDistanceCalculator(), radius);
+                        new HaversineDistanceCalculator(), radius, true);
 
         return clusterAlgorithm.cluster();
     }
@@ -63,7 +63,7 @@ public class LeaderCluster {
             throws ClusteringException, InvalidDataException{
 
         LeaderClusterAlgorithm<SpatialCluster, SpatialPoint> clusterAlgorithm =
-                new LeaderClusterAlgorithm<>(new SpatialGenerator(), data, calculator, radius);
+                new LeaderClusterAlgorithm<>(new SpatialGenerator(), data, calculator, radius, true);
 
         return clusterAlgorithm.cluster();
     }
