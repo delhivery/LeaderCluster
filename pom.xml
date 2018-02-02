@@ -30,16 +30,11 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:delhivery/LeaderCluster.git</connection>
-        <developerConnection>scm:git:https://github.com/delhivery/LeaderCluster.git</developerConnection>
-        <url>https://github.com/delhivery/LeaderCluster/tree/master</url>
+        <connection>scm:git:git@bitbucket.org:DelhiveryTech/leadercluster.git</connection>
+        <developerConnection>scm:git:https://bitbucket.org/DelhiveryTech/leadercluster.git</developerConnection>
+        <url>https://bitbucket.org/DelhiveryTech/leadercluster/src</url>
         <tag>HEAD</tag>
     </scm>
-
-    <issueManagement>
-        <system>github</system>
-        <url>https://github.com/delhivery/LeaderCluster/issues</url>
-    </issueManagement>
 
     <properties>
         <jdkVersion>1.8</jdkVersion>
@@ -199,6 +194,7 @@
                 <version>2.3</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <finalName>${artifactId}-${version}-one-jar</finalName>
                 </configuration>
                 <executions>
                     <execution>

@@ -1,5 +1,6 @@
 package com.delhivery.clustering.algorithm;
 
+import com.delhivery.clustering.exceptions.ClusteringException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class DataCleaner<T extends Cluster<T,V>, V extends Clusterable> {
     /**
      * Removes duplicates and tracks them for expanding later
      */
-    public void uniqify(){
+    public void uniqify() throws ClusteringException {
         createCoordToPointMap();
 
         for(List<V> points: allPoints.values()){

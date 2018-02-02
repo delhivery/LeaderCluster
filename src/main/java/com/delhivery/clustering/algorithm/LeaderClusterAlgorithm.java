@@ -37,12 +37,12 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private PriorityQueue<T> clusters;
+    private TreeSet<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
     //all elements to be clustered
-    private List<V> toBeClustered;
+    private List<V> toBeClustered = new ArrayList<>();
     //for creating a new cluster
     private Generator<T, V> factory;
 
@@ -58,15 +58,10 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                                   DistanceCalculator calculator, int radius){
         this.factory = factory;
 
-        dataCleaner = new DataCleaner<>(toBeClustered, factory);
-        dataCleaner.uniqify();
-
-        this.toBeClustered = new ArrayList<>();
-        this.toBeClustered.addAll(dataCleaner.getOutput());
-        this.toBeClustered.sort(Collections.reverseOrder());
+        this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
-        clusters = new PriorityQueue<>(toBeClustered.size(), Collections.reverseOrder());
+        clusters = new TreeSet<>(Collections.reverseOrder());
     }
 
     /**
@@ -88,7 +83,6 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             // so can be directly added to cluster
             if (memberWeight == 0){
                 cluster.addMember(member);
-                clusters.add(cluster);
                 return true;
             }
 
@@ -96,6 +90,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             double newWeight = memberWeight + oldClusterWeight;
             Coordinate p1 = cluster.getCoordinate();
             Coordinate p2 = member.getCoordinate();
+
             double newClusterLat = (p1.lat * oldClusterWeight + p2.lat * memberWeight) / newWeight;
             double newClusterLon = (p1.lng * oldClusterWeight + p2.lng * memberWeight) / newWeight;
             Coordinate newClusterCoord = new Coordinate(newClusterLat, newClusterLon);
@@ -103,11 +98,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             // this step checks if addition of a new data point violates cluster conditions
             // for any of the existing points, if they do, point is not added to the cluster
             if (verifyCluster(cluster, newClusterCoord)) {
-                cluster.setWeight(newWeight);
-                cluster.setCoordinate(newClusterCoord);
-                if(!cluster.addMember(member))
-                    throw new ClusteringException("Failed to add member to cluster");
-                clusters.add(cluster);
+                cluster.addMember(member).setWeight(newWeight).setCoordinate(newClusterCoord);
                 return true;
             }
         }
@@ -140,31 +131,33 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      */
     public Collection<T> cluster() throws InvalidDataException, ClusteringException{
 
+        dataCleaner = new DataCleaner<>(toBeClustered, factory);
+        dataCleaner.uniqify();
+
+        this.toBeClustered = new ArrayList<>();
+        this.toBeClustered.addAll(dataCleaner.getOutput());
+        this.toBeClustered.sort(Collections.reverseOrder());
+
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());
 
         for(V unassignedMember: toBeClustered){
 
-            Collection<T> tracker = new LinkedList<>();
+            boolean addedToExistingCluster = false;
 
             // this step checks if unassignedMember can be added to
             // any of the existing clusters
-            while (!clusters.isEmpty()) {
-
-                T cluster = clusters.poll();
-
-                if (addToCluster(cluster, unassignedMember))
+            for(T cluster: clusters) {
+                if (addToCluster(cluster, unassignedMember)) {
+                    addedToExistingCluster = true;
                     break;
-
-                tracker.add(cluster);
+                }
             }
 
             // if no clusters exist or if unassignedMember was not able to be
             // added to any of the existing clusters, then createCluster a cluster
             // with the unassignedMember
-            if (clusters.isEmpty())
+            if (!addedToExistingCluster)
                 clusters.add(createNewCluster(unassignedMember));
-
-            clusters.addAll(tracker);
         }
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
@@ -177,12 +170,12 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param firstMember first element to be added
      * @return a newly created cluster on
      */
-    private T createNewCluster(V firstMember){
+    private T createNewCluster(V firstMember) throws ClusteringException {
 
         T cluster = factory.createCluster();
         cluster.addMember(firstMember);
-        cluster.setWeight(firstMember.getWeight());
-        cluster.setCoordinate(firstMember.getCoordinate());
+        cluster.setWeight(firstMember.getWeight())
+                .setCoordinate(firstMember.getCoordinate());
 
         return cluster;
     }

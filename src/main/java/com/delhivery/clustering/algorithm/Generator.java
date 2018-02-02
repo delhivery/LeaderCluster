@@ -17,6 +17,7 @@
 
 package com.delhivery.clustering.algorithm;
 
+import com.delhivery.clustering.exceptions.ClusteringException;
 import com.delhivery.clustering.utils.Coordinate;
 
 /**
@@ -29,7 +30,7 @@ public interface Generator<T extends Cluster<T, V>, V extends Clusterable> {
      * Creates new clusters of {@link Cluster}
      * @return a new cluster
      */
-    T createCluster();
+    T createCluster() throws ClusteringException;
 
     /**
      * Creates replacement clusterable data-points
@@ -37,5 +38,5 @@ public interface Generator<T extends Cluster<T, V>, V extends Clusterable> {
      * @param weight point's weight
      * @return clusterable point
      */
-    V createClusterable(Coordinate coordinate, double weight);
+    V createClusterable(Coordinate coordinate, double weight) throws ClusteringException;
 }

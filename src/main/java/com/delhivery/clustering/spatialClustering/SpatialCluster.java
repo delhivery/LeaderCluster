@@ -63,13 +63,15 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     }
 
     @Override
-    public void setCoordinate(Coordinate coordinate) {
+    public SpatialCluster setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
+        return this;
     }
 
     @Override
-    public void setWeight(double weight) {
+    public SpatialCluster setWeight(double weight) {
         this.weight = weight;
+        return this;
     }
 
     public Set<SpatialPoint> getMembers() {
@@ -77,8 +79,9 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
     }
 
     @Override
-    public boolean addMember(SpatialPoint member) {
-        return members.add(member);
+    public SpatialCluster addMember(SpatialPoint member) {
+        members.add(member);
+        return this;
     }
 
     /**
