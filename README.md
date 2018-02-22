@@ -11,6 +11,7 @@ In Java Leader Cluster, we have modified the original leader cluster to create
 clusters of fixed size in a single pass over the data points.
 
 ## What's New
+- Iterative cluster Refinement to create further disjoint clusters
 - Faster Binary Tree Based (TreeSet) Implementation
 - Allows clustering based on road distances, either using 
 [Google Distance API](https://developers.google.com/maps/documentation/distance-matrix/intro)
@@ -40,6 +41,10 @@ cluster
 - Before each iteration, all the existing clusters are sorted in decreasing
 order of their weights to ensure that we create clusters of greater weights
 
+In each iteration of iterative cluster refinement:
+- Data points are assigned to their nearest cluster amongst the clusters created above
+- Thereafter, a new weighted centroid for the cluster is created 
+
 ## How to build  
 Requirements:-
 - Java 8 (Ubuntu 16.04): `sudo apt-get install openjdk-8-jdk`
@@ -65,10 +70,11 @@ Using runnable jar
     java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters>
 
 ## Advanced Usage:
-- You can specify the distance calculator - either one of haversine, osrm or google as:
+- You can specify whether you want to do refinement and if so, number of iterations for it. 
+Also, the distance calculator can be specified - either one of haversine, osrm or google as:
 
 ``` 
-java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters> <distance-calculator-name>
+java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters> <enable-refinement> <num_iters> <distance-calculator-name>
 ```
 
 ## Usage  

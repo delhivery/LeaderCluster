@@ -171,8 +171,10 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
         logger.info("Clustering Finished with {} clusters", clusters.size());
 
         if(reduceOverlaps) {
-            for(int i=0; i<numIters; i++)
+            for(int i=0; i<numIters; i++) {
+                logger.info("Refinement Iteration: {}", i+1);
                 refineClusters();
+            }
         }
 
         if(uniqify)
