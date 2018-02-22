@@ -37,18 +37,26 @@ public class GenerateClusters {
     public static void main(String[] args) throws InvalidDataException, ClusteringException{
         String inputCsv = args[0];
         int radius = Integer.parseInt(args[1]);
+        boolean refineClusters = false;
+        int numIters = 0;
+
+        if(args.length >= 3)
+            refineClusters = Boolean.parseBoolean(args[2]);
+
+        if(args.length >= 4)
+            numIters = Integer.parseInt(args[3]);
 
         DistanceCalculatorFactory.DistanceType distanceType;
 
-        if(args.length == 3)
-            distanceType = DistanceCalculatorFactory.DistanceType.valueOf(args[2].toUpperCase());
+        if(args.length == 5)
+            distanceType = DistanceCalculatorFactory.DistanceType.valueOf(args[4].toUpperCase());
         else
             distanceType = HAVERSINE;
 
         CsvHandler handler = new CsvHandler();
         Collection<SpatialPoint> data = handler.readInput(inputCsv);
         Collection<SpatialCluster> output = LeaderCluster.cluster(data, radius, DistanceCalculatorFactory
-                .getCalculator(distanceType, radius));
+                .getCalculator(distanceType, radius), refineClusters, numIters);
 
         for(SpatialCluster cluster: output)
             cluster.generateConvexHull();

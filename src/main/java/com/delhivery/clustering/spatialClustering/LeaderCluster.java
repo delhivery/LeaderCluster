@@ -35,18 +35,21 @@ public class LeaderCluster {
      * Clusters using Haversine Distance calculator
      * @param data collection of spatial data points to be clustered
      * @param radius cluster radius in meters
+     * @param reduceOverlaps create tighter clusters
+     * @param
      * @return a collections of clusters
      * @throws ClusteringException
      * @throws InvalidDataException
      */
-    public static Collection<SpatialCluster> cluster(Collection<SpatialPoint> data, int radius)
+    public static Collection<SpatialCluster> cluster(Collection<SpatialPoint> data, int radius,
+                                                     boolean reduceOverlaps, int numIters)
             throws ClusteringException, InvalidDataException{
 
         LeaderClusterAlgorithm<SpatialCluster, SpatialPoint> clusterAlgorithm =
                 new LeaderClusterAlgorithm<>(new SpatialGenerator(), data,
                         new HaversineDistanceCalculator(), radius, true);
 
-        return clusterAlgorithm.cluster();
+        return clusterAlgorithm.cluster(reduceOverlaps, numIters);
     }
 
     /**
@@ -59,13 +62,13 @@ public class LeaderCluster {
      * @throws InvalidDataException
      */
     public static Collection<SpatialCluster> cluster(Collection<SpatialPoint> data, int radius,
-                                                     DistanceCalculator calculator)
+                                                     DistanceCalculator calculator, boolean reduceOverlaps, int numIters)
             throws ClusteringException, InvalidDataException{
 
         LeaderClusterAlgorithm<SpatialCluster, SpatialPoint> clusterAlgorithm =
                 new LeaderClusterAlgorithm<>(new SpatialGenerator(), data, calculator, radius, true);
 
-        return clusterAlgorithm.cluster();
+        return clusterAlgorithm.cluster(reduceOverlaps, numIters);
     }
 
 }

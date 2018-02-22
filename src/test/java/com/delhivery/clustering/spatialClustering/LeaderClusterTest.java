@@ -53,7 +53,7 @@ public class LeaderClusterTest {
         int clusterRadius = 500;
 
         long start = System.currentTimeMillis();
-        Collection<SpatialCluster> clusters = LeaderCluster.cluster(data, clusterRadius);
+        Collection<SpatialCluster> clusters = LeaderCluster.cluster(data, clusterRadius, true, 10);
         System.out.println("Time Taken:" + (System.currentTimeMillis() - start));
 
         DistanceCalculator calculator = new HaversineDistanceCalculator();

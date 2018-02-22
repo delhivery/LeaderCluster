@@ -37,7 +37,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private TreeSet<T> clusters;
+    private Collection<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
@@ -128,11 +128,13 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
     /**
      * Performs the actual clustering operation
+     * @param reduceOverlaps re-run over all clusters to minimize overlaps; significantly costly step
+     * @param numIters number of iterations for reducing overlaps, recommended max 10
      * @return a collection of clusters
      * @throws InvalidDataException incorrect lat, longs sent to Coordinate
      * @throws ClusteringException any error in clustering
      */
-    public Collection<T> cluster() throws InvalidDataException, ClusteringException{
+    public Collection<T> cluster(boolean reduceOverlaps, int numIters) throws InvalidDataException, ClusteringException{
 
         if(uniqify) {
             dataCleaner = new DataCleaner<>(toBeClustered, factory);
@@ -168,10 +170,52 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
 
+        if(reduceOverlaps) {
+            for(int i=0; i<numIters; i++)
+                refineClusters();
+        }
+
         if(uniqify)
             return dataCleaner.expandClusters(clusters);
         else
             return clusters;
+    }
+
+    /**
+     * Reassign members to their nearest cluster
+     */
+    private void refineClusters() throws InvalidDataException {
+
+        List<T> refinedClusters = new ArrayList<>(clusters);
+
+        for(T cluster: refinedClusters) {
+            cluster.resetMembers();
+            cluster.setWeight(0);
+        }
+
+        for(V member: toBeClustered) {
+            double minDistance = Double.MAX_VALUE;
+            int minCluster = -1;
+
+            for (int i = 0; i < refinedClusters.size(); i++) {
+                T cluster = refinedClusters.get(i);
+                double distance = calculator.getDistance(cluster.getCoordinate(), member.getCoordinate());
+
+                if (distance <= radius && distance < minDistance) {
+                    minCluster = i;
+                    minDistance = distance;
+                }
+            }
+
+            T cluster = refinedClusters.get(minCluster).addMember(member);
+            cluster.setWeight(cluster.getWeight() + member.getWeight());
+        }
+
+        for(T cluster: refinedClusters) {
+            cluster.setCoordinate(getUpdatedCoordinate(cluster.getMembers()));
+        }
+
+        clusters = refinedClusters;
     }
 
     /**
@@ -187,5 +231,22 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                 .setCoordinate(firstMember.getCoordinate());
 
         return cluster;
+    }
+
+    /**
+     * Use cluster members to calculate its coordinate
+     */
+    private Coordinate getUpdatedCoordinate(Collection<V> members) throws InvalidDataException {
+
+        double weight = 0;
+        double newLat = 0, newLng = 0;
+
+        for(V member: members) {
+            newLat += member.getCoordinate().lat * member.getWeight();
+            newLng += member.getCoordinate().lng * member.getWeight();
+            weight += member.getWeight();
+        }
+
+        return new Coordinate(newLat/weight, newLng/weight);
     }
 }
