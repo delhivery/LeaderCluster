@@ -213,8 +213,12 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
             cluster.setWeight(cluster.getWeight() + member.getWeight());
         }
 
-        for(T cluster: refinedClusters) {
-            cluster.setCoordinate(getUpdatedCoordinate(cluster.getMembers()));
+        for (Iterator<T> iterator = refinedClusters.iterator(); iterator.hasNext(); ) {
+            T cluster = iterator.next();
+            if(cluster.getMembers().size() > 0)
+                cluster.setCoordinate(getUpdatedCoordinate(cluster.getMembers()));
+            else
+                iterator.remove();
         }
 
         clusters = refinedClusters;
