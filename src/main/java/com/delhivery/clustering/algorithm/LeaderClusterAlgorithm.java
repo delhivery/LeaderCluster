@@ -186,7 +186,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     /**
      * Reassign members to their nearest cluster
      */
-    private void refineClusters() throws InvalidDataException {
+    private void refineClusters() throws InvalidDataException, ClusteringException {
 
         List<T> refinedClusters = new ArrayList<>(clusters);
 
@@ -208,9 +208,11 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                     minDistance = distance;
                 }
             }
-
-            T cluster = refinedClusters.get(minCluster).addMember(member);
-            cluster.setWeight(cluster.getWeight() + member.getWeight());
+            if(minCluster > -1) {
+                T cluster = refinedClusters.get(minCluster).addMember(member);
+                cluster.setWeight(cluster.getWeight() + member.getWeight());
+            } else
+                refinedClusters.add(createNewCluster(member));
         }
 
         for (Iterator<T> iterator = refinedClusters.iterator(); iterator.hasNext(); ) {
