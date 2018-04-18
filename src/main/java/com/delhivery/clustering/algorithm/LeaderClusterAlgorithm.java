@@ -217,7 +217,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         for (Iterator<T> iterator = refinedClusters.iterator(); iterator.hasNext(); ) {
             T cluster = iterator.next();
-            if(cluster.getMembers().size() > 0)
+            if(cluster.getMembers().size() > 0 && cluster.getWeight() > 0)
                 cluster.setCoordinate(getUpdatedCoordinate(cluster.getMembers()));
             else
                 iterator.remove();
