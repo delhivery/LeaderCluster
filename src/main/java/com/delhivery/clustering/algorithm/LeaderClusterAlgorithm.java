@@ -154,8 +154,12 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
             // this step checks if unassignedMember can be added to
             // any of the existing clusters
-            for(T cluster: clusters) {
+            Iterator<T> clusterIterator = clusters.iterator();
+            while(clusterIterator.hasNext()) {
+                T cluster  = clusterIterator.next();
                 if (addToCluster(cluster, unassignedMember)) {
+                    clusterIterator.remove();
+                    clusters.add(cluster);
                     addedToExistingCluster = true;
                     break;
                 }
