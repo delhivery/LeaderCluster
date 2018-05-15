@@ -17,7 +17,6 @@
 
 package com.delhivery.clustering.algorithm;
 
-import com.delhivery.clustering.exceptions.InvalidDataException;
 import com.delhivery.clustering.utils.Coordinate;
 
 import java.util.Collection;

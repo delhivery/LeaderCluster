@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
-import static com.delhivery.clustering.utils.Config.AERIAL_TO_ROAD_MULTIPLIER;
-import static com.delhivery.clustering.utils.Config.GOOGLE_KEY;
-import static com.delhivery.clustering.utils.Config.GOOGLE_URL;
+import static com.delhivery.clustering.utils.Config.*;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)

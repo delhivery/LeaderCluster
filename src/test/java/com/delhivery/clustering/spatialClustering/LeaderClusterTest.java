@@ -25,8 +25,9 @@ import com.delhivery.clustering.utils.HaversineDistanceCalculator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.security.cert.CertificateParsingException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
