@@ -194,7 +194,7 @@
                 <version>2.3</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <finalName>${artifactId}-${version}-one-jar</finalName>
+                    <finalName>${project.artifactId}-${project.version}-one-jar</finalName>
                 </configuration>
                 <executions>
                     <execution>

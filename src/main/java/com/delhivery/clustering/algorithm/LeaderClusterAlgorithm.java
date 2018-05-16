@@ -37,7 +37,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private TreeSet<T> clusters;
+    private Collection<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
@@ -45,6 +45,8 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private List<V> toBeClustered = new ArrayList<>();
     //for creating a new cluster
     private Generator<T, V> factory;
+    // check if duplicates removal is disabled, by defaults it uniqifies
+    private boolean uniqify = true;
 
     private DataCleaner<T, V> dataCleaner;
 
@@ -55,12 +57,13 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
      * @param radius - max allowed radius of any cluster
      */
     public LeaderClusterAlgorithm(Generator<T, V> factory, Collection<V> toBeClustered,
-                                  DistanceCalculator calculator, int radius){
+                                  DistanceCalculator calculator, int radius, boolean uniqify){
         this.factory = factory;
 
         this.toBeClustered.addAll(toBeClustered);
         this.radius = radius;
         this.calculator = calculator;
+        this.uniqify = uniqify;
         clusters = new TreeSet<>(Collections.reverseOrder());
     }
 
@@ -125,17 +128,22 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
     /**
      * Performs the actual clustering operation
+     * @param reduceOverlaps re-run over all clusters to minimize overlaps; significantly costly step
+     * @param numIters number of iterations for reducing overlaps, recommended max 10
      * @return a collection of clusters
      * @throws InvalidDataException incorrect lat, longs sent to Coordinate
      * @throws ClusteringException any error in clustering
      */
-    public Collection<T> cluster() throws InvalidDataException, ClusteringException{
+    public Collection<T> cluster(boolean reduceOverlaps, int numIters) throws InvalidDataException, ClusteringException{
 
-        dataCleaner = new DataCleaner<>(toBeClustered, factory);
-        dataCleaner.uniqify();
+        if(uniqify) {
+            dataCleaner = new DataCleaner<>(toBeClustered, factory);
+            dataCleaner.uniqify();
 
-        this.toBeClustered = new ArrayList<>();
-        this.toBeClustered.addAll(dataCleaner.getOutput());
+            this.toBeClustered = new ArrayList<>();
+            this.toBeClustered.addAll(dataCleaner.getOutput());
+        }
+
         this.toBeClustered.sort(Collections.reverseOrder());
 
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());
@@ -146,8 +154,12 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
             // this step checks if unassignedMember can be added to
             // any of the existing clusters
-            for(T cluster: clusters) {
+            Iterator<T> clusterIterator = clusters.iterator();
+            while(clusterIterator.hasNext()) {
+                T cluster  = clusterIterator.next();
                 if (addToCluster(cluster, unassignedMember)) {
+                    clusterIterator.remove();
+                    clusters.add(cluster);
                     addedToExistingCluster = true;
                     break;
                 }
@@ -162,7 +174,60 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
 
-        return dataCleaner.expandClusters(clusters);
+        if(reduceOverlaps) {
+            for(int i=0; i<numIters; i++) {
+                logger.info("Refinement Iteration: {}", i+1);
+                refineClusters();
+            }
+        }
+
+        if(uniqify)
+            return dataCleaner.expandClusters(clusters);
+        else
+            return clusters;
+    }
+
+    /**
+     * Reassign members to their nearest cluster
+     */
+    private void refineClusters() throws InvalidDataException, ClusteringException {
+
+        List<T> refinedClusters = new ArrayList<>(clusters);
+
+        for(T cluster: refinedClusters) {
+            cluster.resetMembers();
+            cluster.setWeight(0);
+        }
+
+        for(V member: toBeClustered) {
+            double minDistance = Double.MAX_VALUE;
+            int minCluster = -1;
+
+            for (int i = 0; i < refinedClusters.size(); i++) {
+                T cluster = refinedClusters.get(i);
+                double distance = calculator.getDistance(cluster.getCoordinate(), member.getCoordinate());
+
+                if (distance <= radius && distance < minDistance) {
+                    minCluster = i;
+                    minDistance = distance;
+                }
+            }
+            if(minCluster > -1) {
+                T cluster = refinedClusters.get(minCluster).addMember(member);
+                cluster.setWeight(cluster.getWeight() + member.getWeight());
+            } else
+                refinedClusters.add(createNewCluster(member));
+        }
+
+        for (Iterator<T> iterator = refinedClusters.iterator(); iterator.hasNext(); ) {
+            T cluster = iterator.next();
+            if(cluster.getMembers().size() > 0 && cluster.getWeight() > 0)
+                cluster.setCoordinate(getUpdatedCoordinate(cluster.getMembers()));
+            else
+                iterator.remove();
+        }
+
+        clusters = refinedClusters;
     }
 
     /**
@@ -178,5 +243,22 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                 .setCoordinate(firstMember.getCoordinate());
 
         return cluster;
+    }
+
+    /**
+     * Use cluster members to calculate its coordinate
+     */
+    private Coordinate getUpdatedCoordinate(Collection<V> members) throws InvalidDataException {
+
+        double weight = 0;
+        double newLat = 0, newLng = 0;
+
+        for(V member: members) {
+            newLat += member.getCoordinate().lat * member.getWeight();
+            newLng += member.getCoordinate().lng * member.getWeight();
+            weight += member.getWeight();
+        }
+
+        return new Coordinate(newLat/weight, newLng/weight);
     }
 }
