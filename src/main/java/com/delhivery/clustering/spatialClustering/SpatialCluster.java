@@ -113,12 +113,7 @@ public class SpatialCluster implements Cluster<SpatialCluster, SpatialPoint>{
 
     @Override
     public int compareTo(SpatialCluster spatialCluster) {
-
-        int compare = Double.compare(weight, spatialCluster.weight);
-        if(compare == 0)
-            compare = this.coordinate.compareTo(spatialCluster.coordinate);
-
-        return compare;
+        return Double.compare(weight, spatialCluster.weight);
     }
 
     @Override

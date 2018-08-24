@@ -60,7 +60,7 @@ public class LeaderClusterTest {
         SpatialCluster prevCluster = null;
 
         //check number of clusters
-        Assert.assertEquals(334, clusters.size());
+        Assert.assertEquals(389, clusters.size());
 
         int counter = 0;
 
@@ -92,7 +92,8 @@ public class LeaderClusterTest {
             Assert.assertEquals(cluster.getWeight(), sumWeight, 0.0);
 
             //checks coordinate of cluster is weighted sum of the coordinates of its members
-            Assert.assertEquals(cluster.getCoordinate().toString(), new Coordinate(lat, lng).toString());
+            Assert.assertEquals(cluster.getCoordinate().lat, lat, 0.000001);
+            Assert.assertEquals(cluster.getCoordinate().lng, lng, 0.000001);
         }
 
         //check if all data points were clustered

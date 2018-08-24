@@ -61,14 +61,7 @@ public class SpatialPoint implements Clusterable {
     @Override
     public int compareTo(Clusterable clusterable) {
         SpatialPoint spatialPoint = (SpatialPoint) clusterable;
-        int compare1 = Double.compare(weight, spatialPoint.weight);
-        int compare2 = this.coordinate.compareTo(spatialPoint.coordinate);
-        if(compare2 == 0)
-            return 0;
-        else if(compare1 == 0)
-            return compare2;
-        else
-            return compare1;
+        return Double.compare(weight, spatialPoint.weight);
     }
 
     @Override
