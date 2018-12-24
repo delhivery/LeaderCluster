@@ -37,7 +37,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
     private final static Logger logger = LoggerFactory.getLogger(LeaderClusterAlgorithm.class);
 
     private DistanceCalculator calculator;
-    private Collection<T> clusters;
+    private Queue<T> clusters;
 
     //max allowed radius of the cluster
     private int radius;
@@ -64,7 +64,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
         this.radius = radius;
         this.calculator = calculator;
         this.uniqify = uniqify;
-        clusters = new TreeSet<>(Collections.reverseOrder());
+        this.clusters = null;
     }
 
     /**
@@ -147,29 +147,36 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
         this.toBeClustered.sort(Collections.reverseOrder());
 
         logger.info("Clustering Started with data size as: {}", toBeClustered.size());
-
+        this.clusters = new PriorityQueue<>(Collections.reverseOrder());
+        
         for(V unassignedMember: toBeClustered){
-
-            boolean addedToExistingCluster = false;
 
             // this step checks if unassignedMember can be added to
             // any of the existing clusters
-            Iterator<T> clusterIterator = clusters.iterator();
-            while(clusterIterator.hasNext()) {
-                T cluster  = clusterIterator.next();
+            Collection<T> removedClusterHolder=new LinkedList<>();
+            T chosenCluster=null;
+
+            while(!clusters.isEmpty()) {
+                T cluster  = clusters.remove();
+                
                 if (addToCluster(cluster, unassignedMember)) {
-                    clusterIterator.remove();
-                    clusters.add(cluster);
-                    addedToExistingCluster = true;
+                    chosenCluster=cluster;
                     break;
                 }
+                
+                removedClusterHolder.add(cluster);
+                
             }
 
             // if no clusters exist or if unassignedMember was not able to be
             // added to any of the existing clusters, then createCluster a cluster
             // with the unassignedMember
-            if (!addedToExistingCluster)
-                clusters.add(createNewCluster(unassignedMember));
+            if (chosenCluster==null)
+                chosenCluster=createNewCluster(unassignedMember);
+            
+            removedClusterHolder.add(chosenCluster);
+            
+            clusters.addAll(removedClusterHolder);
         }
 
         logger.info("Clustering Finished with {} clusters", clusters.size());
@@ -227,7 +234,7 @@ public class LeaderClusterAlgorithm<T extends Cluster<T,V>, V extends Clusterabl
                 iterator.remove();
         }
 
-        clusters = refinedClusters;
+        clusters = new LinkedList<>(refinedClusters);
     }
 
     /**
