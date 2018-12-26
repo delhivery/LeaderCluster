@@ -6,6 +6,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -34,6 +35,12 @@ public final class LC implements Clusterer {
         this.fitForCluster = fitForCluster;
     }
 
+    /**
+     * Creating leader cluster.
+     * 1) Sorting clusterabls in ascending order of their weights.
+     * 2) While assigning clusterable to a cluster, choosing of clusters is
+     * prioritized by their weight.
+     */
     @Override
     public Collection<Cluster> cluster(Collection<? extends Clusterable> points) {
         LOGGER.info("Leader clustering starts with: {} clusterable points", points.size());
@@ -93,15 +100,15 @@ public final class LC implements Clusterer {
         }
 
         private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
-            final BiPredicate<Clusterable, Clusterable> checking;
+            final BiPredicate<Clusterable, Clusterable> constraint;
 
             DistanceConstraint(double distance, DistanceMeasure distanceMeasure) {
-                this.checking = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
+                this.constraint = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
             }
 
             @Override
             public boolean test(Cluster t, Clusterable u) {
-                return checking.test(t, u) && t.getMembers().stream().allMatch(m -> checking.test(m, u));
+                return constraint.test(t, u) && t.getMembers().stream().allMatch(m -> constraint.test(m, u));
             }
         }
 
@@ -113,7 +120,7 @@ public final class LC implements Clusterer {
             if (isNull(this.fitForCluster))
                 this.fitForCluster = fitForCluster;
             else
-                this.fitForCluster = fitForCluster.and(this.fitForCluster);
+                this.fitForCluster = this.fitForCluster.and(fitForCluster);
 
             return this;
         }
@@ -132,7 +139,7 @@ public final class LC implements Clusterer {
 
             UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure);
 
-            UnaryOperator<Collection<Cluster>> refinement = x -> x;
+            UnaryOperator<Collection<Cluster>> refinement = identity();
 
             while (times-- > 0)
                 refinement = refinement.andThen(assignToNearest)::apply;
@@ -154,7 +161,8 @@ public final class LC implements Clusterer {
 
             out.sort(WEIGHT_SORTED);
 
-            LOGGER.info("Sorting clustering. Cluster size:{}", out.size());
+            LOGGER.info("Sorted clusters in decreasing order of their weights");
+
             return out;
         }
 
@@ -165,7 +173,7 @@ public final class LC implements Clusterer {
             }
 
             if (isNull(this.refineCluster)) {
-                this.refineCluster = x -> x;
+                this.refineCluster = identity();
                 LOGGER.info("No refinement strategy provided. Defaulting to identity.");
             }
 
@@ -218,7 +226,7 @@ public final class LC implements Clusterer {
             return clusters;
         }
 
-        private static class ClusterWithDecompressedClusterables implements Cluster {
+        private final static class ClusterWithDecompressedClusterables implements Cluster {
             final Cluster                 cluster;
             final Collection<Clusterable> members;
 
