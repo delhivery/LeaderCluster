@@ -157,14 +157,12 @@ public final class Demo {
         output.add("points", docs);
 
         for (Clusterable c : cluster.getMembers()) {
-            UniqueClusterable m = (UniqueClusterable) c;
-
             JsonObject member = new JsonObject();
 
-            member.addProperty("id", m.id());
-            member.addProperty("lat", m.geocode().lat);
-            member.addProperty("lng", m.geocode().lng);
-            member.addProperty("weight", m.weight());
+            member.addProperty("id", c.id());
+            member.addProperty("lat", c.geocode().lat);
+            member.addProperty("lng", c.geocode().lng);
+            member.addProperty("weight", c.weight());
 
             docs.add(member);
         }
