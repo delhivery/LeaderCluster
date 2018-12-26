@@ -23,11 +23,6 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.delhivery.clustering.Cluster;
-import com.delhivery.clustering.Clusterable;
-import com.delhivery.clustering.ClusterableImpl;
-import com.delhivery.clustering.Clusterer;
-import com.delhivery.clustering.Geocode;
 import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.distances.DistanceMeasureFactory;
@@ -50,7 +45,7 @@ public class LeaderClusterTest {
                 double lng = i % 2 == 0 ? 77 - ratio : 77 + ratio;
                 double weight = generateWeight ? (i % 2 == 0 ? 2 * i + 1 : 3 * i - 2) : 1;
 
-                data.add(new ClusterableImpl(new Geocode(lat, lng), weight));
+                data.add(new ClusterableImpl(i + "", new Geocode(lat, lng), weight));
             }
 
             Assert.assertTrue(data.size() == numPoints);

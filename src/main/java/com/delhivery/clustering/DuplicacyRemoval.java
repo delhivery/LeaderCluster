@@ -1,5 +1,7 @@
 package com.delhivery.clustering;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.Collection;
 import java.util.Map.Entry;
 
@@ -20,18 +22,22 @@ final class DuplicacyRemoval extends Reducer<Geocode> {
                          .mapToDouble(Clusterable::weight)
                          .sum();
 
-        return new DuplicateClustreables(e.getKey(), weight);
+        String id = e.getValue()
+                     .stream()
+                     .map(Clusterable::id)
+                     .collect(joining(";"));
+
+        return new DuplicateClustreables(id, e.getKey(), weight);
     }
 
     private final static class DuplicateClustreables extends ClusterableImpl {
 
-        public DuplicateClustreables(Geocode geocode, double weight) {
-            super(geocode, weight);
+        DuplicateClustreables(String id, Geocode geocode, double weight) {
+            super(id, geocode, weight);
         }
 
         @Override
         public int hashCode() {
-
             return geocode().hashCode();
         }
 

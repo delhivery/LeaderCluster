@@ -20,6 +20,7 @@ final class ClusterImpl implements Cluster {
         this.members = new LinkedList<>();
     }
 
+    @Override
     public String id() {
         return id;
     }

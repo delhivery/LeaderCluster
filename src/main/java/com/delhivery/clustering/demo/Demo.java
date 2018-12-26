@@ -17,6 +17,7 @@ import java.util.Collection;
 
 import com.delhivery.clustering.Cluster;
 import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.ClusterableImpl;
 import com.delhivery.clustering.Clusterer;
 import com.delhivery.clustering.Geocode;
 import com.delhivery.clustering.LC.LCBuilder;
@@ -133,7 +134,7 @@ public final class Demo {
 
         double weight = point.has("weight") ? point.get("weight").getAsDouble() : 1;
 
-        return new UniqueClusterableImpl(point.get("id").getAsString(), geocode, weight);
+        return new ClusterableImpl(point.get("id").getAsString(), geocode, weight);
     }
 
     private static Collection<Clusterable> createClusterables(JsonArray points) {

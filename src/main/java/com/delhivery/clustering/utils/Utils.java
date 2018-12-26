@@ -6,6 +6,8 @@ import static java.lang.Math.abs;
 
 public final class Utils {
 
+    private Utils() {}
+
     public static String formatNumber(double n) {
         return DECIMAL_FORMAT.format(n);
     }

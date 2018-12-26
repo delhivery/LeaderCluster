@@ -1,6 +1,9 @@
 package com.delhivery.clustering;
 
 public interface Clusterable {
+    
+    String id();
+
     /**
      * @return geocode of this point.
      */

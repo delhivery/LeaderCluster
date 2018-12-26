@@ -27,7 +27,7 @@ import com.delhivery.clustering.distances.DistanceMeasure;
 public final class LC implements Clusterer {
     private static final Logger                  LOGGER        = getLogger(LC.class);
     private static final Comparator<Clusterable> WEIGHT_SORTED = reverseOrder(comparingDouble(Clusterable::weight));
-    private static final Comparator<ClusterImpl> CLUSTER_COMP  = reverseOrder(comparingDouble(ClusterImpl::weight).thenComparing(comparing(ClusterImpl::id)));
+    private static final Comparator<Cluster>     CLUSTER_COMP  = reverseOrder(comparingDouble(Cluster::weight).thenComparing(comparing(Cluster::id)));
 
     private final BiPredicate<Cluster, Clusterable> fitForCluster;
 
@@ -295,6 +295,11 @@ public final class LC implements Clusterer {
             @Override
             public void consumeClusterer(Clusterable point) {
                 throw new UnsupportedOperationException("Cluster has stopped comsuming more points.");
+            }
+
+            @Override
+            public String id() {
+                return cluster.id();
             }
 
         }
