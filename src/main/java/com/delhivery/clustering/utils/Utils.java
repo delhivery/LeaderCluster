@@ -1,27 +1,17 @@
 package com.delhivery.clustering.utils;
 
+import static com.delhivery.clustering.config.Constants.DECIMAL_FORMAT;
+import static com.delhivery.clustering.config.Constants.TOLERANCE;
 import static java.lang.Math.abs;
-import static java.lang.Math.pow;
-import static java.lang.String.format;
 
 public final class Utils {
+
     public static String formatNumber(double n) {
-        return format("%.6f", n);
-    }
-
-    public static double truncate(double d, int placeAfterDecimal) {
-
-        double multiplier = pow(10, placeAfterDecimal);
-
-        return ((int) (d * multiplier)) / multiplier;
-    }
-
-    public static boolean isZero(double d, double tolerance) {
-        return abs(d) <= tolerance;
+        return DECIMAL_FORMAT.format(n);
     }
 
     public static boolean isZero(double d) {
-        return isZero(d, 10e-8);
+        return abs(d) <= TOLERANCE;
     }
 
 }
