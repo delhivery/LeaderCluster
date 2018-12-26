@@ -85,9 +85,9 @@ public final class Demo {
 
         DistanceMeasure distanceMeasure = getDistanceMeasure(input.has("distanceMeasure") ? input.get("distanceMeasure").getAsString() : "haversine");
 
-        double throwDistance = input.get("throwDistance").getAsDouble();
+        double throwDistance = input.get("throwDistance").getAsDouble();// in meter.
 
-        boolean enableGeocodeCompression = input.get("enableGeocodeCompression").getAsBoolean();
+        boolean enableGeocodeCompression = input.has("enableGeocodeCompression") ? input.get("enableGeocodeCompression").getAsBoolean() : false;
 
         int assignToNearestCluster = input.has("assignToNearest") ? input.get("assignToNearest").getAsInt() : 0;
 
