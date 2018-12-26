@@ -1,5 +1,6 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
+import static com.delhivery.clustering.utils.Utils.isZero;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
@@ -7,15 +8,16 @@ import java.util.LinkedList;
 
 final class ClusterImpl implements Cluster {
     private final String                  id;
-    private final Collection<Clusterable> members;
     private double                        lat , lng , weight;
+    private final Collection<Clusterable> members;
 
     public ClusterImpl(String id) {
         this.id = id;
-        this.members = new LinkedList<>();
         this.lat = 0;
         this.lng = 0;
         this.weight = 0;
+
+        this.members = new LinkedList<>();
     }
 
     @Override
@@ -27,6 +29,7 @@ final class ClusterImpl implements Cluster {
     public void consumeClusterer(Clusterable point) {
         updateCentroid(point);
         this.members.add(point);
+
     }
 
     public String id() {
@@ -38,15 +41,26 @@ final class ClusterImpl implements Cluster {
 
         Geocode ptCoords = point.geocode();
 
-        this.lat = (this.lat * this.weight + ptCoords.lat * point.weight()) / newWeight;
-        this.lng = (this.lng * this.weight + ptCoords.lng * point.weight()) / newWeight;
+        if (!isZero(newWeight)) {
+
+            this.lat = (this.lat * this.weight + ptCoords.lat * point.weight()) / newWeight;
+            this.lng = (this.lng * this.weight + ptCoords.lng * point.weight()) / newWeight;
+
+        } else {
+
+            this.lat = ptCoords.lat;
+            this.lng = ptCoords.lng;
+
+        }
 
         this.weight = newWeight;
     }
 
     @Override
     public int hashCode() {
+
         return id.hashCode();
+
     }
 
     @Override

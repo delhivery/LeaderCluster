@@ -1,4 +1,4 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toMap;
@@ -14,7 +14,7 @@ import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 
-import com.delhivery.refactoring.distances.DistanceMeasure;
+import com.delhivery.clustering.distances.DistanceMeasure;
 
 public final class AssignToNearest implements UnaryOperator<Collection<Cluster>> {
     private static final Logger LOGGER = getLogger(AssignToNearest.class);

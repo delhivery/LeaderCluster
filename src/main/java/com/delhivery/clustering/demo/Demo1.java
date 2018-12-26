@@ -1,6 +1,6 @@
-package com.delhivery.refactoring.demo;
+package com.delhivery.clustering.demo;
 
-import static com.delhivery.refactoring.distances.DistanceMeasureFactory.HAVERSINE;
+import static com.delhivery.clustering.distances.DistanceMeasureFactory.HAVERSINE;
 import static java.lang.Double.parseDouble;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Paths.get;
@@ -14,13 +14,13 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 
-import com.delhivery.refactoring.Cluster;
-import com.delhivery.refactoring.Clusterable;
-import com.delhivery.refactoring.ClusterableImpl;
-import com.delhivery.refactoring.Clusterer;
-import com.delhivery.refactoring.Geocode;
-import com.delhivery.refactoring.LC.LCBuilder;
-import com.delhivery.refactoring.distances.DistanceMeasure;
+import com.delhivery.clustering.Cluster;
+import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.ClusterableImpl;
+import com.delhivery.clustering.Clusterer;
+import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.LC.LCBuilder;
+import com.delhivery.clustering.distances.DistanceMeasure;
 import com.opencsv.CSVReader;
 
 public class Demo1 {

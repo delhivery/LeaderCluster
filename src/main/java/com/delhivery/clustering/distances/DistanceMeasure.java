@@ -1,6 +1,6 @@
-package com.delhivery.refactoring.distances;
+package com.delhivery.clustering.distances;
 
-import com.delhivery.refactoring.Geocode;
+import com.delhivery.clustering.Geocode;
 
 @FunctionalInterface
 public interface DistanceMeasure {

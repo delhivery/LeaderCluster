@@ -1,4 +1,4 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
 public class ClusterableImpl implements Clusterable {
     private final Geocode geocode;

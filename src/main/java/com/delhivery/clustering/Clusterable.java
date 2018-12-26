@@ -1,4 +1,4 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
 public interface Clusterable {
 

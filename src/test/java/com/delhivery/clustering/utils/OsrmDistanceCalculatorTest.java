@@ -1,10 +1,12 @@
 package com.delhivery.clustering.utils;
 
-import com.delhivery.clustering.exceptions.InvalidDataException;
+import static com.delhivery.clustering.config.Config.OSRM_URL;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.delhivery.clustering.utils.Config.OSRM_URL;
+import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.distances.DistanceMeasureFactory;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -13,13 +15,14 @@ import static com.delhivery.clustering.utils.Config.OSRM_URL;
 public class OsrmDistanceCalculatorTest {
 
     @Test
-    public void getDistanceTest() throws InvalidDataException {
+    public void getDistanceTest() {
 
-        Coordinate p1 = new Coordinate(28.454812, 77.070350);
-        Coordinate p2 = new Coordinate(28.452029, 77.067657);
+        Geocode p1 = new Geocode(28.454812, 77.070350);
+        Geocode p2 = new Geocode(28.452029, 77.067657);
 
-        if(UrlHandler.isServerListening(OSRM_URL)) {
-            int distance = new OsrmDistanceCalculator(1000).getDistance(p1, p2);
+        if (UrlHandler.isServerListening(OSRM_URL)) {
+            double distance = DistanceMeasureFactory.OSRM.distance(p1, p2);
+
             Assert.assertEquals(406, distance, 10.);
         } else
             System.out.println("Skipped OSRM test as server not available");

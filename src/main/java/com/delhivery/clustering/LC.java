@@ -1,4 +1,4 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 
-import com.delhivery.refactoring.distances.DistanceMeasure;
+import com.delhivery.clustering.distances.DistanceMeasure;
 
 public final class LC implements Clusterer {
     private static final Logger                  LOGGER        = getLogger(LC.class);
@@ -30,8 +30,8 @@ public final class LC implements Clusterer {
 
     private final BiPredicate<Cluster, Clusterable> fitForCluster;
 
-    private LC(LCBuilder builder) {
-        this.fitForCluster = builder.fitForCluster;
+    private LC(BiPredicate<Cluster, Clusterable> fitForCluster) {
+        this.fitForCluster = fitForCluster;
     }
 
     @Override
@@ -59,14 +59,13 @@ public final class LC implements Clusterer {
                 if (fitForCluster.test(cluster, point)) {
                     itrCluster.remove();
                     fitCluster = cluster;
-
-                    LOGGER.debug("Cluster: {} is found for clusterables:", fitCluster, point);
+                    break;
                 }
             }
 
             if (isNull(fitCluster)) {
                 fitCluster = new ClusterImpl(clusterIndexer++ + "");
-                LOGGER.debug("No cluster found for Clusterable: {}. So creating new cluster.", point);
+                LOGGER.debug("No cluster found for Clusterable: {}. So creating new cluster. cluster id: {}", point, clusterIndexer - 1);
             }
 
             fitCluster.consumeClusterer(point);
@@ -123,9 +122,8 @@ public final class LC implements Clusterer {
 
             if (isNull(this.refineCluster))
                 this.refineCluster = refinement;
-            else {
-                this.refineCluster = refinement.andThen(this.refineCluster)::apply;
-            }
+            else
+                this.refineCluster = this.refineCluster.andThen(refinement)::apply;
 
             return this;
         }
@@ -137,7 +135,7 @@ public final class LC implements Clusterer {
             UnaryOperator<Collection<Cluster>> refinement = x -> x;
 
             while (times-- > 0)
-                refinement = refinement.andThen(assignToNearest::apply)::apply;
+                refinement = refinement.andThen(assignToNearest)::apply;
 
             return refine(refinement::apply);
         }
@@ -151,6 +149,15 @@ public final class LC implements Clusterer {
             return this;
         }
 
+        private static Collection<Cluster> inAsendingOrderOfWeight(Collection<Cluster> clusters) {
+            List<Cluster> out = new ArrayList<>(clusters);
+
+            out.sort(WEIGHT_SORTED);
+
+            LOGGER.info("Sorting clustering. Cluster size:{}", out.size());
+            return out;
+        }
+
         public Clusterer build() {
             if (isNull(this.fitForCluster)) {
                 LOGGER.error("Criteria to add a clusterable point to a cluster has not been provided");
@@ -162,17 +169,18 @@ public final class LC implements Clusterer {
                 LOGGER.info("No refinement strategy provided. Defaulting to identity.");
             }
 
-            Clusterer lc = new LC(this);
+            refine(LCBuilder::inAsendingOrderOfWeight);
 
-            Clusterer algorithm = clusterables -> this.refineCluster.apply(lc.cluster(clusterables));
+            Clusterer lc = this.refineCluster.compose(new LC(this.fitForCluster)::cluster)::apply;
 
             if (nonNull(this.reducerFactory)) {
                 LOGGER.info("Reduction factory provided. This will be used to run LC "
                     + "on reduced number of points.");
-                algorithm = new ReduceLC(reducerFactory, algorithm);
+
+                lc = new ReduceLC(reducerFactory, lc);
             }
 
-            return algorithm;
+            return lc;
         }
     }
 

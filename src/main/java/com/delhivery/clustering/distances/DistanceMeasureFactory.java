@@ -1,22 +1,22 @@
-package com.delhivery.refactoring.distances;
+package com.delhivery.clustering.distances;
 
-import static com.delhivery.clustering.utils.Config.GOOGLE_KEY;
-import static com.delhivery.clustering.utils.Config.GOOGLE_URL;
-import static com.delhivery.clustering.utils.Config.OSRM_PWD;
-import static com.delhivery.clustering.utils.Config.OSRM_URL;
-import static com.delhivery.clustering.utils.Config.OSRM_USER;
+import static com.delhivery.clustering.config.Config.GOOGLE_KEY;
+import static com.delhivery.clustering.config.Config.GOOGLE_URL;
+import static com.delhivery.clustering.config.Config.OSRM_PWD;
+import static com.delhivery.clustering.config.Config.OSRM_URL;
+import static com.delhivery.clustering.config.Config.OSRM_USER;
+import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Math.asin;
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
-import static java.lang.String.format;
 
 import java.util.Optional;
 
+import com.delhivery.clustering.Geocode;
 import com.delhivery.clustering.utils.UrlHandler;
-import com.delhivery.refactoring.Geocode;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -46,10 +46,6 @@ public final class DistanceMeasureFactory {
         return pow(sin(theta / 2), 2);
     }
 
-    private static String formatNumber(double n) {
-        return format("%.6f", n);
-    }
-
     private static double googleDistance(Geocode source, Geocode destination) {
 
         String link = GOOGLE_URL + "?origins=" + formatNumber(source.lat) + "," + formatNumber(source.lng) +
@@ -57,7 +53,7 @@ public final class DistanceMeasureFactory {
             "&language=en&sensor=false&key=" + GOOGLE_KEY;
 
         Optional<String> output = UrlHandler.processUrl(link);
-
+        System.out.println(output.get());
         if (output.isPresent())
             return JSON_PARSER.parse(output.get())
                               .getAsJsonObject()

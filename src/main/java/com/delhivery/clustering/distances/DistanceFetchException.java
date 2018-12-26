@@ -1,4 +1,4 @@
-package com.delhivery.refactoring.distances;
+package com.delhivery.clustering.distances;
 
 public class DistanceFetchException extends RuntimeException {
 

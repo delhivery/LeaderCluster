@@ -17,17 +17,20 @@
 
 package com.delhivery.clustering.spatialClustering;
 
-import com.delhivery.clustering.exceptions.ClusteringException;
-import com.delhivery.clustering.exceptions.InvalidDataException;
-import com.delhivery.clustering.utils.Coordinate;
-import com.delhivery.clustering.utils.DistanceCalculator;
-import com.delhivery.clustering.utils.HaversineDistanceCalculator;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import com.delhivery.clustering.Cluster;
+import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.ClusterableImpl;
+import com.delhivery.clustering.Clusterer;
+import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.LC.LCBuilder;
+import com.delhivery.clustering.distances.DistanceMeasure;
+import com.delhivery.clustering.distances.DistanceMeasureFactory;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
@@ -36,69 +39,70 @@ import java.util.Set;
 public class LeaderClusterTest {
 
     @Test
-    public void leaderClusterTest() throws InvalidDataException, ClusteringException{
-        for (boolean generateWeight : new boolean[] {true,false}) {
-        
-        Set<SpatialPoint> data = new HashSet<>();
+    public void leaderClusterTest() {
+        for (boolean generateWeight : new boolean[] { true, false }) {
 
-        int numPoints = 1000, divisor = 1000;
+            int numPoints = 1000;
+            double divisor = 1000;
 
-        for (double i = 0; i < numPoints; i++){
-            double lat = i%2 == 0 ? 28 + i/divisor : 28 - i/divisor;
-            double lng = i%2 == 0 ? 77 - i/divisor : 77 + i/divisor;
-            double weight = generateWeight?(i%2 == 0 ? 2*i + 1: 3*i - 2):1;
-            SpatialPoint point = new SpatialPoint(new Coordinate(lat, lng), weight);
-            data.add(point);
-        }
-        
-        Assert.assertTrue(data.size()==numPoints);
-        
-        int clusterRadius = 500;
+            Collection<Clusterable> data = new ArrayList<>(1000);
 
-        long start = System.currentTimeMillis();
-        Collection<SpatialCluster> clusters = LeaderCluster.cluster(data, clusterRadius, true, 10);
-        System.out.println("Time Taken:" + (System.currentTimeMillis() - start));
+            for (double i = 0; i < numPoints; i++) {
+                double ratio = i / divisor;
 
-        DistanceCalculator calculator = new HaversineDistanceCalculator();
-        SpatialCluster prevCluster = null;
+                double lat = i % 2 == 0 ? 28 + ratio : 28 - ratio;
+                double lng = i % 2 == 0 ? 77 - ratio : 77 + ratio;
+                double weight = generateWeight ? (i % 2 == 0 ? 2 * i + 1 : 3 * i - 2) : 1;
 
-        //check number of clusters
-
-        int counter = 0;
-
-        for(SpatialCluster cluster : clusters){
-
-            //checks decreasing order
-            if(prevCluster == null)
-                prevCluster = cluster;
-            else{
-                Assert.assertTrue(prevCluster.getWeight() >= cluster.getWeight());
+                data.add(new ClusterableImpl(new Geocode(lat, lng), weight));
             }
 
-            double sumWeight, lat, lng, ratio;
-            sumWeight = lat = lng = 0.0;
+            Assert.assertTrue(data.size() == numPoints);
 
-            for(SpatialPoint member: cluster.getMembers()) {
-                sumWeight += member.getWeight();
-                ratio = member.getWeight()/cluster.getWeight();
-                lat += ratio * member.getCoordinate().lat;
-                lng += ratio * member.getCoordinate().lng;
+            int clusterRadius = 500;
 
-                //checks if each member is within the specified radius from the cluster centroid
-                Assert.assertTrue(clusterRadius >= calculator.getDistance(cluster.getCoordinate(),
-                        member.getCoordinate()));
-                counter++;
+            DistanceMeasure haversine = DistanceMeasureFactory.HAVERSINE;
+            Clusterer lc = LCBuilder.newInstance()
+                                    .distanceConstraint(clusterRadius, haversine)
+                                    .refineAssignToClosestCluster(5, haversine)
+                                    .build();
+
+            Collection<Cluster> clusters = lc.cluster(data);
+
+            Cluster prevCluster = null;
+
+            // check number of clusters
+            for (Cluster cluster : clusters) {
+
+                // checks decreasing order
+                if (prevCluster == null)
+                    prevCluster = cluster;
+                else
+                    Assert.assertTrue(prevCluster.weight() >= cluster.weight());
+
+                double sumWeight , lat , lng , ratio;
+                sumWeight = lat = lng = 0.0;
+
+                for (Clusterable member : cluster.getMembers()) {
+                    sumWeight += member.weight();
+                    ratio = member.weight() / cluster.weight();
+                    lat += ratio * member.geocode().lat;
+                    lng += ratio * member.geocode().lng;
+
+                    // checks if each member is within the specified radius from the cluster centroid
+                    Assert.assertTrue(clusterRadius >= haversine.distance(cluster.geocode(), member.geocode()));
+                }
+
+                // checks weight of cluster = sum of weights of its members
+                Assert.assertEquals(cluster.weight(), sumWeight, 0.0);
+
+                // checks coordinate of cluster is weighted sum of the coordinates of its members
+                Assert.assertEquals(cluster.geocode().lat, lat, 10e-8);
+                Assert.assertEquals(cluster.geocode().lng, lng, 10e-8);
             }
 
-            //checks weight of cluster = sum of weights of its members
-            Assert.assertEquals(cluster.getWeight(), sumWeight, 0.0);
-
-            //checks coordinate of cluster is weighted sum of the coordinates of its members
-            Assert.assertEquals(cluster.getCoordinate().toString(), new Coordinate(lat, lng).toString());
-        }
-
-        //check if all data points were clustered
-        Assert.assertEquals(numPoints, counter);
+            // check if all data points were clustered
+            Assert.assertEquals(numPoints, clusters.stream().map(Cluster::getMembers).mapToInt(Collection::size).sum());
         }
     }
 }

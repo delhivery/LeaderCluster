@@ -1,6 +1,6 @@
-package com.delhivery.refactoring;
+package com.delhivery.clustering;
 
-import static java.util.Objects.hash;
+import static com.delhivery.clustering.utils.Utils.formatNumber;
 
 public final class Geocode {
     public final double lat , lng;
@@ -12,12 +12,19 @@ public final class Geocode {
 
     @Override
     public String toString() {
-        return " [x=" + lat + ", y=" + lng + "]";
+        return " [x=" + formatNumber(lat) + ", y=" + formatNumber(lng) + "]";
     }
 
     @Override
     public int hashCode() {
-        return hash(lat, lng);
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(lat);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(lng);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 
     @Override
@@ -26,15 +33,13 @@ public final class Geocode {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof Geocode))
+        if (getClass() != obj.getClass())
             return false;
-
         Geocode other = (Geocode) obj;
         if (Double.doubleToLongBits(lat) != Double.doubleToLongBits(other.lat))
             return false;
         if (Double.doubleToLongBits(lng) != Double.doubleToLongBits(other.lng))
             return false;
-
         return true;
     }
 
