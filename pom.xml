@@ -141,7 +141,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.delhivery.clustering.instance.GenerateClusters</mainClass>
+							<mainClass>com.delhivery.clustering.demo.Demo</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

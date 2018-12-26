@@ -83,13 +83,13 @@ public final class Demo {
 
     private static JsonArray run(JsonObject input) {
 
-        DistanceMeasure distanceMeasure = getDistanceMeasure(input.get("distanceMeasure").getAsString());
+        DistanceMeasure distanceMeasure = getDistanceMeasure(input.has("distanceMeasure") ? input.get("distanceMeasure").getAsString() : "haversine");
 
         double throwDistance = input.get("throwDistance").getAsDouble();
 
         boolean enableGeocodeCompression = input.get("enableGeocodeCompression").getAsBoolean();
 
-        int assignToNearestCluster = input.get("assignToNearest").getAsInt();
+        int assignToNearestCluster = input.has("assignToNearest") ? input.get("assignToNearest").getAsInt() : 0;
 
         Collection<Clusterable> points = createClusterables(input.getAsJsonArray("points"));
 

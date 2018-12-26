@@ -37,7 +37,7 @@ public final class LC implements Clusterer {
 
     /**
      * Creating leader cluster.
-     * 1) Sorting clusterabls in ascending order of their weights.
+     * 1) Sorting clusterabls in decreasing order of their weights.
      * 2) While assigning clusterable to a cluster, choosing of clusters is
      * prioritized by their weight.
      */
@@ -187,10 +187,10 @@ public final class LC implements Clusterer {
         }
 
         /**
-         * @param clusters: returning clusters in ascending order of their weight
+         * @param clusters: returning clusters in decreasing order of their weight
          * @return
          */
-        private static Collection<Cluster> inAscendingOrderOfWeight(Collection<Cluster> clusters) {
+        private static Collection<Cluster> inDecreasingOrderOfWeight(Collection<Cluster> clusters) {
             List<Cluster> out = new ArrayList<>(clusters);
 
             out.sort(WEIGHT_SORTED);
@@ -211,7 +211,7 @@ public final class LC implements Clusterer {
                 LOGGER.info("No refinement strategy provided. Defaulting to identity.");
             }
 
-            refine(LCBuilder::inAscendingOrderOfWeight);// output clusters will be in ascending order of their weight.
+            refine(LCBuilder::inDecreasingOrderOfWeight);// output clusters will be in decreasing order of their weight.
 
             Clusterer lc = this.refineCluster.compose(new LC(this.fitForCluster)::cluster)::apply;
 
