@@ -19,7 +19,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 8/2/17
  */
-class UrlHandler {
+public class UrlHandler {
 
     private static Logger logger = LoggerFactory.getLogger(UrlHandler.class);
 
@@ -176,7 +176,7 @@ class UrlHandler {
      * @param host server to be checked
      * @return true or false
      */
-    static boolean isServerListening(String host){
+   public static boolean isServerListening(String host){
         HttpResponse<String> response;
         try {
             response = Unirest.get(host).asString();

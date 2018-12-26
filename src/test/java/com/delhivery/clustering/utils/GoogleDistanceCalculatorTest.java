@@ -2,6 +2,7 @@ package com.delhivery.clustering.utils;
 
 import com.delhivery.clustering.exceptions.InvalidDataException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -9,6 +10,7 @@ import org.junit.Test;
  *         Date: 8/2/17
  */
 public class GoogleDistanceCalculatorTest {
+    @Ignore
     @Test
     public void getDistanceTest() throws InvalidDataException {
 

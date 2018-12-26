@@ -18,15 +18,15 @@ public class Config {
 
     private static final Properties CONFIG = loadConfigFile();
 
-    static String OSRM_URL = CONFIG.getProperty("OSRM_URL", "http://localhost:5000/route/v1/driving/");
-    static String OSRM_USER = CONFIG.getProperty("OSRM_USER", ""); //optional
-    static String OSRM_PWD = CONFIG.getProperty("OSRM_PWD", ""); //optional
+   public static String OSRM_URL = CONFIG.getProperty("OSRM_URL", "http://localhost:5000/route/v1/driving/");
+   public static String OSRM_USER = CONFIG.getProperty("OSRM_USER", ""); //optional
+    public static String OSRM_PWD = CONFIG.getProperty("OSRM_PWD", ""); //optional
 
-    static String GOOGLE_URL = CONFIG.getProperty("GOOGLE_URL",
+    public static String GOOGLE_URL = CONFIG.getProperty("GOOGLE_URL",
                                                         "https://maps.googleapis.com/maps/api/distancematrix/json");
-    static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", ""); //get from file
+    public static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", ""); //get from file
 
-    static final double AERIAL_TO_ROAD_MULTIPLIER = 1.5;
+    public static final double AERIAL_TO_ROAD_MULTIPLIER = 1.5;
 
     public static void setOsrmUrl(String osrmUrl) {
         OSRM_URL = osrmUrl;
