@@ -9,6 +9,10 @@ final class DuplicacyRemoval extends Reducer<Geocode> {
         super(points, Clusterable::geocode);
     }
 
+    /**
+     * Creates clusterable point with geocode of this entry and having weight 
+     * which is sum of weight of clusterables given by value of this entry.
+     */
     public Clusterable create(Entry<Geocode, Collection<Clusterable>> e) {
 
         double weight = e.getValue()

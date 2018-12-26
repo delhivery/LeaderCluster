@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public final class AssignToNearest implements UnaryOperator<Collection<Cluster>>
         Map<Geocode, Collection<Clusterable>> closestMapping = clusters.stream()
                                                                        .map(Cluster::geocode)
                                                                        .distinct()
-                                                                       .collect(toMap(Function.identity(), g -> new LinkedList<>()));
+                                                                       .collect(toMap(x -> x, g -> new LinkedList<>()));
 
         LOGGER.info("Distinct geocode count: {}", closestMapping.size());
 

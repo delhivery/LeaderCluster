@@ -6,6 +6,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -34,6 +35,12 @@ public final class LC implements Clusterer {
         this.fitForCluster = fitForCluster;
     }
 
+    /**
+     * Creating leader cluster.
+     * 1) Sorting clusterabls in ascending order of their weights.
+     * 2) While assigning clusterable to a cluster, choosing of clusters is
+     * prioritized by their weight.
+     */
     @Override
     public Collection<Cluster> cluster(Collection<? extends Clusterable> points) {
         LOGGER.info("Leader clustering starts with: {} clusterable points", points.size());
@@ -93,31 +100,49 @@ public final class LC implements Clusterer {
         }
 
         private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
-            final BiPredicate<Clusterable, Clusterable> checking;
+            final BiPredicate<Clusterable, Clusterable> constraint;
 
             DistanceConstraint(double distance, DistanceMeasure distanceMeasure) {
-                this.checking = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
+                this.constraint = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
             }
 
             @Override
             public boolean test(Cluster t, Clusterable u) {
-                return checking.test(t, u) && t.getMembers().stream().allMatch(m -> checking.test(m, u));
+                return constraint.test(t, u) && t.getMembers().stream().allMatch(m -> constraint.test(m, u));
             }
         }
 
+        /**
+         * Constraint that each point in cluster should not be more than
+         * "max distance".
+         * Notice that if Refinement of leader clusters is used then this may be violated. 
+         * @param maxDistance
+         * @param distanceMeasure
+         * @return
+         */
         public LCBuilder distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
             return constraint(new DistanceConstraint(maxDistance, distanceMeasure));
         }
 
+        /**
+         * Constraint whether or not a clusterable should be added to a cluster.
+         * @param fitForCluster
+         * @return
+         */
         public LCBuilder constraint(BiPredicate<Cluster, Clusterable> fitForCluster) {
             if (isNull(this.fitForCluster))
                 this.fitForCluster = fitForCluster;
             else
-                this.fitForCluster = fitForCluster.and(this.fitForCluster);
+                this.fitForCluster = this.fitForCluster.and(fitForCluster);
 
             return this;
         }
 
+        /**
+         * Refinement of output cluster from Leader clustering algorithm.
+         * @param refinement
+         * @return
+         */
         public LCBuilder refine(UnaryOperator<Collection<Cluster>> refinement) {
 
             if (isNull(this.refineCluster))
@@ -128,11 +153,17 @@ public final class LC implements Clusterer {
             return this;
         }
 
+        /**
+         * A refine strategy which assigns clusterables to nearest cluster available.
+         * @param times: Number of times this strategy should be used.
+         * @param distanceMeasure
+         * @return
+         */
         public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure) {
 
             UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure);
 
-            UnaryOperator<Collection<Cluster>> refinement = x -> x;
+            UnaryOperator<Collection<Cluster>> refinement = identity();
 
             while (times-- > 0)
                 refinement = refinement.andThen(assignToNearest)::apply;
@@ -140,6 +171,12 @@ public final class LC implements Clusterer {
             return refine(refinement::apply);
         }
 
+        /**
+         * If enabled, then clusterables having same Geocode will be grouped before
+         * Leader cluster and after clustering, clusters will be expanded with
+         * actual points having representation earlier in cluster.
+         * @return
+         */
         public LCBuilder enableLcOnCompressedClusterables() {
             this.reducerFactory = DuplicacyRemoval::new;
 
@@ -149,12 +186,17 @@ public final class LC implements Clusterer {
             return this;
         }
 
-        private static Collection<Cluster> inAsendingOrderOfWeight(Collection<Cluster> clusters) {
+        /**
+         * @param clusters: returning clusters in ascending order of their weight
+         * @return
+         */
+        private static Collection<Cluster> inAscendingOrderOfWeight(Collection<Cluster> clusters) {
             List<Cluster> out = new ArrayList<>(clusters);
 
             out.sort(WEIGHT_SORTED);
 
-            LOGGER.info("Sorting clustering. Cluster size:{}", out.size());
+            LOGGER.info("Sorted clusters in decreasing order of their weights");
+
             return out;
         }
 
@@ -165,11 +207,11 @@ public final class LC implements Clusterer {
             }
 
             if (isNull(this.refineCluster)) {
-                this.refineCluster = x -> x;
+                this.refineCluster = identity();
                 LOGGER.info("No refinement strategy provided. Defaulting to identity.");
             }
 
-            refine(LCBuilder::inAsendingOrderOfWeight);
+            refine(LCBuilder::inAscendingOrderOfWeight);// output clusters will be in ascending order of their weight.
 
             Clusterer lc = this.refineCluster.compose(new LC(this.fitForCluster)::cluster)::apply;
 
@@ -218,7 +260,7 @@ public final class LC implements Clusterer {
             return clusters;
         }
 
-        private static class ClusterWithDecompressedClusterables implements Cluster {
+        private final static class ClusterWithDecompressedClusterables implements Cluster {
             final Cluster                 cluster;
             final Collection<Clusterable> members;
 

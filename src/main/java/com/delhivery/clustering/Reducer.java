@@ -13,6 +13,12 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 
 public abstract class Reducer<T> {
+    /**
+     * Hashes Clusterable on given function and produces
+     * a representable clusterable point.
+     * After clustering, clusters can be expanded with individual clusterable points
+     * using "decompressClusterable" methods.
+     */
 
     private final Map<T, Collection<Clusterable>> mapper;
     private final Function<Clusterable, T>        hasher;
@@ -22,12 +28,20 @@ public abstract class Reducer<T> {
         this.hasher = hasher;
     }
 
+    /**
+     * @return clusterables which is distinct on hash given by "hasher" function.
+     */
     public Collection<Clusterable> compressedClusterables() {
         return this.mapper.entrySet()
                           .stream()
                           .map(this::create)
                           .collect(toList());
     }
+
+    /**
+     * @param clusterable
+     * @return clusterables point which share same hash as that of "clusterable"
+     */
 
     public Collection<Clusterable> decompressClusterable(Clusterable clusterable) {
         Collection<Clusterable> points = mapper.get(hasher.apply(clusterable));

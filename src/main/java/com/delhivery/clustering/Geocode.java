@@ -1,6 +1,7 @@
 package com.delhivery.clustering;
 
 import static com.delhivery.clustering.utils.Utils.formatNumber;
+import static java.lang.Double.doubleToLongBits;
 
 public final class Geocode {
     public final double lat , lng;
@@ -20,10 +21,13 @@ public final class Geocode {
         final int prime = 31;
         int result = 1;
         long temp;
+
         temp = Double.doubleToLongBits(lat);
         result = prime * result + (int) (temp ^ (temp >>> 32));
+
         temp = Double.doubleToLongBits(lng);
         result = prime * result + (int) (temp ^ (temp >>> 32));
+
         return result;
     }
 
@@ -33,13 +37,17 @@ public final class Geocode {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof Geocode))
             return false;
+
         Geocode other = (Geocode) obj;
-        if (Double.doubleToLongBits(lat) != Double.doubleToLongBits(other.lat))
+
+        if (doubleToLongBits(lat) != doubleToLongBits(other.lat))
             return false;
-        if (Double.doubleToLongBits(lng) != Double.doubleToLongBits(other.lng))
+
+        if (doubleToLongBits(lng) != doubleToLongBits(other.lng))
             return false;
+
         return true;
     }
 

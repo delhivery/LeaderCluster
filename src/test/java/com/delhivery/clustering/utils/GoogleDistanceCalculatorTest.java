@@ -3,6 +3,7 @@ package com.delhivery.clustering.utils;
 import static com.delhivery.clustering.distances.DistanceMeasureFactory.GOOGLE_DISTANCE;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.delhivery.clustering.Geocode;
@@ -12,7 +13,7 @@ import com.delhivery.clustering.Geocode;
  *         Date: 8/2/17
  */
 public class GoogleDistanceCalculatorTest {
-
+    @Ignore
     @Test
     public void getDistanceTest() {
 

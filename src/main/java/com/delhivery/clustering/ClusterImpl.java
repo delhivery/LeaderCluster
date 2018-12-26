@@ -20,6 +20,10 @@ final class ClusterImpl implements Cluster {
         this.members = new LinkedList<>();
     }
 
+    public String id() {
+        return id;
+    }
+
     @Override
     public Collection<Clusterable> getMembers() {
         return unmodifiableCollection(members);
@@ -30,10 +34,6 @@ final class ClusterImpl implements Cluster {
         updateCentroid(point);
         this.members.add(point);
 
-    }
-
-    public String id() {
-        return id;
     }
 
     private void updateCentroid(Clusterable point) {

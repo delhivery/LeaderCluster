@@ -32,10 +32,6 @@ import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.distances.DistanceMeasureFactory;
 
-/**
- * @author Anurag Paul(anurag.paul@delhivery.com)
- *         Date: 4/1/17
- */
 public class LeaderClusterTest {
 
     @Test
