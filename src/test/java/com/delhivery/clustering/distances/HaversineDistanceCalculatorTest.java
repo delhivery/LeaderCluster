@@ -15,25 +15,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.delhivery.clustering.algorithm;
+package com.delhivery.clustering.distances;
 
-import com.delhivery.clustering.utils.Coordinate;
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.distances.DistanceMeasureFactory;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)
  *         Date: 4/1/17
  */
-public interface Clusterable extends Comparable<Clusterable> {
+public class HaversineDistanceCalculatorTest {
 
-    /**
-     * Returns the coordinate of the {@link Clusterable} object
-     * @return Coordinate
-     */
-    Coordinate getCoordinate();
+    @Test
+    public void getDistanceTest() {
 
-    /**
-     * Returns the {@link Clusterable} object's weight
-     * @return weight
-     */
-    double getWeight();
+        Geocode p1 = new Geocode(28.234, 78.123);
+        Geocode p2 = new Geocode(29.123, 78.234);
+
+        double distance = DistanceMeasureFactory.HAVERSINE.distance(p1, p2);
+
+        Assert.assertEquals(99450, distance, 30.);
+    }
 }

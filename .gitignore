@@ -15,6 +15,11 @@ hs_err_pid*
 .idea/*
 *.iml
 
+#eclipse files
+.classpath
+.project
+.settings/
+
 #target files
 target/*
 
@@ -23,3 +28,7 @@ target/*
 
 #config file
 config/*
+/target/
+
+#exp folder
+src/main/exp/

@@ -1,4 +1,4 @@
-Java Leader Cluster v1.1
+Java Leader Cluster v2.0
 ===================
 
 ## Introduction  
@@ -23,6 +23,8 @@ or
 It requires two basic inputs:-
 - Data points comprising of their coordinates and weights
 - Radius of the cluster in meters
+
+See data/sampleInput.json for more details.
 
 Optionally you can also provide your own distance calculator, by default,
 it uses Haversine distance calculator.
@@ -56,26 +58,23 @@ After, that, clone the project to a folder and to build the project, use command
     cd LeaderCluster
     mvn clean package
 
-## How to use  
-There are three ways to use it:-
- - You can directly use it as a tool for clustering spatial points by using
- the spatialClustering package
+## How to use
+There are two ways to use it:-
  - You can implement the interfaces given in algorithm package and integrate
  Leader Cluster Algorithm into your project
- - You can use it as a standalone runnable jar to cluster points given in a input csv file.
+ - You can use it as a standalone runnable jar to cluster points given in a input json file (see data/sampleInput.json file)
 
 Using runnable jar  
  After mvn install, a runnable jar is created in the target folder. You can use it as shown below:
- 
-    java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters>
+
+```
+java -jar target/JavaLeaderCluster-2.0-one-jar.jar data/sampleInput.json data/sampleOutput.json
+```
 
 ## Advanced Usage:
-- You can specify whether you want to do refinement and if so, number of iterations for it. 
-Also, the distance calculator can be specified - either one of haversine, osrm or google as:
+- You can specify whether you want to do refinement and if so, number of iterations for it. (by adding key "assignToNearest" and corresponding value(defaults to 0) in input json file)
+Also, the distance calculator can be specified - either one of haversine, osrm or google (by adding key "distanceMeasure" in input json file, defaults to "haversine")
 
-``` 
-java -jar target/JavaLeaderCluster-1.1-one-jar.jar /path/to/input.csv <radius-of-cluster-in-meters> <enable-refinement> <num_iters> <distance-calculator-name>
-```
 
 ## Usage  
 For a sample use case, please look at LeaderClusterTest.java in unit tests
@@ -92,11 +91,11 @@ Add this project as a submodule or place the jar file in the libs folder, and th
              <id>install-external</id>
              <phase>clean</phase>
              <configuration>
-                 <file>${basedir}/path/to/JavaLeaderCluster-1.1.jar</file>
+                 <file>${basedir}/path/to/JavaLeaderCluster-2.0.jar</file>
                  <repositoryLayout>default</repositoryLayout>
                  <groupId>com.delhivery</groupId>
                  <artifactId>JavaLeaderCluster</artifactId>
-                 <version>1.1</version>
+                 <version>2.0</version>
                  <packaging>jar</packaging>
                  <generatePom>true</generatePom>
              </configuration>
