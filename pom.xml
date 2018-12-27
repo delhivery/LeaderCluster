@@ -6,7 +6,7 @@
 
 	<groupId>com.delhivery</groupId>
 	<artifactId>JavaLeaderCluster</artifactId>
-	<version>2.0</version>
+	<version>1.5</version>
 	<packaging>jar</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -26,6 +26,9 @@
 			<email>shivkrishna.jaiswal@delhivery.com</email>
 			<organization>Delhivery</organization>
 			<organizationUrl>http://www.delhivery.com/</organizationUrl>
+		</developer>
+		<developer>
+			<name>Anurag Paul</name>
 		</developer>
 	</developers>
 
@@ -73,7 +76,7 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>${slf4j-simple.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.mashape.unirest</groupId>
 			<artifactId>unirest-java</artifactId>

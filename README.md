@@ -1,4 +1,4 @@
-Java Leader Cluster v2.0
+Java Leader Cluster v1.5
 ===================
 
 ## Introduction  
@@ -68,7 +68,7 @@ Using runnable jar
  After mvn install, a runnable jar is created in the target folder. You can use it as shown below:
 
 ```
-java -jar target/JavaLeaderCluster-2.0-one-jar.jar data/sampleInput.json data/sampleOutput.json
+java -jar target/JavaLeaderCluster-1.5-one-jar.jar data/sampleInput.json data/sampleOutput.json
 ```
 
 ## Advanced Usage:
@@ -91,11 +91,11 @@ Add this project as a submodule or place the jar file in the libs folder, and th
              <id>install-external</id>
              <phase>clean</phase>
              <configuration>
-                 <file>${basedir}/path/to/JavaLeaderCluster-2.0.jar</file>
+                 <file>${basedir}/path/to/JavaLeaderCluster-1.5.jar</file>
                  <repositoryLayout>default</repositoryLayout>
                  <groupId>com.delhivery</groupId>
                  <artifactId>JavaLeaderCluster</artifactId>
-                 <version>2.0</version>
+                 <version>1.5</version>
                  <packaging>jar</packaging>
                  <generatePom>true</generatePom>
              </configuration>
