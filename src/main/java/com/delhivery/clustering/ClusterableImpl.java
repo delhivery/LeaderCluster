@@ -1,5 +1,7 @@
 package com.delhivery.clustering;
 
+import static java.util.Objects.requireNonNull;
+
 public class ClusterableImpl extends AbstractClusterable {
     private final Geocode geocode;
     private final double  weight;
@@ -8,7 +10,7 @@ public class ClusterableImpl extends AbstractClusterable {
     public ClusterableImpl(String id, Geocode geocode, double weight) {
         super(id);
 
-        this.geocode = geocode;
+        this.geocode = requireNonNull(geocode);
         this.weight = weight;
         this.userData = null;
     }

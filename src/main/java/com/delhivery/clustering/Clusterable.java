@@ -1,7 +1,7 @@
 package com.delhivery.clustering;
 
 public interface Clusterable {
-    
+
     String id();
 
     /**

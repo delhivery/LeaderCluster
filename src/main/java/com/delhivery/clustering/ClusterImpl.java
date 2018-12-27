@@ -6,7 +6,7 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Collection;
 import java.util.LinkedList;
 
-final class ClusterImpl extends AbstractClusterable implements Cluster {
+public final class ClusterImpl extends AbstractClusterable implements Cluster {
     private double                        lat , lng , weight;
     private final Collection<Clusterable> members;
 

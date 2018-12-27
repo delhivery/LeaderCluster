@@ -9,6 +9,7 @@ import static com.delhivery.clustering.distances.DistanceMeasureFactory.OSRM;
 import static java.lang.Math.abs;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
+import static java.util.Objects.nonNull;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -98,7 +99,7 @@ public final class Utils {
         for (Clusterable c : cluster.getMembers()) {
             JsonObject member = null;
 
-            if (c instanceof ClusterableImpl)
+            if (c instanceof ClusterableImpl && nonNull(((ClusterableImpl) c).userData()))
                 member = ((ClusterableImpl) c).userData();
             else {
 

@@ -1,11 +1,15 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.reduction;
 
 import static java.util.stream.Collectors.joining;
 
 import java.util.Collection;
 import java.util.Map.Entry;
 
-final class DuplicacyRemoval extends Reducer<Geocode> {
+import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.ClusterableImpl;
+import com.delhivery.clustering.Geocode;
+
+final class DuplicacyRemoval extends HashReducer<Geocode> {
 
     DuplicacyRemoval(Collection<? extends Clusterable> points) {
         super(points, Clusterable::geocode);
@@ -15,6 +19,7 @@ final class DuplicacyRemoval extends Reducer<Geocode> {
      * Creates clusterable point with geocode of this entry and having weight 
      * which is sum of weight of clusterables given by value of this entry.
      */
+    @Override
     public Clusterable create(Entry<Geocode, Collection<Clusterable>> e) {
 
         double weight = e.getValue()
