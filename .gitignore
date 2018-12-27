@@ -32,3 +32,6 @@ config/*
 
 #exp folder
 src/main/exp/
+
+#output json file
+data/sampleOutput.json
