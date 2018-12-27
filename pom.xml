@@ -141,7 +141,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.delhivery.clustering.demo.Demo</mainClass>
+							<mainClass>com.delhivery.clustering.demo.LeaderClusterDemo</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

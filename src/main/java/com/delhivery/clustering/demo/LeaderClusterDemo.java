@@ -27,11 +27,31 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public final class Demo {
+public final class LeaderClusterDemo {
     private static final Gson GSON = new Gson();
 
     /**
      * Sample Input format: see json file at data/sampleInput.json
+     * {
+            "throwDistance": 500,             // required field
+            "enableGeocodeCompression": true, // defaults to false
+            "assignToNearest": 5,             // refinement strategy, defaults to 0.
+            "distanceMeasure": "haversine",   // distance measure, defaults to "haversine"
+            "points": [
+                {
+                    "id": "1",
+                    "lat": 28.011,
+                    "lng": 77.01100000000001,
+                    "weight": 1
+                },
+                {
+                    "id": "2",
+                    "lat": 28.011999999999997,
+                    "lng": 77.009,
+                    "weight": 2
+                }
+            ]
+      }
      * Sample output format: 
      * 
      * [
