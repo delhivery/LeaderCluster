@@ -27,12 +27,12 @@ final class DuplicacyRemoval extends Reducer<Geocode> {
                      .map(Clusterable::id)
                      .collect(joining(";"));
 
-        return new DuplicateClustreables(id, e.getKey(), weight);
+        return new CompressedClusterable(id, e.getKey(), weight);
     }
 
-    private final static class DuplicateClustreables extends ClusterableImpl {
+    private final static class CompressedClusterable extends ClusterableImpl {
 
-        DuplicateClustreables(String id, Geocode geocode, double weight) {
+        CompressedClusterable(String id, Geocode geocode, double weight) {
             super(id, geocode, weight);
         }
 
@@ -43,8 +43,8 @@ final class DuplicacyRemoval extends Reducer<Geocode> {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof DuplicateClustreables)
-                return ((DuplicateClustreables) obj).geocode().equals(geocode());
+            if (obj instanceof CompressedClusterable)
+                return ((CompressedClusterable) obj).geocode().equals(geocode());
 
             return false;
         }

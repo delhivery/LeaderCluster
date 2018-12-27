@@ -1,19 +1,13 @@
 package com.delhivery.clustering;
 
-public class ClusterableImpl implements Clusterable {
-    private final String  id;
+public class ClusterableImpl extends AbstractClusterable {
     private final Geocode geocode;
     private final double  weight;
 
     public ClusterableImpl(String id, Geocode geocode, double weight) {
-        this.id = id;
+        super(id);
         this.geocode = geocode;
         this.weight = weight;
-    }
-
-    @Override
-    public String id() {
-        return id;
     }
 
     @Override
@@ -26,11 +20,6 @@ public class ClusterableImpl implements Clusterable {
     public double weight() {
 
         return weight;
-    }
-
-    @Override
-    public String toString() {
-        return id;
     }
 
 }

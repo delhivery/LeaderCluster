@@ -2,6 +2,7 @@ package com.delhivery.clustering;
 
 import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Double.doubleToLongBits;
+import static java.util.Objects.hash;
 
 public final class Geocode {
     public final double lat , lng;
@@ -18,25 +19,17 @@ public final class Geocode {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        long temp;
-
-        temp = Double.doubleToLongBits(lat);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-
-        temp = Double.doubleToLongBits(lng);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
-
-        return result;
+        return hash(lat, lng);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
+
         if (obj == null)
             return false;
+
         if (!(obj instanceof Geocode))
             return false;
 

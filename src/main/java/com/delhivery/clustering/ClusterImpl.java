@@ -6,23 +6,18 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Collection;
 import java.util.LinkedList;
 
-final class ClusterImpl implements Cluster {
-    private final String                  id;
+final class ClusterImpl extends AbstractClusterable implements Cluster {
     private double                        lat , lng , weight;
     private final Collection<Clusterable> members;
 
     public ClusterImpl(String id) {
-        this.id = id;
+        super(id);
+
         this.lat = 0;
         this.lng = 0;
         this.weight = 0;
 
         this.members = new LinkedList<>();
-    }
-
-    @Override
-    public String id() {
-        return id;
     }
 
     @Override
@@ -58,13 +53,6 @@ final class ClusterImpl implements Cluster {
     }
 
     @Override
-    public int hashCode() {
-
-        return id.hashCode();
-
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -72,10 +60,15 @@ final class ClusterImpl implements Cluster {
         if (obj == null)
             return false;
 
-        if (!(obj instanceof ClusterImpl))
+        if (!(obj instanceof Cluster))
             return false;
 
-        return this.id.equals(((ClusterImpl) obj).id);
+        return this.id().equals(((Cluster) obj).id());
+    }
+
+    @Override
+    public int hashCode() {
+        return id().hashCode();
     }
 
     @Override
