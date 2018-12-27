@@ -78,7 +78,11 @@ public final class Utils {
 
         double weight = point.has("weight") ? point.get("weight").getAsDouble() : 1;
 
-        return new ClusterableImpl(point.get("id").getAsString(), geocode, weight);
+        ClusterableImpl out = new ClusterableImpl(point.get("id").getAsString(), geocode, weight);
+
+        out.userData(point);
+
+        return out;
     }
 
     public static JsonObject clusterData(Cluster cluster) {
@@ -92,12 +96,19 @@ public final class Utils {
         output.add("points", docs);
 
         for (Clusterable c : cluster.getMembers()) {
-            JsonObject member = new JsonObject();
+            JsonObject member = null;
 
-            member.addProperty("id", c.id());
-            member.addProperty("lat", c.geocode().lat);
-            member.addProperty("lng", c.geocode().lng);
-            member.addProperty("weight", c.weight());
+            if (c instanceof ClusterableImpl)
+                member = ((ClusterableImpl) c).userData();
+            else {
+
+                member = new JsonObject();
+                member.addProperty("id", c.id());
+                member.addProperty("lat", c.geocode().lat);
+                member.addProperty("lng", c.geocode().lng);
+                member.addProperty("weight", c.weight());
+
+            }
 
             docs.add(member);
         }
