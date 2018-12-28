@@ -1,6 +1,9 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.exception;
 
-public class BuilderException extends RuntimeException {
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+public final class BuilderException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

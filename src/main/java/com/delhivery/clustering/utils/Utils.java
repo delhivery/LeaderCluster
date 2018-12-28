@@ -7,6 +7,7 @@ import static com.delhivery.clustering.distances.DistanceMeasureFactory.GOOGLE_D
 import static com.delhivery.clustering.distances.DistanceMeasureFactory.HAVERSINE;
 import static com.delhivery.clustering.distances.DistanceMeasureFactory.OSRM;
 import static java.lang.Math.abs;
+import static java.lang.String.valueOf;
 import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.newBufferedWriter;
 import static java.util.Objects.nonNull;
@@ -16,6 +17,8 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 
 import com.delhivery.clustering.Cluster;
 import com.delhivery.clustering.Clusterable;
@@ -25,6 +28,9 @@ import com.delhivery.clustering.distances.DistanceMeasure;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public final class Utils {
 
     private Utils() {}
@@ -35,6 +41,11 @@ public final class Utils {
 
     public static boolean isZero(double d) {
         return abs(d) <= TOLERANCE;
+    }
+
+    public static Supplier<String> iDCreator() {
+        AtomicLong idProvider = new AtomicLong(0);
+        return () -> valueOf(idProvider.getAndIncrement());
     }
 
     // ------------------ Parser utility ----------------------------

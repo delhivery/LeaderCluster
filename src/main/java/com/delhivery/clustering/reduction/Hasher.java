@@ -14,7 +14,10 @@ import java.util.function.Function;
 
 import com.delhivery.clustering.Clusterable;
 
-public abstract class HashReducer<T> extends Reducer<T> {
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+public abstract class Hasher<T> extends Reducer<T> {
     /**
      * Hashes Clusterable on given function and produces
      * a representable clusterable point.
@@ -25,7 +28,7 @@ public abstract class HashReducer<T> extends Reducer<T> {
     private final Map<T, Collection<Clusterable>> mapper;
     private final Function<Clusterable, T>        hasher;
 
-    protected HashReducer(Collection<? extends Clusterable> clusterables, Function<Clusterable, T> hasher) {
+    protected Hasher(Collection<? extends Clusterable> clusterables, Function<Clusterable, T> hasher) {
         this.mapper = clusterables.stream().collect(groupingBy(hasher, toCollection(LinkedList::new)));
         this.hasher = hasher;
     }

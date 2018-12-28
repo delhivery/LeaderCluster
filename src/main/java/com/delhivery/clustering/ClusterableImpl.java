@@ -2,6 +2,9 @@ package com.delhivery.clustering;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public class ClusterableImpl extends AbstractClusterable {
     private final Geocode geocode;
     private final double  weight;

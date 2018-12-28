@@ -11,13 +11,16 @@ import java.util.Collection;
 
 import com.delhivery.clustering.Cluster;
 import com.delhivery.clustering.Clusterable;
-import com.delhivery.clustering.Clusterer;
 import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 
 public final class LeaderClusterDemo {
 
@@ -85,16 +88,14 @@ public final class LeaderClusterDemo {
         Collection<Clusterable> points = stream(input.getAsJsonArray("points")).map(JsonElement::getAsJsonObject)
                                                                                .map(Utils::createClusterable)
                                                                                .collect(toList());
-        LCBuilder builder = LCBuilder.newInstance()
+        LCBuilder builder = LCBuilder.newInstance(points)
                                      .distanceConstraint(throwDistance, distanceMeasure)
                                      .refineAssignToClosestCluster(assignToNearestCluster, distanceMeasure);
 
         if (enableGeocodeCompression)
             builder = builder.enableLcOnCompressedClusterables();
 
-        Clusterer algorithm = builder.build();
-
-        Collection<Cluster> clusters = algorithm.cluster(points);
+        Collection<Cluster> clusters = builder.build();
 
         JsonArray output = new JsonArray();
 

@@ -1,5 +1,8 @@
 package com.delhivery.clustering;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public interface Clusterable {
 
     String id();

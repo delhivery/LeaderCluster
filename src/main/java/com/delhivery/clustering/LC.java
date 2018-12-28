@@ -1,8 +1,10 @@
 package com.delhivery.clustering;
 
+import static com.delhivery.clustering.ClusterImpl.ClusterBuilder.newInstance;
 import static com.delhivery.clustering.preclustering.PreClusteringFactory.NO_PRECLUSTERING;
 import static com.delhivery.clustering.reduction.ReductionFactory.NO_REDUCTION;
 import static com.delhivery.clustering.reduction.ReductionFactory.REDUCE_ON_GEOCODE;
+import static com.delhivery.clustering.utils.Utils.iDCreator;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
@@ -19,54 +21,55 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 
 import com.delhivery.clustering.distances.DistanceMeasure;
+import com.delhivery.clustering.exception.BuilderException;
 import com.delhivery.clustering.preclustering.PreClustering;
 import com.delhivery.clustering.preclustering.PreClusteringFactory;
 import com.delhivery.clustering.reduction.Reducer;
 import com.delhivery.clustering.reduction.ReductionFactory;
+import com.delhivery.clustering.refinement.AssignToNearest;
 
-public final class LC implements Clusterer {
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+public final class LC {
     private static final Logger                  LOGGER        = getLogger(LC.class);
     private static final Comparator<Clusterable> WEIGHT_SORTED = reverseOrder(comparingDouble(Clusterable::weight));
     private static final Comparator<Cluster>     CLUSTER_COMP  = reverseOrder(comparingDouble(Cluster::weight).thenComparing(comparing(Cluster::id)));
 
+    private final Supplier<String>                   idFactory;
+    private final Collection<Clusterable>            points;
     private final BiPredicate<Cluster, Clusterable>  fitForCluster;
     private final PreClusteringFactory               preClusterer;
     private final ReductionFactory                   reducerFactory;
     private final UnaryOperator<Collection<Cluster>> refineCluster;
 
     private LC(LCBuilder builder) {
+        this.idFactory = iDCreator();
+        this.points = builder.clusterables;
         this.fitForCluster = builder.fitForCluster;
         this.preClusterer = builder.preClustering;
         this.reducerFactory = builder.reducerFactory;
         this.refineCluster = builder.refineCluster;
     }
 
-    /**
-     * Creating leader cluster.
-     * 1) Sorting clusterabls in decreasing order of their weights.
-     * 2) While assigning clusterable to a cluster, choosing of clusters is
-     * prioritized by their weight.
-     */
-    @Override
-    public Collection<Cluster> cluster(Collection<? extends Clusterable> points) {
+    private Collection<Cluster> process() {
         LOGGER.info("Leader clustering starts with: {} clusterable points", points.size());
 
         Reducer<?> reducer = reducerFactory.createReducer(points);
-        points = reducer.compressedClusterables();
 
-        PreClustering preClustering = this.preClusterer.createPreClusterer(points);
+        PreClustering preClustering = this.preClusterer.createPreClusterer(reducer.compressedClusterables());
 
         Collection<Cluster> clusters = new TreeSet<>(CLUSTER_COMP);
-        clusters.addAll(preClustering.preclusters());
 
-        points = preClustering.unclusteredPoints();
+        clusters.addAll(preClustering.preclusters(idFactory));
 
-        List<Clusterable> toBeClustered = new ArrayList<>(points);
+        List<Clusterable> toBeClustered = new ArrayList<>(preClustering.unclusteredPoints());
 
         toBeClustered.sort(WEIGHT_SORTED);
 
@@ -89,7 +92,7 @@ public final class LC implements Clusterer {
             }
 
             if (isNull(fitCluster)) {
-                fitCluster = new ClusterImpl(preClustering.nextClusterID());
+                fitCluster = newInstance(idFactory.get()).build();
                 LOGGER.debug("No cluster found for Clusterable: {}. So creating new cluster. cluster id: {}", point, fitCluster.id());
             }
 
@@ -155,15 +158,19 @@ public final class LC implements Clusterer {
     public static final class LCBuilder {
         private static final Logger LOGGER = getLogger(LCBuilder.class);
 
+        private Collection<Clusterable> clusterables;
+
         private BiPredicate<Cluster, Clusterable>  fitForCluster;
         private UnaryOperator<Collection<Cluster>> refineCluster;
         private ReductionFactory                   reducerFactory;
         private PreClusteringFactory               preClustering;
 
-        private LCBuilder() {}
+        private LCBuilder(Collection<? extends Clusterable> clusterables) {
+            this.clusterables = unmodifiableCollection(clusterables);
+        }
 
-        public static LCBuilder newInstance() {
-            return new LCBuilder();
+        public static LCBuilder newInstance(Collection<? extends Clusterable> clusterables) {
+            return new LCBuilder(clusterables);
         }
 
         private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
@@ -272,7 +279,7 @@ public final class LC implements Clusterer {
             return this;
         }
 
-        public Clusterer build() {
+        public Collection<Cluster> build() {
             if (isNull(this.fitForCluster)) {
                 LOGGER.error("Criteria to add a clusterable point to a cluster has not been provided");
                 throw new BuilderException("Criteria to add clusterable to a cluster has not been provided");
@@ -291,7 +298,7 @@ public final class LC implements Clusterer {
             if (isNull(this.preClustering))
                 this.preClustering = NO_PRECLUSTERING;
 
-            return new LC(this);
+            return new LC(this).process();
         }
     }
 

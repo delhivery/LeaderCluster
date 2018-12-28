@@ -1,21 +1,27 @@
 package com.delhivery.clustering;
 
+import static com.delhivery.clustering.Geocode.ZERO;
 import static com.delhivery.clustering.utils.Utils.isZero;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public final class ClusterImpl extends AbstractClusterable implements Cluster {
     private double                        lat , lng , weight;
     private final Collection<Clusterable> members;
 
-    public ClusterImpl(String id) {
-        super(id);
+    private ClusterImpl(ClusterBuilder builder) {
+        super(builder.id);
 
-        this.lat = 0;
-        this.lng = 0;
-        this.weight = 0;
+        this.lat = builder.geocode.lat;
+        this.lng = builder.geocode.lng;
+        this.weight = builder.weight;
 
         this.members = new LinkedList<>();
     }
@@ -85,6 +91,37 @@ public final class ClusterImpl extends AbstractClusterable implements Cluster {
     public double weight() {
 
         return weight;
+    }
+
+    public final static class ClusterBuilder {
+        private final String id;
+        private double       weight;
+        private Geocode      geocode;
+
+        private ClusterBuilder(String id) {
+            this.id = requireNonNull(id);
+        }
+
+        public static ClusterBuilder newInstance(String id) {
+            return new ClusterBuilder(id);
+        }
+
+        public ClusterBuilder weight(double weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        public ClusterBuilder geocode(Geocode geocode) {
+            this.geocode = geocode;
+            return this;
+        }
+
+        public Cluster build() {
+            if (isNull(this.geocode))
+                this.geocode = ZERO;
+
+            return new ClusterImpl(this);
+        }
     }
 
 }

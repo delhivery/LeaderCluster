@@ -7,6 +7,9 @@ import java.util.Collection;
 
 import com.delhivery.clustering.Clusterable;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 final class NoReduction extends Reducer<Object> {
     private final Collection<Clusterable> clusterables;
 

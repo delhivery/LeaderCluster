@@ -4,6 +4,10 @@ import java.util.Collection;
 
 import com.delhivery.clustering.Clusterable;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+
 @FunctionalInterface
 public interface PreClusteringFactory {
 

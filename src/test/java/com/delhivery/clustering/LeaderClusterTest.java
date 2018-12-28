@@ -53,12 +53,11 @@ public class LeaderClusterTest {
             int clusterRadius = 500;
 
             DistanceMeasure haversine = DistanceMeasureFactory.HAVERSINE;
-            Clusterer lc = LCBuilder.newInstance()
-                                    .distanceConstraint(clusterRadius, haversine)
-                                    .refineAssignToClosestCluster(1, haversine)
-                                    .build();
 
-            Collection<Cluster> clusters = lc.cluster(data);
+            Collection<Cluster> clusters = LCBuilder.newInstance(data)
+                                                    .distanceConstraint(clusterRadius, haversine)
+                                                    .refineAssignToClosestCluster(1, haversine)
+                                                    .build();
 
             Cluster prevCluster = null;
 

@@ -2,6 +2,9 @@ package com.delhivery.clustering;
 
 import java.util.Collection;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public interface Cluster extends Clusterable {
     /**
      * 

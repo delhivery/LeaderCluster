@@ -4,7 +4,12 @@ import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Double.doubleToLongBits;
 import static java.util.Objects.hash;
 
+/**
+ * @author Shiv Krishna Jaiswal
+ */
 public final class Geocode {
+    public static final Geocode ZERO = new Geocode(0, 0);
+
     public final double lat , lng;
 
     public Geocode(double lat, double lng) {

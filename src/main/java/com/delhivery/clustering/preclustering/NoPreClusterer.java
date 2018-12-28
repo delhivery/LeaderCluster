@@ -4,11 +4,16 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.delhivery.clustering.Cluster;
 import com.delhivery.clustering.Clusterable;
 
-final class NoPreClusterer extends AbstractPreClusterer {
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+
+final class NoPreClusterer implements PreClustering {
     private final Collection<Clusterable> points;
 
     public NoPreClusterer(Collection<? extends Clusterable> points) {
@@ -16,7 +21,7 @@ final class NoPreClusterer extends AbstractPreClusterer {
     }
 
     @Override
-    public Collection<Cluster> preclusters() {
+    public Collection<Cluster> preclusters(Supplier<String> idSupplier) {
         return emptyList();
     }
 

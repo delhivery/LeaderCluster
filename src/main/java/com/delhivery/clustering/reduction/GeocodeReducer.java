@@ -9,9 +9,12 @@ import com.delhivery.clustering.Clusterable;
 import com.delhivery.clustering.ClusterableImpl;
 import com.delhivery.clustering.Geocode;
 
-final class DuplicacyRemoval extends HashReducer<Geocode> {
+/**
+ * @author Shiv Krishna Jaiswal
+ */
+final class GeocodeReducer extends Hasher<Geocode> {
 
-    DuplicacyRemoval(Collection<? extends Clusterable> points) {
+    GeocodeReducer(Collection<? extends Clusterable> points) {
         super(points, Clusterable::geocode);
     }
 
