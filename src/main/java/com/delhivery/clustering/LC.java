@@ -1,6 +1,6 @@
 package com.delhivery.clustering;
 
-import static com.delhivery.clustering.ClusterImpl.ClusterBuilder.newInstance;
+import static com.delhivery.clustering.elements.ClusterImpl.ClusterBuilder.newInstance;
 import static com.delhivery.clustering.preclustering.PreClusteringFactory.NO_PRECLUSTERING;
 import static com.delhivery.clustering.reduction.ReductionFactory.NO_REDUCTION;
 import static com.delhivery.clustering.reduction.ReductionFactory.REDUCE_ON_GEOCODE;
@@ -27,6 +27,9 @@ import java.util.function.UnaryOperator;
 import org.slf4j.Logger;
 
 import com.delhivery.clustering.distances.DistanceMeasure;
+import com.delhivery.clustering.elements.Cluster;
+import com.delhivery.clustering.elements.Clusterable;
+import com.delhivery.clustering.elements.Geocode;
 import com.delhivery.clustering.exception.BuilderException;
 import com.delhivery.clustering.preclustering.PreClustering;
 import com.delhivery.clustering.preclustering.PreClusteringFactory;
@@ -158,7 +161,7 @@ public final class LC {
     public static final class LCBuilder {
         private static final Logger LOGGER = getLogger(LCBuilder.class);
 
-        private Collection<Clusterable> clusterables;
+        private final Collection<Clusterable> clusterables;
 
         private BiPredicate<Cluster, Clusterable>  fitForCluster;
         private UnaryOperator<Collection<Cluster>> refineCluster;
@@ -236,6 +239,25 @@ public final class LC {
         public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure) {
 
             UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure);
+
+            UnaryOperator<Collection<Cluster>> refinement = identity();
+
+            while (times-- > 0)
+                refinement = refinement.andThen(assignToNearest)::apply;
+
+            return refine(refinement::apply);
+        }
+
+        /**
+         * A refine strategy which assigns clusterables to nearest cluster available considering hard constraint.
+         * @param times: Number of times this strategy should be used.
+         * @param distanceMeasure
+         * @param hardConstraint
+         * @return
+         */
+        public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure, BiPredicate<Geocode, Geocode> hardConstraint) {
+
+            UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure, hardConstraint);
 
             UnaryOperator<Collection<Cluster>> refinement = identity();
 

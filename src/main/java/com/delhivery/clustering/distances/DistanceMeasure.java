@@ -1,6 +1,6 @@
 package com.delhivery.clustering.distances;
 
-import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.elements.Geocode;
 
 /**
  * @author Shiv Krishna Jaiswal

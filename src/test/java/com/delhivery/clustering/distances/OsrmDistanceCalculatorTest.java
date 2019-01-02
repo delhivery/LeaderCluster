@@ -5,8 +5,8 @@ import static com.delhivery.clustering.config.Config.OSRM_URL;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.delhivery.clustering.Geocode;
 import com.delhivery.clustering.distances.DistanceMeasureFactory;
+import com.delhivery.clustering.elements.Geocode;
 import com.delhivery.clustering.utils.UrlHandler;
 
 /**

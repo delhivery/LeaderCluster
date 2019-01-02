@@ -5,9 +5,9 @@ import static java.util.stream.Collectors.joining;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import com.delhivery.clustering.Clusterable;
-import com.delhivery.clustering.ClusterableImpl;
-import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.elements.Clusterable;
+import com.delhivery.clustering.elements.ClusterableImpl;
+import com.delhivery.clustering.elements.Geocode;
 
 /**
  * @author Shiv Krishna Jaiswal

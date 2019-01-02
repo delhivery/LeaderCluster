@@ -26,6 +26,10 @@ import org.junit.Test;
 import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.distances.DistanceMeasureFactory;
+import com.delhivery.clustering.elements.Cluster;
+import com.delhivery.clustering.elements.Clusterable;
+import com.delhivery.clustering.elements.ClusterableImpl;
+import com.delhivery.clustering.elements.Geocode;
 
 public class LeaderClusterTest {
 

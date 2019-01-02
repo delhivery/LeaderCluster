@@ -15,7 +15,7 @@ import static java.lang.Math.toRadians;
 
 import java.util.Optional;
 
-import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.elements.Geocode;
 import com.delhivery.clustering.exception.DistanceFetchException;
 import com.delhivery.clustering.utils.UrlHandler;
 import com.google.gson.JsonObject;

@@ -20,11 +20,11 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import com.delhivery.clustering.Cluster;
-import com.delhivery.clustering.Clusterable;
-import com.delhivery.clustering.ClusterableImpl;
-import com.delhivery.clustering.Geocode;
 import com.delhivery.clustering.distances.DistanceMeasure;
+import com.delhivery.clustering.elements.Cluster;
+import com.delhivery.clustering.elements.Clusterable;
+import com.delhivery.clustering.elements.ClusterableImpl;
+import com.delhivery.clustering.elements.Geocode;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 

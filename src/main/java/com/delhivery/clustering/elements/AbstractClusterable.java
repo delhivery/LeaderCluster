@@ -1,4 +1,4 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.elements;
 
 /**
  * @author Shiv Krishna Jaiswal

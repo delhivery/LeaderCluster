@@ -1,6 +1,6 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.elements;
 
-import static com.delhivery.clustering.Geocode.ZERO;
+import static com.delhivery.clustering.elements.Geocode.ZERO;
 import static com.delhivery.clustering.utils.Utils.isZero;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.isNull;

@@ -1,4 +1,4 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.elements;
 
 import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Double.doubleToLongBits;

@@ -9,10 +9,10 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 
-import com.delhivery.clustering.Cluster;
-import com.delhivery.clustering.Clusterable;
 import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
+import com.delhivery.clustering.elements.Cluster;
+import com.delhivery.clustering.elements.Clusterable;
 import com.delhivery.clustering.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

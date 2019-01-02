@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.delhivery.clustering.Geocode;
+import com.delhivery.clustering.elements.Geocode;
 
 /**
  * @author Anurag Paul(anurag.paul@delhivery.com)

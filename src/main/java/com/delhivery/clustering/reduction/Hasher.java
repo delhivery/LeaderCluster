@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.elements.Clusterable;
 
 /**
  * @author Shiv Krishna Jaiswal

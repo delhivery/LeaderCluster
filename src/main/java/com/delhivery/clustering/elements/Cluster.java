@@ -1,4 +1,4 @@
-package com.delhivery.clustering;
+package com.delhivery.clustering.elements;
 
 import java.util.Collection;
 

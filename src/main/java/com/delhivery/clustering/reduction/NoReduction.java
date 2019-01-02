@@ -5,7 +5,7 @@ import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 
-import com.delhivery.clustering.Clusterable;
+import com.delhivery.clustering.elements.Clusterable;
 
 /**
  * @author Shiv Krishna Jaiswal
