@@ -30,8 +30,7 @@ import com.delhivery.clustering.elements.Geocode;
  * @author Shiv Krishna Jaiswal
  */
 public final class AssignToNearest implements UnaryOperator<Collection<Cluster>> {
-    private static final Logger                        LOGGER             = getLogger(AssignToNearest.class);
-    private static final BiPredicate<Geocode, Geocode> NO_HARD_CONSTRAINT = (from, to) -> true;
+    private static final Logger LOGGER = getLogger(AssignToNearest.class);
 
     private final DistanceMeasure               distanceMeasure;
     private final BiPredicate<Geocode, Geocode> hardConstraint;
@@ -39,10 +38,6 @@ public final class AssignToNearest implements UnaryOperator<Collection<Cluster>>
     public AssignToNearest(DistanceMeasure distanceMeasure, BiPredicate<Geocode, Geocode> hardConstraint) {
         this.distanceMeasure = distanceMeasure;
         this.hardConstraint = hardConstraint;
-    }
-
-    public AssignToNearest(DistanceMeasure distanceMeasure) {
-        this(distanceMeasure, NO_HARD_CONSTRAINT);
     }
 
     private static Predicate<Cluster> distinctCluster() {

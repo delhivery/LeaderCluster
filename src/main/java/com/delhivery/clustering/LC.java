@@ -237,15 +237,7 @@ public final class LC {
          * @return
          */
         public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure) {
-
-            UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure);
-
-            UnaryOperator<Collection<Cluster>> refinement = identity();
-
-            while (times-- > 0)
-                refinement = refinement.andThen(assignToNearest)::apply;
-
-            return refine(refinement::apply);
+            return refineAssignToClosestCluster(times, distanceMeasure, (from, to) -> true);
         }
 
         /**
