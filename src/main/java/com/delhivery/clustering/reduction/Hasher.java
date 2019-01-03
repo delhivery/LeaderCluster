@@ -36,6 +36,7 @@ public abstract class Hasher<T> extends Reducer<T> {
     /**
      * @return clusterables which is distinct on hash given by "hasher" function.
      */
+    @Override
     public Collection<Clusterable> compressedClusterables() {
         return this.mapper.entrySet()
                           .stream()
@@ -48,6 +49,7 @@ public abstract class Hasher<T> extends Reducer<T> {
      * @return clusterables point which share same hash as that of "clusterable"
      */
 
+    @Override
     public Collection<Clusterable> decompressClusterable(Clusterable clusterable) {
         Collection<Clusterable> points = mapper.get(hasher.apply(clusterable));
 

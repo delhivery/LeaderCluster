@@ -1,6 +1,6 @@
 package com.delhivery.clustering.utils;
 
-import static com.delhivery.clustering.config.Constants.DECIMAL_FORMAT;
+import static com.delhivery.clustering.config.Constants.LAT_LNG_FORMATTER;
 import static com.delhivery.clustering.config.Constants.TOLERANCE;
 import static com.delhivery.clustering.config.StaticObjects.GSON;
 import static com.delhivery.clustering.distances.DistanceMeasureFactory.GOOGLE_DISTANCE;
@@ -36,7 +36,7 @@ public final class Utils {
     private Utils() {}
 
     public static String formatNumber(double n) {
-        return DECIMAL_FORMAT.format(n);
+        return LAT_LNG_FORMATTER.format(n);
     }
 
     public static boolean isZero(double d) {

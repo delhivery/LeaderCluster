@@ -127,10 +127,12 @@ public final class LC {
                                   .collect(toList());;
         }
 
+        @Override
         public Geocode geocode() {
             return cluster.geocode();
         }
 
+        @Override
         public double weight() {
             return cluster.weight();
         }
