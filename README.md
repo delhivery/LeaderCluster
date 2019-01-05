@@ -60,8 +60,8 @@ After, that, clone the project to a folder and to build the project, use command
 
 ## How to use
 There are two ways to use it:-
- - You can implement the interfaces given in algorithm package and integrate
- Leader Cluster Algorithm into your project
+ - By using either high level API (using com.delhivery.clustering.Builder) or core Leader clustering
+   algorithms (com.delhivery.clustering.LCBuilder). 
  - You can use it as a standalone runnable jar to cluster points given in a input json file (see data/sampleInput.json file)
 
 Using runnable jar  

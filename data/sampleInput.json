@@ -1,5 +1,7 @@
 {
-	"throwDistance": 500,
+	"constraint": {
+		"throwDistance": 500
+	},
 	"enableGeocodeCompression": true,
 	"assignToNearest": 5,
 	"distanceMeasure": "haversine",

@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 
-import com.delhivery.clustering.LC.LCBuilder;
+import com.delhivery.clustering.Builder;
 import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.elements.Cluster;
 import com.delhivery.clustering.elements.Clusterable;
@@ -26,8 +26,10 @@ public final class LeaderClusterDemo {
 
     /**
      * Sample Input format: see json file at data/sampleInput.json
-     * {
-            "throwDistance": 500,             // required field
+     * {    
+            "constraint":{
+                "throwDistance": 500          // required field
+            },             
             "enableGeocodeCompression": true, // defaults to false
             "assignToNearest": 5,             // refinement strategy, defaults to 0.
             "distanceMeasure": "haversine",   // distance measure, defaults to "haversine"
@@ -79,7 +81,7 @@ public final class LeaderClusterDemo {
 
         DistanceMeasure distanceMeasure = getDistanceMeasure(input.has("distanceMeasure") ? input.get("distanceMeasure").getAsString() : "haversine");
 
-        double throwDistance = input.get("throwDistance").getAsDouble();// in meter.
+        double throwDistance = input.getAsJsonObject("constraint").get("throwDistance").getAsDouble();// in meter.
 
         boolean enableGeocodeCompression = input.has("enableGeocodeCompression") ? input.get("enableGeocodeCompression").getAsBoolean() : false;
 
@@ -88,12 +90,13 @@ public final class LeaderClusterDemo {
         Collection<Clusterable> points = stream(input.getAsJsonArray("points")).map(JsonElement::getAsJsonObject)
                                                                                .map(Utils::createClusterable)
                                                                                .collect(toList());
-        LCBuilder builder = LCBuilder.newInstance(points)
-                                     .distanceConstraint(throwDistance, distanceMeasure)
-                                     .refineAssignToClosestCluster(assignToNearestCluster, distanceMeasure);
+        Builder builder = Builder.newInstance(points)
+                                 .distanceMeasure(distanceMeasure)
+                                 .throwDistance(throwDistance)
+                                 .refinementAfterClustering(assignToNearestCluster);
 
         if (enableGeocodeCompression)
-            builder = builder.enableLcOnCompressedClusterables();
+            builder = builder.enableMergingSameLocationClusterables();
 
         Collection<Cluster> clusters = builder.build();
 

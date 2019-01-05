@@ -3,7 +3,6 @@ package com.delhivery.clustering;
 import static com.delhivery.clustering.elements.ClusterImpl.ClusterBuilder.newInstance;
 import static com.delhivery.clustering.preclustering.PreClusteringFactory.NO_PRECLUSTERING;
 import static com.delhivery.clustering.reduction.ReductionFactory.NO_REDUCTION;
-import static com.delhivery.clustering.reduction.ReductionFactory.REDUCE_ON_GEOCODE;
 import static com.delhivery.clustering.utils.Utils.iDCreator;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
@@ -26,7 +25,6 @@ import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
 
-import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.elements.Cluster;
 import com.delhivery.clustering.elements.Clusterable;
 import com.delhivery.clustering.elements.Geocode;
@@ -35,7 +33,6 @@ import com.delhivery.clustering.preclustering.PreClustering;
 import com.delhivery.clustering.preclustering.PreClusteringFactory;
 import com.delhivery.clustering.reduction.Reducer;
 import com.delhivery.clustering.reduction.ReductionFactory;
-import com.delhivery.clustering.refinement.AssignToNearest;
 
 /**
  * @author Shiv Krishna Jaiswal
@@ -43,7 +40,7 @@ import com.delhivery.clustering.refinement.AssignToNearest;
 public final class LC {
     private static final Logger                  LOGGER        = getLogger(LC.class);
     private static final Comparator<Clusterable> WEIGHT_SORTED = reverseOrder(comparingDouble(Clusterable::weight));
-    private static final Comparator<Cluster>     CLUSTER_COMP  = reverseOrder(comparingDouble(Cluster::weight).thenComparing(comparing(Cluster::id)));
+    private static final Comparator<Clusterable> CLUSTER_COMP  = WEIGHT_SORTED.thenComparing(comparing(Clusterable::id));
 
     private final Supplier<String>                   idFactory;
     private final Collection<Clusterable>            points;
@@ -178,42 +175,13 @@ public final class LC {
             return new LCBuilder(clusterables);
         }
 
-        private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
-            final BiPredicate<Clusterable, Clusterable> constraint;
-
-            DistanceConstraint(double distance, DistanceMeasure distanceMeasure) {
-                this.constraint = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
-            }
-
-            @Override
-            public boolean test(Cluster t, Clusterable u) {
-                return constraint.test(t, u) && t.getMembers().stream().allMatch(m -> constraint.test(m, u));
-            }
-        }
-
-        /**
-         * Constraint that each point in cluster should not be more than
-         * "max distance".
-         * Notice that if Refinement of leader clusters is used then this may be violated. 
-         * @param maxDistance
-         * @param distanceMeasure
-         * @return
-         */
-        public LCBuilder distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
-            return constraint(new DistanceConstraint(maxDistance, distanceMeasure));
-        }
-
         /**
          * Constraint whether or not a clusterable should be added to a cluster.
          * @param fitForCluster
          * @return
          */
         public LCBuilder constraint(BiPredicate<Cluster, Clusterable> fitForCluster) {
-            if (isNull(this.fitForCluster))
-                this.fitForCluster = fitForCluster;
-            else
-                this.fitForCluster = this.fitForCluster.and(fitForCluster);
-
+            this.fitForCluster = fitForCluster;
             return this;
         }
 
@@ -223,73 +191,29 @@ public final class LC {
          * @return
          */
         public LCBuilder refine(UnaryOperator<Collection<Cluster>> refinement) {
-
-            if (isNull(this.refineCluster))
-                this.refineCluster = refinement;
-            else
-                this.refineCluster = this.refineCluster.andThen(refinement)::apply;
-
+            this.refineCluster = refinement;
             return this;
         }
 
         /**
-         * A refine strategy which assigns clusterables to nearest cluster available.
-         * @param times: Number of times this strategy should be used.
-         * @param distanceMeasure
+         * Merges some of the clusterables points. These merged points will then
+         * be sent to LC and after that clusterables in Cluster will be expanded.
+         *  
+         * @param reductionFactory
          * @return
          */
-        public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure) {
-            return refineAssignToClosestCluster(times, distanceMeasure, (from, to) -> true);
-        }
-
-        /**
-         * A refine strategy which assigns clusterables to nearest cluster available considering hard constraint.
-         * @param times: Number of times this strategy should be used.
-         * @param distanceMeasure
-         * @param hardConstraint
-         * @return
-         */
-        public LCBuilder refineAssignToClosestCluster(int times, DistanceMeasure distanceMeasure, BiPredicate<Geocode, Geocode> hardConstraint) {
-
-            UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure, hardConstraint);
-
-            UnaryOperator<Collection<Cluster>> refinement = identity();
-
-            while (times-- > 0)
-                refinement = refinement.andThen(assignToNearest)::apply;
-
-            return refine(refinement::apply);
-        }
-
-        /**
-         * If enabled, then clusterables having same Geocode will be grouped before
-         * Leader cluster and after clustering, clusters will be expanded with
-         * actual points having representation earlier in cluster.
-         * @return
-         */
-        public LCBuilder enableLcOnCompressedClusterables() {
-            this.reducerFactory = REDUCE_ON_GEOCODE;
-
-            LOGGER.debug("Enabling leadering clustering on clusterable which "
-                + "will be reduced/aggregated on their geocode.");
-
+        public LCBuilder reductingClusterables(ReductionFactory reductionFactory) {
+            this.reducerFactory = reductionFactory;
             return this;
         }
 
         /**
-         * @param clusters: returning clusters in decreasing order of their weight
+         * Provides initial clusters for LC. This clusters will serve as initial seed points
+         * for remaining clusterbles points.
+         * 
+         * @param preClustering
          * @return
          */
-        private static Collection<Cluster> inDecreasingOrderOfWeight(Collection<Cluster> clusters) {
-            List<Cluster> out = new ArrayList<>(clusters);
-
-            out.sort(WEIGHT_SORTED);
-
-            LOGGER.info("Sorted clusters in decreasing order of their weights");
-
-            return out;
-        }
-
         public LCBuilder preclustering(PreClusteringFactory preClustering) {
             this.preClustering = preClustering;
             return this;
@@ -305,8 +229,6 @@ public final class LC {
                 this.refineCluster = identity();
                 LOGGER.info("No refinement strategy provided. Defaulting to identity.");
             }
-
-            refine(LCBuilder::inDecreasingOrderOfWeight);// output clusters will be in decreasing order of their weight.
 
             if (isNull(this.reducerFactory))
                 this.reducerFactory = NO_REDUCTION;

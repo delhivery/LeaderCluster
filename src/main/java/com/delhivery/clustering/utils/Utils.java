@@ -18,6 +18,7 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 import com.delhivery.clustering.distances.DistanceMeasure;
@@ -46,6 +47,24 @@ public final class Utils {
     public static Supplier<String> iDCreator() {
         AtomicLong idProvider = new AtomicLong(0);
         return () -> valueOf(idProvider.getAndIncrement());
+    }
+
+    // --------------------------------------------------------------
+    private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
+        final BiPredicate<Clusterable, Clusterable> distanceConstraint;
+
+        DistanceConstraint(double distance, DistanceMeasure distanceMeasure) {
+            this.distanceConstraint = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
+        }
+
+        @Override
+        public boolean test(Cluster t, Clusterable u) {
+            return distanceConstraint.test(t, u) && t.getMembers().stream().allMatch(m -> distanceConstraint.test(m, u));
+        }
+    }
+
+    public static BiPredicate<Cluster, Clusterable> distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
+        return new DistanceConstraint(maxDistance, distanceMeasure);
     }
 
     // ------------------ Parser utility ----------------------------

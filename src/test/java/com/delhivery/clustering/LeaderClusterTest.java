@@ -17,15 +17,15 @@
 
 package com.delhivery.clustering;
 
+import static com.delhivery.clustering.distances.DistanceMeasureFactory.HAVERSINE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.delhivery.clustering.LC.LCBuilder;
 import com.delhivery.clustering.distances.DistanceMeasure;
-import com.delhivery.clustering.distances.DistanceMeasureFactory;
 import com.delhivery.clustering.elements.Cluster;
 import com.delhivery.clustering.elements.Clusterable;
 import com.delhivery.clustering.elements.ClusterableImpl;
@@ -55,13 +55,12 @@ public class LeaderClusterTest {
             Assert.assertTrue(data.size() == numPoints);
 
             int clusterRadius = 500;
-
-            DistanceMeasure haversine = DistanceMeasureFactory.HAVERSINE;
-
-            Collection<Cluster> clusters = LCBuilder.newInstance(data)
-                                                    .distanceConstraint(clusterRadius, haversine)
-                                                    .refineAssignToClosestCluster(1, haversine)
-                                                    .build();
+            DistanceMeasure distanceMeasure = HAVERSINE;
+            Collection<Cluster> clusters = Builder.newInstance(data)
+                                                  .throwDistance(clusterRadius)
+                                                  .distanceMeasure(distanceMeasure)
+                                                  .refinementAfterClustering(3)
+                                                  .build();
 
             Cluster prevCluster = null;
 
@@ -84,7 +83,7 @@ public class LeaderClusterTest {
                     lng += ratio * member.geocode().lng;
 
                     // checks if each member is within the specified radius from the cluster centroid
-                    Assert.assertTrue(clusterRadius >= haversine.distance(cluster.geocode(), member.geocode()));
+                    Assert.assertTrue(clusterRadius >= distanceMeasure.distance(cluster.geocode(), member.geocode()));
                 }
 
                 // checks weight of cluster = sum of weights of its members

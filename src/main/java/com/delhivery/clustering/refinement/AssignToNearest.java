@@ -32,12 +32,12 @@ import com.delhivery.clustering.elements.Geocode;
 public final class AssignToNearest implements UnaryOperator<Collection<Cluster>> {
     private static final Logger LOGGER = getLogger(AssignToNearest.class);
 
-    private final DistanceMeasure               distanceMeasure;
-    private final BiPredicate<Geocode, Geocode> hardConstraint;
+    private final DistanceMeasure                   distanceMeasure;
+    private final BiPredicate<Cluster, Clusterable> constraint;
 
-    public AssignToNearest(DistanceMeasure distanceMeasure, BiPredicate<Geocode, Geocode> hardConstraint) {
+    public AssignToNearest(DistanceMeasure distanceMeasure, BiPredicate<Cluster, Clusterable> constraint) {
         this.distanceMeasure = distanceMeasure;
-        this.hardConstraint = hardConstraint;
+        this.constraint = constraint;
     }
 
     private static Predicate<Cluster> distinctCluster() {
@@ -103,7 +103,7 @@ public final class AssignToNearest implements UnaryOperator<Collection<Cluster>>
     }
 
     private boolean canServe(Cluster cluster, Clusterable clusterable) {
-        return hardConstraint.test(cluster.geocode(), clusterable.geocode());
+        return constraint.test(cluster, clusterable);
     }
 
 }
