@@ -38,6 +38,7 @@ public final class Builder {
 
     private final Collection<Clusterable> clusterables;
     private Double                        throwDistance;
+    private Double                        maxLoad;
     private DistanceMeasure               distanceMeasure;
     private BiPredicate<Geocode, Geocode> connectivity;
     private int                           assignToNearest;
@@ -73,6 +74,12 @@ public final class Builder {
     public Builder distanceMeasure(DistanceMeasure distanceMeasure) {
         this.distanceMeasure = distanceMeasure;
         return this;
+    }
+
+    public Builder maxLoad(double maxLoad) {
+        this.maxLoad = maxLoad;
+        return this;
+
     }
 
     /**
@@ -121,6 +128,9 @@ public final class Builder {
         requireNonNull(this.distanceMeasure, "distance measure has not been set");
 
         BiPredicate<Cluster, Clusterable> constraint = distanceConstraint(this.throwDistance, this.distanceMeasure);
+
+        if (nonNull(this.maxLoad))
+            constraint = constraint.and((x, y) -> x.weight() + y.weight() <= this.maxLoad);
 
         if (nonNull(this.connectivity))
             constraint = constraint.and((from, to) -> this.connectivity.test(from.geocode(), to.geocode()));

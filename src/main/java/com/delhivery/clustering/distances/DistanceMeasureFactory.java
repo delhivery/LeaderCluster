@@ -8,6 +8,7 @@ import static com.delhivery.clustering.config.Config.OSRM_USER;
 import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Math.asin;
 import static java.lang.Math.cos;
+import static java.lang.Math.hypot;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
@@ -22,19 +23,23 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public final class DistanceMeasureFactory {
-    private static final JsonParser JSON_PARSER = new JsonParser();
+    private static final JsonParser     JSON_PARSER        = new JsonParser();
+    public static final DistanceMeasure EUDLIDEAN_DISTANCE = DistanceMeasureFactory::euclideanDistance;
+    public static final DistanceMeasure HAVERSINE          = DistanceMeasureFactory::haversineDistance;
+    public static final DistanceMeasure GOOGLE_DISTANCE    = DistanceMeasureFactory::googleDistance;
+    public static final DistanceMeasure OSRM               = DistanceMeasureFactory::osrm;
 
-    public static final DistanceMeasure HAVERSINE       = DistanceMeasureFactory::haversineDistance;
-    public static final DistanceMeasure GOOGLE_DISTANCE = DistanceMeasureFactory::googleDistance;
-    public static final DistanceMeasure OSRM            = DistanceMeasureFactory::osrm;
+    private static double euclideanDistance(Geocode from, Geocode to) {
+        return hypot(from.lat - to.lat, from.lng - to.lng);
+    }
 
-    private static double haversineDistance(Geocode to, Geocode from) {
+    private static double haversineDistance(Geocode from, Geocode to) {
 
-        double deltaLat = toRadians(from.lat - to.lat);
-        double deltaLng = toRadians(from.lng - to.lng);
+        double deltaLat = toRadians(to.lat - from.lat);
+        double deltaLng = toRadians(to.lng - from.lng);
 
-        double lat1 = toRadians(to.lat);
-        double lat2 = toRadians(from.lat);
+        double lat1 = toRadians(from.lat);
+        double lat2 = toRadians(to.lat);
 
         double a = haversine(deltaLat) + haversine(deltaLng) * cos(lat1) * cos(lat2);
 
