@@ -3,6 +3,8 @@ package com.delhivery.clustering;
 import static com.delhivery.clustering.reduction.ReductionFactory.NO_REDUCTION;
 import static com.delhivery.clustering.reduction.ReductionFactory.REDUCE_ON_GEOCODE;
 import static com.delhivery.clustering.utils.Utils.distanceConstraint;
+import static com.delhivery.clustering.utils.Utils.isZero;
+import static com.delhivery.clustering.utils.Utils.weightedGeocode;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparingDouble;
@@ -38,7 +40,6 @@ public final class Builder {
 
     private final Collection<Clusterable> clusterables;
     private Double                        throwDistance;
-    private Double                        maxLoad;
     private DistanceMeasure               distanceMeasure;
     private BiPredicate<Geocode, Geocode> connectivity;
     private int                           assignToNearest;
@@ -74,12 +75,6 @@ public final class Builder {
     public Builder distanceMeasure(DistanceMeasure distanceMeasure) {
         this.distanceMeasure = distanceMeasure;
         return this;
-    }
-
-    public Builder maxLoad(double maxLoad) {
-        this.maxLoad = maxLoad;
-        return this;
-
     }
 
     /**
@@ -123,29 +118,66 @@ public final class Builder {
         return out;
     }
 
+    private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
+        final BiPredicate<Geocode, Geocode> distanceConstraint;
+
+        DistanceConstraint(BiPredicate<Geocode, Geocode> distanceConstraint) {
+            this.distanceConstraint = distanceConstraint;
+        }
+
+        @Override
+        public boolean test(Cluster cluster, Clusterable clusterable) {
+            Geocode clusterCoord = cluster.geocode() , clusterableCoord = clusterable.geocode();
+
+            if (distanceConstraint.test(clusterCoord, clusterableCoord)) {
+                double newWeight = cluster.weight() + clusterable.weight();
+
+                Geocode updatedCoord = isZero(newWeight) ? clusterableCoord : weightedGeocode(cluster, clusterable);
+
+                return cluster.getMembers()
+                              .stream()
+                              .map(Clusterable::geocode)
+                              .allMatch(to -> distanceConstraint.test(updatedCoord, to));
+
+            }
+            return false;
+
+        }
+    }
+
     public Collection<Cluster> build() {
         requireNonNull(this.throwDistance, "Throw distance has not been set");
         requireNonNull(this.distanceMeasure, "distance measure has not been set");
 
-        BiPredicate<Cluster, Clusterable> constraint = distanceConstraint(this.throwDistance, this.distanceMeasure);
+        BiPredicate<Geocode, Geocode> distanceConstaint = distanceConstraint(this.throwDistance, distanceMeasure);
 
-        if (nonNull(this.maxLoad))
-            constraint = constraint.and((x, y) -> x.weight() + y.weight() <= this.maxLoad);
+        BiPredicate<Cluster, Clusterable> constraint = new DistanceConstraint(distanceConstaint);
+
+        BiPredicate<Cluster, Clusterable> connectivityConstraint = null;
 
         if (nonNull(this.connectivity))
-            constraint = constraint.and((from, to) -> this.connectivity.test(from.geocode(), to.geocode()));
+            connectivityConstraint = (from, to) -> this.connectivity.test(from.geocode(), to.geocode());
+        else
+            connectivityConstraint = (from, to) -> true;
+
+        constraint = constraint.and(connectivityConstraint);
 
         ReductionFactory reductionFactory = this.mergeDuplicateClusterables ? REDUCE_ON_GEOCODE : NO_REDUCTION;
 
         UnaryOperator<Collection<Cluster>> refinement = identity();
 
-        UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure, constraint);
+        if (this.assignToNearest > 0) {
 
-        while (this.assignToNearest-- > 0)
-            refinement = refinement.andThen(assignToNearest)::apply;
+            BiPredicate<Cluster, Clusterable> refinementConstraint = (from, to) -> distanceConstaint.test(from.geocode(), to.geocode());
+            refinementConstraint = refinementConstraint.and(connectivityConstraint);
+
+            UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure, refinementConstraint);
+
+            while (this.assignToNearest-- > 0)
+                refinement = refinement.andThen(assignToNearest)::apply;
+        }
 
         refinement = refinement.andThen(Builder::inDecreasingOrderOfWeight)::apply;
-        // sorting clusters in decreasing of their weights
 
         return LCBuilder.newInstance(clusterables)
                         .constraint(constraint)

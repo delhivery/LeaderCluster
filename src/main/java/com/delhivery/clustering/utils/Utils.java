@@ -49,22 +49,25 @@ public final class Utils {
         return () -> valueOf(idProvider.getAndIncrement());
     }
 
-    // --------------------------------------------------------------
-    private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
-        final BiPredicate<Clusterable, Clusterable> distanceConstraint;
+    public static Geocode weightedGeocode(Clusterable a, Clusterable b) {
+        double totalWeight = a.weight() + b.weight();
 
-        DistanceConstraint(double distance, DistanceMeasure distanceMeasure) {
-            this.distanceConstraint = (x, y) -> distanceMeasure.distance(x.geocode(), y.geocode()) <= distance;
-        }
+        if (isZero(totalWeight))
+            throw new IllegalArgumentException("sum of weight of clusterable=" + a + " and " + b + " is zero");
 
-        @Override
-        public boolean test(Cluster t, Clusterable u) {
-            return distanceConstraint.test(t, u) && t.getMembers().stream().allMatch(m -> distanceConstraint.test(m, u));
-        }
+        Geocode from = a.geocode() , to = b.geocode();
+        double fromW = a.weight() , toW = b.weight();
+
+        double lat = (from.lat * fromW + to.lat * toW) / totalWeight;
+        double lng = (from.lng * fromW + to.lng * toW) / totalWeight;
+
+        return new Geocode(lat, lng);
     }
 
-    public static BiPredicate<Cluster, Clusterable> distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
-        return new DistanceConstraint(maxDistance, distanceMeasure);
+    // --------------------------------------------------------------
+
+    public static BiPredicate<Geocode, Geocode> distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
+        return (from, to) -> distanceMeasure.distance(from, to) <= maxDistance;
     }
 
     // ------------------ Parser utility ----------------------------

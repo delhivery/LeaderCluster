@@ -2,6 +2,7 @@ package com.delhivery.clustering.elements;
 
 import static com.delhivery.clustering.elements.Geocode.ZERO;
 import static com.delhivery.clustering.utils.Utils.isZero;
+import static com.delhivery.clustering.utils.Utils.weightedGeocode;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -13,14 +14,14 @@ import java.util.LinkedList;
  * @author Shiv Krishna Jaiswal
  */
 public final class ClusterImpl extends AbstractClusterable implements Cluster {
-    private double                        lat , lng , weight;
+    private double                        weight;
+    private Geocode                       geocode;
     private final Collection<Clusterable> members;
 
     private ClusterImpl(ClusterBuilder builder) {
         super(builder.id);
 
-        this.lat = builder.geocode.lat;
-        this.lng = builder.geocode.lng;
+        this.geocode = builder.geocode;
         this.weight = builder.weight;
 
         this.members = new LinkedList<>();
@@ -33,29 +34,13 @@ public final class ClusterImpl extends AbstractClusterable implements Cluster {
 
     @Override
     public void consumeClusterer(Clusterable point) {
-        updateCentroid(point);
-        this.members.add(point);
-
-    }
-
-    private void updateCentroid(Clusterable point) {
         double newWeight = this.weight + point.weight();
 
-        Geocode ptCoords = point.geocode();
-
-        if (!isZero(newWeight)) {
-
-            this.lat = (this.lat * this.weight + ptCoords.lat * point.weight()) / newWeight;
-            this.lng = (this.lng * this.weight + ptCoords.lng * point.weight()) / newWeight;
-
-        } else {
-
-            this.lat = ptCoords.lat;
-            this.lng = ptCoords.lng;
-
-        }
-
+        this.geocode = isZero(newWeight) ? point.geocode() : weightedGeocode(this, point);
         this.weight = newWeight;
+
+        this.members.add(point);
+
     }
 
     @Override
@@ -84,7 +69,7 @@ public final class ClusterImpl extends AbstractClusterable implements Cluster {
 
     @Override
     public Geocode geocode() {
-        return new Geocode(lat, lng);
+        return geocode;
     }
 
     @Override

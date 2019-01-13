@@ -8,9 +8,11 @@ import static com.delhivery.clustering.utils.Utils.distanceConstraint;
 import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static com.delhivery.clustering.utils.Utils.isZero;
 import static com.delhivery.clustering.utils.Utils.loadFile;
+import static com.delhivery.clustering.utils.Utils.weightedGeocode;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Paths.get;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -19,7 +21,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 
@@ -58,14 +59,12 @@ public class TestUtils {
 
     @Test
     public void testDistanceConstraint() {
-        BiPredicate<Cluster, Clusterable> predicate = distanceConstraint(5, EUDLIDEAN_DISTANCE);
-        Cluster cluster = ClusterBuilder.newInstance("0")
-                                        .geocode(new Geocode(0, 0))
-                                        .build();
+        BiPredicate<Geocode, Geocode> predicate = distanceConstraint(5, EUDLIDEAN_DISTANCE);
+        Geocode cluster = new Geocode(0, 0);
 
-        assertTrue(predicate.test(cluster, new ClusterableImpl("1", new Geocode(3, 4), 0)));
-        assertTrue(predicate.test(cluster, new ClusterableImpl("1", new Geocode(3, 1), 0)));
-        Assert.assertFalse(predicate.test(cluster, new ClusterableImpl("1", new Geocode(3, 4.1), 0)));
+        assertTrue(predicate.test(cluster, new Geocode(3, 4)));
+        assertTrue(predicate.test(cluster, new Geocode(3, 1)));
+        assertFalse(predicate.test(cluster, new Geocode(3, 4.1)));
     }
 
     @Test
@@ -77,6 +76,22 @@ public class TestUtils {
         else {
             LOGGER.warn("File: {} is not found so skipping this test.", file);
         }
+    }
+
+    @Test
+    public void testWeightGeocode1() {
+        Clusterable from = new ClusterableImpl("from", new Geocode(3, 5), 2);
+        Clusterable to = new ClusterableImpl("to", new Geocode(6, 8), 1);
+
+        assertEquals(weightedGeocode(from, to), new Geocode(4, 6));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWeightGeocode2() {
+        Clusterable from = new ClusterableImpl("from", new Geocode(0, 0), 0);
+        Clusterable to = new ClusterableImpl("from", new Geocode(6, 9), 0);
+
+        weightedGeocode(from, to);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.delhivery.clustering.refinement;
 
-import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparingDouble;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -83,19 +82,22 @@ public final class AssignToNearest implements UnaryOperator<Collection<Cluster>>
     }
 
     private void addToClosestServicebleCluster(Clusterable clusterable, Map<Cluster, Collection<Clusterable>> mapping) {
-        Optional<Entry<Cluster, Collection<Clusterable>>> cluster = mapping.entrySet()
-                                                                           .stream()
-                                                                           .filter(e -> canServe(e.getKey(), clusterable))
-                                                                           .min(comparingDouble(e -> distance(e.getKey(), clusterable)));
-
-        if (cluster.isPresent())
-            cluster.get().getValue().add(clusterable);
+        Optional<Entry<Cluster, Collection<Clusterable>>> foundCluster = mapping.entrySet()
+                                                                                .stream()
+                                                                                .filter(e -> canServe(e.getKey(), clusterable))
+                                                                                .min(comparingDouble(e -> distance(e.getKey(), clusterable)));
+        if (foundCluster.isPresent())
+            foundCluster.get().getValue().add(clusterable);
         else {
-            Collection<Clusterable> clusterables = new LinkedList<>();
+            LOGGER.info("Current set of cluster can not serve clusterble={} "
+                + "so creating new cluster with id={}", clusterable, clusterable.id());
 
-            clusterables.add(clusterable);
-            mapping.put(createCluster(clusterable.id(), emptyList()), clusterables);
+            Collection<Clusterable> members = new LinkedList<>();
+            members.add(clusterable);
+
+            mapping.put(ClusterBuilder.newInstance(clusterable.id()).build(), members);
         }
+
     }
 
     private double distance(Cluster cluster, Clusterable clusterable) {
