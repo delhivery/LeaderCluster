@@ -40,7 +40,7 @@ public abstract class Hasher<T> extends Reducer {
     public Collection<Clusterable> compressedClusterables() {
         return this.mapper.entrySet()
                           .stream()
-                          .map(this::create)
+                          .map(this::createCompressedClusterable)
                           .collect(toList());
     }
 
@@ -60,6 +60,6 @@ public abstract class Hasher<T> extends Reducer {
 
     }
 
-    public abstract Clusterable create(Entry<T, Collection<Clusterable>> e);
+    public abstract Clusterable createCompressedClusterable(Entry<T, Collection<Clusterable>> e);
 
 }

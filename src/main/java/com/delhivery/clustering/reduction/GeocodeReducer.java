@@ -23,7 +23,7 @@ final class GeocodeReducer extends Hasher<Geocode> {
      * which is sum of weight of clusterables given by value of this entry.
      */
     @Override
-    public Clusterable create(Entry<Geocode, Collection<Clusterable>> e) {
+    public Clusterable createCompressedClusterable(Entry<Geocode, Collection<Clusterable>> e) {
 
         double weight = e.getValue()
                          .stream()
