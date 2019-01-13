@@ -23,7 +23,7 @@ public final class Config {
     public final static String OSRM_USER  = CONFIG.getProperty("OSRM_USER", "");                                                         // optional
     public final static String OSRM_PWD   = CONFIG.getProperty("OSRM_PWD", "");                                                          // optional
     public final static String GOOGLE_URL = CONFIG.getProperty("GOOGLE_URL", "https://maps.googleapis.com/maps/api/distancematrix/json");
-    public final static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", "AIzaSyC83rkPuLvqQsjQt80kfOMI6js-zDBauVA");                 // get from file
+    public final static String GOOGLE_KEY = CONFIG.getProperty("GOOGLE_KEY", "");                                                        // get from file
 
     private Config() {}
 
