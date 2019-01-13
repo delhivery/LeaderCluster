@@ -1,6 +1,6 @@
 package com.delhivery.clustering.preclustering;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
@@ -22,7 +22,7 @@ final class NoPreClusterer implements PreClustering {
 
     @Override
     public Collection<Cluster> preclusters(Supplier<String> idSupplier) {
-        return emptyList();
+        return emptySet();
     }
 
     @Override
