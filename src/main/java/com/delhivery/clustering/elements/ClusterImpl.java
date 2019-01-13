@@ -79,7 +79,7 @@ public final class ClusterImpl extends AbstractClusterable implements Cluster {
 
     @Override
     public String toString() {
-        return members.toString();
+        return "[Cluster=" + id() + ", members=" + members.toString() + "]";
     }
 
     @Override

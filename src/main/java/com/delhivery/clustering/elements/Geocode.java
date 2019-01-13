@@ -19,7 +19,7 @@ public final class Geocode {
 
     @Override
     public String toString() {
-        return " [x=" + formatNumber(lat) + ", y=" + formatNumber(lng) + "]";
+        return "[x=" + formatNumber(lat) + ", y=" + formatNumber(lng) + "]";
     }
 
     @Override
