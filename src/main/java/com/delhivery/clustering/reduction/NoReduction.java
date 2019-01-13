@@ -10,7 +10,7 @@ import com.delhivery.clustering.elements.Clusterable;
 /**
  * @author Shiv Krishna Jaiswal
  */
-final class NoReduction extends Reducer<Object> {
+final class NoReduction extends Reducer {
     private final Collection<Clusterable> clusterables;
 
     public NoReduction(Collection<? extends Clusterable> clusterables) {

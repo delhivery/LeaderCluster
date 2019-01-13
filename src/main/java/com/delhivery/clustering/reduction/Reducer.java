@@ -7,18 +7,18 @@ import com.delhivery.clustering.elements.Clusterable;
 /**
  * @author Shiv Krishna Jaiswal
  */
-public abstract class Reducer<T> {
+public abstract class Reducer {
 
     /**
-     * @return clusterables which is distinct on hash given by "hasher" function.
+     * @return clusterables which is distinct, for example, on geocode.
      */
     public abstract Collection<Clusterable> compressedClusterables();
 
     /**
-     * @param clusterable
-     * @return clusterables point which share same hash as that of "clusterable"
+     * @param compressedClusterable
+     * @return all clusterables point corresponding to this "compressedClusterable" clusterable.
      */
 
-    public abstract Collection<Clusterable> decompressClusterable(Clusterable clusterable);
+    public abstract Collection<Clusterable> decompressClusterable(Clusterable compressedClusterable);
 
 }

@@ -61,7 +61,7 @@ public final class LC {
     private Collection<Cluster> process() {
         LOGGER.info("Leader clustering starts with: {} clusterable points", points.size());
 
-        Reducer<?> reducer = reducerFactory.createReducer(points);
+        Reducer reducer = reducerFactory.createReducer(points);
 
         PreClustering preClustering = this.preClusterer.createPreClusterer(reducer.compressedClusterables());
 
@@ -115,7 +115,7 @@ public final class LC {
         final Cluster                 cluster;
         final Collection<Clusterable> members;
 
-        ClusterWithDecompressedClusterables(Cluster cluster, Reducer<?> reducer) {
+        ClusterWithDecompressedClusterables(Cluster cluster, Reducer reducer) {
             this.cluster = cluster;
             this.members = cluster.getMembers()
                                   .stream()

@@ -17,6 +17,6 @@ public interface ReductionFactory {
      * @param clusterables
      * @return
      */
-    Reducer<?> createReducer(Collection<? extends Clusterable> clusterables);
+    Reducer createReducer(Collection<? extends Clusterable> clusterables);
 
 }

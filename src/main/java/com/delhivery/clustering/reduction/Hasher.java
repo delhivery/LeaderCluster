@@ -17,7 +17,7 @@ import com.delhivery.clustering.elements.Clusterable;
 /**
  * @author Shiv Krishna Jaiswal
  */
-public abstract class Hasher<T> extends Reducer<T> {
+public abstract class Hasher<T> extends Reducer {
     /**
      * Hashes Clusterable on given function and produces
      * a representable clusterable point.
