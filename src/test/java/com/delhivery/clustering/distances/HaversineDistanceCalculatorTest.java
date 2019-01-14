@@ -17,10 +17,11 @@
 
 package com.delhivery.clustering.distances;
 
+import static com.delhivery.clustering.distances.DistanceMeasure.HAVERSINE;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.delhivery.clustering.distances.DistanceMeasureFactory;
 import com.delhivery.clustering.elements.Geocode;
 
 /**
@@ -35,7 +36,7 @@ public class HaversineDistanceCalculatorTest {
         Geocode p1 = new Geocode(28.234, 78.123);
         Geocode p2 = new Geocode(29.123, 78.234);
 
-        double distance = DistanceMeasureFactory.HAVERSINE.distance(p1, p2);
+        double distance = HAVERSINE.distance(p1, p2);
 
         Assert.assertEquals(99450, distance, 30.);
     }

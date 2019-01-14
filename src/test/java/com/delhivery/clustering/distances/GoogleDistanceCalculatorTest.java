@@ -1,6 +1,6 @@
 package com.delhivery.clustering.distances;
 
-import static com.delhivery.clustering.distances.DistanceMeasureFactory.GOOGLE_DISTANCE;
+import static com.delhivery.clustering.distances.DistanceMeasure.GOOGLE_DISTANCE;
 
 import org.junit.Assert;
 import org.junit.Ignore;

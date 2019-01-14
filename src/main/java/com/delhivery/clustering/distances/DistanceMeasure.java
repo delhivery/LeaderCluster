@@ -8,6 +8,11 @@ import com.delhivery.clustering.elements.Geocode;
 @FunctionalInterface
 public interface DistanceMeasure {
 
+    DistanceMeasure EUDLIDEAN_DISTANCE = DistanceMeasureFactory::euclideanDistance;
+    DistanceMeasure HAVERSINE          = DistanceMeasureFactory::haversineDistance;
+    DistanceMeasure OSRM               = DistanceMeasureFactory::osrm;
+    DistanceMeasure GOOGLE_DISTANCE    = DistanceMeasureFactory::googleDistance;
+
     double distance(Geocode from, Geocode to);
 
 }

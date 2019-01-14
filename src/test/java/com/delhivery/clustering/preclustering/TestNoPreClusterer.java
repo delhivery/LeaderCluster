@@ -39,9 +39,7 @@ public class TestNoPreClusterer {
     public void testPreclusters() {
 
         PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
-
         PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
-        
         assertTrue(preClustering.preclusters(iDCreator()).isEmpty());
     }
 

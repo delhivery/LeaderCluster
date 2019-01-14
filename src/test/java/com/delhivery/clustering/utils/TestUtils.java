@@ -1,7 +1,6 @@
 package com.delhivery.clustering.utils;
 
 import static com.delhivery.clustering.config.Constants.TOLERANCE;
-import static com.delhivery.clustering.distances.DistanceMeasureFactory.EUDLIDEAN_DISTANCE;
 import static com.delhivery.clustering.utils.Utils.clusterData;
 import static com.delhivery.clustering.utils.Utils.createClusterable;
 import static com.delhivery.clustering.utils.Utils.distanceConstraint;
@@ -24,6 +23,7 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.elements.Cluster;
 import com.delhivery.clustering.elements.ClusterImpl.ClusterBuilder;
 import com.delhivery.clustering.elements.Clusterable;
@@ -59,7 +59,7 @@ public class TestUtils {
 
     @Test
     public void testDistanceConstraint() {
-        BiPredicate<Geocode, Geocode> predicate = distanceConstraint(5, EUDLIDEAN_DISTANCE);
+        BiPredicate<Geocode, Geocode> predicate = distanceConstraint(5, DistanceMeasure.EUDLIDEAN_DISTANCE);
         Geocode cluster = new Geocode(0, 0);
 
         assertTrue(predicate.test(cluster, new Geocode(3, 4)));

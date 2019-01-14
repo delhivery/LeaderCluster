@@ -22,18 +22,14 @@ import com.delhivery.clustering.utils.UrlHandler;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public final class DistanceMeasureFactory {
-    private static final JsonParser     JSON_PARSER        = new JsonParser();
-    public static final DistanceMeasure EUDLIDEAN_DISTANCE = DistanceMeasureFactory::euclideanDistance;
-    public static final DistanceMeasure HAVERSINE          = DistanceMeasureFactory::haversineDistance;
-    public static final DistanceMeasure GOOGLE_DISTANCE    = DistanceMeasureFactory::googleDistance;
-    public static final DistanceMeasure OSRM               = DistanceMeasureFactory::osrm;
+final class DistanceMeasureFactory {
+    private static final JsonParser JSON_PARSER = new JsonParser();
 
-    private static double euclideanDistance(Geocode from, Geocode to) {
+    static double euclideanDistance(Geocode from, Geocode to) {
         return hypot(from.lat - to.lat, from.lng - to.lng);
     }
 
-    private static double haversineDistance(Geocode from, Geocode to) {
+    static double haversineDistance(Geocode from, Geocode to) {
 
         double deltaLat = toRadians(to.lat - from.lat);
         double deltaLng = toRadians(to.lng - from.lng);
@@ -52,7 +48,7 @@ public final class DistanceMeasureFactory {
         return pow(sin(theta / 2), 2);
     }
 
-    private static double googleDistance(Geocode source, Geocode destination) {
+    static double googleDistance(Geocode source, Geocode destination) {
 
         String link = GOOGLE_URL + "?origins=" + formatNumber(source.lat) + "," + formatNumber(source.lng) +
             "&destinations=" + formatNumber(destination.lat) + "," + formatNumber(destination.lng) +
@@ -79,7 +75,7 @@ public final class DistanceMeasureFactory {
         throw new DistanceFetchException("unable to fetch distances from Google");
     }
 
-    private static double osrm(Geocode source, Geocode destination) {
+    static double osrm(Geocode source, Geocode destination) {
 
         if (UrlHandler.isServerListening(OSRM_URL)) {
 

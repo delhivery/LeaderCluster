@@ -1,11 +1,11 @@
 package com.delhivery.clustering.distances;
 
 import static com.delhivery.clustering.config.Config.OSRM_URL;
+import static com.delhivery.clustering.distances.DistanceMeasure.OSRM;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.delhivery.clustering.distances.DistanceMeasureFactory;
 import com.delhivery.clustering.elements.Geocode;
 import com.delhivery.clustering.utils.UrlHandler;
 
@@ -22,7 +22,7 @@ public class OsrmDistanceCalculatorTest {
         Geocode p2 = new Geocode(28.452029, 77.067657);
 
         if (UrlHandler.isServerListening(OSRM_URL)) {
-            double distance = DistanceMeasureFactory.OSRM.distance(p1, p2);
+            double distance = OSRM.distance(p1, p2);
 
             Assert.assertEquals(406, distance, 10.);
         } else

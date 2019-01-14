@@ -17,7 +17,7 @@
 
 package com.delhivery.clustering;
 
-import static com.delhivery.clustering.distances.DistanceMeasureFactory.HAVERSINE;
+import static com.delhivery.clustering.distances.DistanceMeasure.HAVERSINE;
 
 import java.util.ArrayList;
 import java.util.Collection;
