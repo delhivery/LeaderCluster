@@ -55,7 +55,6 @@ final class DistanceMeasureFactory {
             "&language=en&sensor=false&key=" + GOOGLE_KEY;
 
         Optional<String> output = UrlHandler.processUrl(link);
-        System.out.println(output.get());
         if (output.isPresent())
             return JSON_PARSER.parse(output.get())
                               .getAsJsonObject()
