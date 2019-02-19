@@ -39,8 +39,7 @@ import com.delhivery.clustering.reduction.ReductionFactory;
  */
 public final class LC {
     private static final Logger                  LOGGER        = getLogger(LC.class);
-    private static final Comparator<Clusterable> WEIGHT_SORTED = reverseOrder(comparingDouble(Clusterable::weight));
-    private static final Comparator<Clusterable> CLUSTER_COMP  = WEIGHT_SORTED.thenComparing(comparing(Clusterable::id));
+    private static final Comparator<Clusterable> WEIGHT_SORTED = reverseOrder(comparingDouble(Clusterable::weight)).thenComparing(comparing(Clusterable::id));
 
     private final Supplier<String>                   idFactory;
     private final Collection<Clusterable>            points;
@@ -65,7 +64,7 @@ public final class LC {
 
         PreClustering preClustering = this.preClusterer.createPreClusterer(reducer.compressedClusterables());
 
-        Collection<Cluster> clusters = new TreeSet<>(CLUSTER_COMP);
+        Collection<Cluster> clusters = new TreeSet<>(WEIGHT_SORTED);
 
         clusters.addAll(preClustering.preclusters(idFactory));
 
