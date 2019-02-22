@@ -25,6 +25,7 @@ target/*
 
 #data files
 *.csv
+*.json
 
 #config file
 config/*

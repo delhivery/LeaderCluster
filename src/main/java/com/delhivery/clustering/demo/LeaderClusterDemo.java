@@ -77,7 +77,7 @@ public final class LeaderClusterDemo {
         dumpToFile(output, get(outputFile));
     }
 
-    private static JsonArray run(JsonObject input) {
+    public static JsonArray run(JsonObject input) {
 
         DistanceMeasure distanceMeasure = getDistanceMeasure(input.has("distanceMeasure") ? input.get("distanceMeasure").getAsString() : "haversine");
 
