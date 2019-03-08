@@ -4,11 +4,17 @@ import static com.delhivery.clustering.utils.Utils.formatNumber;
 import static java.lang.Double.doubleToLongBits;
 import static java.util.Objects.hash;
 
+import java.io.Serializable;
+
 /**
  * @author Shiv Krishna Jaiswal
  */
-public final class Geocode {
-    public static final Geocode ZERO = new Geocode(0, 0);
+public final class Geocode implements Serializable {
+    /**
+     * 
+     */
+    private static final long   serialVersionUID = 1L;
+    public static final Geocode ZERO             = new Geocode(0, 0);
 
     public final double lat , lng;
 

@@ -111,6 +111,11 @@ public final class LC {
     }
 
     private final static class ClusterWithDecompressedClusterables implements Cluster {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         final Cluster                 cluster;
         final Collection<Clusterable> members;
 

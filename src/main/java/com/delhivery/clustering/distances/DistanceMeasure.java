@@ -1,12 +1,14 @@
 package com.delhivery.clustering.distances;
 
+import java.io.Serializable;
+
 import com.delhivery.clustering.elements.Geocode;
 
 /**
  * @author Shiv Krishna Jaiswal
  */
 @FunctionalInterface
-public interface DistanceMeasure {
+public interface DistanceMeasure extends Serializable {
 
     DistanceMeasure EUDLIDEAN_DISTANCE = DistanceMeasureFactory::euclideanDistance;
     DistanceMeasure HAVERSINE          = DistanceMeasureFactory::haversineDistance;

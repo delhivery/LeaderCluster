@@ -40,6 +40,11 @@ final class GeocodeReducer extends Hasher<Geocode> {
 
     private final static class CompressedClusterable extends ClusterableImpl {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         CompressedClusterable(String id, Geocode geocode, double weight) {
             super(id, geocode, weight);
         }

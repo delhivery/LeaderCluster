@@ -48,7 +48,7 @@ public final class AssignToNearest implements UnaryOperator<Collection<Cluster>>
     public Collection<Cluster> apply(Collection<Cluster> clusters) {
 
         LOGGER.info("Number of clusters before 'AssignToNearest' refinement: {}", clusters.size());
-
+        
         Map<Cluster, Collection<Clusterable>> closestMapping = clusters.stream()
                                                                        .filter(distinctCluster())
                                                                        .collect(toMap(identity(), c -> new LinkedList<>()));

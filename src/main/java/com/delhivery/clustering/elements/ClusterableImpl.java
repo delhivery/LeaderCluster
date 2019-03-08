@@ -6,6 +6,11 @@ import static java.util.Objects.requireNonNull;
  * @author Shiv Krishna Jaiswal
  */
 public class ClusterableImpl extends AbstractClusterable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private final Geocode geocode;
     private final double  weight;
     private Object        userData;

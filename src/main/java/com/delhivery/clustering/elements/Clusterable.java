@@ -1,9 +1,11 @@
 package com.delhivery.clustering.elements;
 
+import java.io.Serializable;
+
 /**
  * @author Shiv Krishna Jaiswal
  */
-public interface Clusterable {
+public interface Clusterable extends Serializable {
 
     String id();
 

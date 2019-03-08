@@ -6,6 +6,11 @@ package com.delhivery.clustering.elements;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractClusterable implements Clusterable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private final String id;
 
     protected AbstractClusterable(String id) {

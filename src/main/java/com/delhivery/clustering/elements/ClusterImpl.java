@@ -14,6 +14,11 @@ import java.util.LinkedList;
  * @author Shiv Krishna Jaiswal
  */
 public final class ClusterImpl extends AbstractClusterable implements Cluster {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     private double                        weight;
     private Geocode                       geocode;
     private final Collection<Clusterable> members;
