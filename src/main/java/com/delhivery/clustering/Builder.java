@@ -5,12 +5,14 @@ import static com.delhivery.clustering.reduction.ReductionFactory.REDUCE_ON_GEOC
 import static com.delhivery.clustering.utils.Utils.distanceConstraint;
 import static com.delhivery.clustering.utils.Utils.isZero;
 import static com.delhivery.clustering.utils.Utils.weightedGeocode;
+import static com.google.common.collect.Streams.stream;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparingDouble;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.UnaryOperator.identity;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -28,6 +30,9 @@ import com.delhivery.clustering.elements.Clusterable;
 import com.delhivery.clustering.elements.Geocode;
 import com.delhivery.clustering.reduction.ReductionFactory;
 import com.delhivery.clustering.refinement.AssignToNearest;
+import com.delhivery.clustering.utils.Utils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 /**
  * This class simplifies Clustering using high level description.
@@ -53,6 +58,17 @@ public final class Builder {
 
     public static Builder newInstance(Collection<? extends Clusterable> clusterables) {
         return new Builder(clusterables);
+    }
+
+    /**
+     * Each element of jsonArray "clusterables" must be jsonObject with 
+     * keys "id", "lat", "lng", "weight".
+     * 
+     * @param clusterables
+     * @return
+     */
+    public static Builder newInstance(JsonArray clusterables) {
+        return new Builder(stream(clusterables).map(JsonElement::getAsJsonObject).map(Utils::createClusterable).collect(toList()));
     }
 
     /**
