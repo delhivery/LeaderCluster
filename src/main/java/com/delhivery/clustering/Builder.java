@@ -9,6 +9,7 @@ import static com.google.common.collect.Streams.stream;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparingDouble;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.UnaryOperator.identity;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import org.slf4j.Logger;
@@ -28,6 +30,7 @@ import com.delhivery.clustering.distances.DistanceMeasure;
 import com.delhivery.clustering.elements.Cluster;
 import com.delhivery.clustering.elements.Clusterable;
 import com.delhivery.clustering.elements.Geocode;
+import com.delhivery.clustering.exception.BuilderException;
 import com.delhivery.clustering.reduction.ReductionFactory;
 import com.delhivery.clustering.refinement.AssignToNearest;
 import com.delhivery.clustering.utils.Utils;
@@ -43,12 +46,13 @@ import com.google.gson.JsonElement;
 public final class Builder {
     private static final Logger LOGGER = getLogger(Builder.class);
 
-    private final Collection<Clusterable> clusterables;
-    private Double                        throwDistance;
-    private DistanceMeasure               distanceMeasure;
-    private BiPredicate<Geocode, Geocode> connectivity;
-    private int                           assignToNearest;
-    private boolean                       mergeDuplicateClusterables;
+    private final Collection<Clusterable>     clusterables;
+    private Double                            throwDistance;
+    private DistanceMeasure                   distanceMeasure;
+    private BiPredicate<Geocode, Geocode>     connectivity;
+    private int                               assignToNearest;
+    private boolean                           mergeDuplicateClusterables;
+    private BiPredicate<Cluster, Clusterable> otherConstraints;
 
     private Builder(Collection<? extends Clusterable> clusterables) {
         this.clusterables = unmodifiableCollection(clusterables);
@@ -124,6 +128,18 @@ public final class Builder {
         return this;
     }
 
+    /**
+     * To add other clustering constraints which needs to 
+     * be respected while creating cluster.
+     * 
+     * @param otherConstraints
+     * @return
+     */
+    public Builder otherConstraint(BiPredicate<Cluster, Clusterable> otherConstraints) {
+        this.otherConstraints = otherConstraints;
+        return this;
+    }
+
     private static Collection<Cluster> inDecreasingOrderOfWeight(Collection<Cluster> clusters) {
         List<Cluster> out = new ArrayList<>(clusters);
 
@@ -135,39 +151,57 @@ public final class Builder {
     }
 
     private static class DistanceConstraint implements BiPredicate<Cluster, Clusterable> {
-        final BiPredicate<Geocode, Geocode> distanceConstraint;
+        /**
+         * This class tests if a clusterable qualifies to be added to a cluster. 
+         */
+        final BiPredicate<Geocode, Geocode> insideThrow;
 
-        DistanceConstraint(BiPredicate<Geocode, Geocode> distanceConstraint) {
-            this.distanceConstraint = distanceConstraint;
+        DistanceConstraint(BiPredicate<Geocode, Geocode> insideThrow) {
+            this.insideThrow = insideThrow;
         }
 
         @Override
         public boolean test(Cluster cluster, Clusterable clusterable) {
             Geocode clusterCoord = cluster.geocode() , clusterableCoord = clusterable.geocode();
 
-            if (distanceConstraint.test(clusterCoord, clusterableCoord)) {
+            if (insideThrow.test(clusterCoord, clusterableCoord)) {
                 double newWeight = cluster.weight() + clusterable.weight();
 
                 Geocode updatedCoord = isZero(newWeight) ? clusterableCoord : weightedGeocode(cluster, clusterable);
 
+                Predicate<Geocode> reachable = c -> insideThrow.test(updatedCoord, c);
+
                 return cluster.getMembers()
                               .stream()
                               .map(Clusterable::geocode)
-                              .allMatch(to -> distanceConstraint.test(updatedCoord, to));
+                              .allMatch(reachable);
 
             }
+            
             return false;
 
         }
     }
 
+    private BiPredicate<Cluster, Clusterable> createThrowConstraint() {
+        if (nonNull(this.throwDistance))
+            return new DistanceConstraint(distanceConstraint(this.throwDistance, distanceMeasure));
+
+        return (x, y) -> true;
+    }
+
     public Collection<Cluster> build() {
-        requireNonNull(this.throwDistance, "Throw distance has not been set");
         requireNonNull(this.distanceMeasure, "distance measure has not been set");
 
-        BiPredicate<Geocode, Geocode> distanceConstaint = distanceConstraint(this.throwDistance, distanceMeasure);
+        if (isNull(this.throwDistance) && isNull(this.otherConstraints))
+            throw new BuilderException("No constraint has been provided for clustering");
 
-        BiPredicate<Cluster, Clusterable> constraint = new DistanceConstraint(distanceConstaint);
+        BiPredicate<Cluster, Clusterable> distanceConstraint = createThrowConstraint();
+
+        BiPredicate<Cluster, Clusterable> constraint = distanceConstraint;
+
+        if (nonNull(this.otherConstraints))
+            constraint = constraint.and(this.otherConstraints);
 
         BiPredicate<Cluster, Clusterable> connectivityConstraint = null;
 
@@ -178,14 +212,15 @@ public final class Builder {
 
         constraint = constraint.and(connectivityConstraint);
 
+        if (nonNull(this.otherConstraints))
+            constraint = constraint.and(this.otherConstraints);
+
         ReductionFactory reductionFactory = this.mergeDuplicateClusterables ? REDUCE_ON_GEOCODE : NO_REDUCTION;
 
         UnaryOperator<Collection<Cluster>> refinement = identity();
 
         if (this.assignToNearest > 0) {
-
-            BiPredicate<Cluster, Clusterable> refinementConstraint = (from, to) -> distanceConstaint.test(from.geocode(), to.geocode());
-            refinementConstraint = refinementConstraint.and(connectivityConstraint);
+            BiPredicate<Cluster, Clusterable> refinementConstraint = distanceConstraint.and(connectivityConstraint);
 
             UnaryOperator<Collection<Cluster>> assignToNearest = new AssignToNearest(distanceMeasure, refinementConstraint);
 
@@ -200,5 +235,6 @@ public final class Builder {
                         .reductingClusterables(reductionFactory)
                         .refine(refinement)
                         .build();
+
     }
 }

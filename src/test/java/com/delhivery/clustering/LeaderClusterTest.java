@@ -37,10 +37,10 @@ public class LeaderClusterTest {
     public void leaderClusterTest() {
         for (boolean generateWeight : new boolean[] { true, false }) {
 
-            int numPoints = 1000;
+            int numPoints = 10;
             double divisor = 1000;
 
-            Collection<Clusterable> data = new ArrayList<>(1000);
+            Collection<Clusterable> data = new ArrayList<>(numPoints);
 
             for (double i = 0; i < numPoints; i++) {
                 double ratio = i / divisor;
@@ -48,7 +48,7 @@ public class LeaderClusterTest {
                 double lat = i % 2 == 0 ? 28 + ratio : 28 - ratio;
                 double lng = i % 2 == 0 ? 77 - ratio : 77 + ratio;
                 double weight = generateWeight ? (i % 2 == 0 ? 2 * i + 1 : 3 * i - 2) : 1;
-
+                
                 data.add(new ClusterableImpl(i + "", new Geocode(lat, lng), weight));
             }
 
@@ -56,10 +56,11 @@ public class LeaderClusterTest {
 
             int clusterRadius = 500;
             DistanceMeasure distanceMeasure = HAVERSINE;
+            
             Collection<Cluster> clusters = Builder.newInstance(data)
                                                   .throwDistance(clusterRadius)
                                                   .distanceMeasure(distanceMeasure)
-                                                  .refinementAfterClustering(3)
+                                                  .refinementAfterClustering(5)
                                                   .build();
 
             Cluster prevCluster = null;
