@@ -1,9 +1,11 @@
 package com.delhivery.clustering;
 
+import static com.delhivery.clustering.distances.DistanceMeasure.HAVERSINE;
 import static com.delhivery.clustering.elements.ClusterImpl.ClusterBuilder.newInstance;
 import static com.delhivery.clustering.preclustering.PreClusteringFactory.NO_PRECLUSTERING;
 import static com.delhivery.clustering.reduction.ReductionFactory.NO_REDUCTION;
 import static com.delhivery.clustering.utils.Utils.iDCreator;
+import static com.google.common.collect.Sets.difference;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
@@ -11,17 +13,22 @@ import static java.util.Comparator.comparingDouble;
 import static java.util.Objects.isNull;
 import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.IntStream.range;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 
@@ -73,8 +80,16 @@ public final class LC {
         toBeClustered.sort(WEIGHT_SORTED);
 
         LOGGER.info("Sorted clusterables point in decending order of their weights.");
+        
+        Set<Integer> allIndex = range(0, toBeClustered.size()).boxed().collect(toSet());
+        Set<Integer> addedClusterables = new HashSet<>();
 
-        for (Clusterable point : toBeClustered) {
+        for (int ptIdx = 0; ptIdx < toBeClustered.size(); ptIdx++) {
+            if (addedClusterables.contains(ptIdx))
+                continue;
+
+            Clusterable point = toBeClustered.get(ptIdx);
+            addedClusterables.add(ptIdx);
             LOGGER.debug("Clusterable: {} is going to be assigned to a cluster", point);
 
             Iterator<Cluster> itrCluster = clusters.iterator();
@@ -90,12 +105,33 @@ public final class LC {
                 }
             }
 
+            boolean goReverse = false;
+
             if (isNull(fitCluster)) {
                 fitCluster = newInstance(idFactory.get()).build();
+                goReverse = true;
                 LOGGER.debug("No cluster found for Clusterable: {}. So creating new cluster. cluster id: {}", point, fitCluster.id());
             }
 
             fitCluster.consumeClusterer(point);
+
+            if (goReverse) {
+                List<Integer> remaining = difference(allIndex, addedClusterables).stream()
+                                                                                 .sorted(comparingDouble(
+                                                                                         j -> HAVERSINE.distance(point.geocode(),
+                                                                                                 toBeClustered.get(j).geocode())))
+                                                                                 .collect(toList());
+
+                for (Integer r : remaining) {
+                    Clusterable pt = toBeClustered.get(r);
+                    if (fitForCluster.test(fitCluster, pt)) {
+                        fitCluster.consumeClusterer(pt);
+                        addedClusterables.add(r);
+
+                    }
+                }
+            }
+
             clusters.add(fitCluster);
 
             LOGGER.debug("clusterable: {} added to cluster: {}", point, fitCluster);
