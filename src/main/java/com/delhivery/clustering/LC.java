@@ -28,7 +28,6 @@ import java.util.TreeSet;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 
@@ -80,7 +79,7 @@ public final class LC {
         toBeClustered.sort(WEIGHT_SORTED);
 
         LOGGER.info("Sorted clusterables point in decending order of their weights.");
-        
+
         Set<Integer> allIndex = range(0, toBeClustered.size()).boxed().collect(toSet());
         Set<Integer> addedClusterables = new HashSet<>();
 
@@ -88,8 +87,9 @@ public final class LC {
             if (addedClusterables.contains(ptIdx))
                 continue;
 
-            Clusterable point = toBeClustered.get(ptIdx);
             addedClusterables.add(ptIdx);
+
+            Clusterable point = toBeClustered.get(ptIdx);
             LOGGER.debug("Clusterable: {} is going to be assigned to a cluster", point);
 
             Iterator<Cluster> itrCluster = clusters.iterator();
@@ -127,7 +127,6 @@ public final class LC {
                     if (fitForCluster.test(fitCluster, pt)) {
                         fitCluster.consumeClusterer(pt);
                         addedClusterables.add(r);
-
                     }
                 }
             }

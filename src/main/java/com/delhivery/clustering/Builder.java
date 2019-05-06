@@ -177,7 +177,7 @@ public final class Builder {
                               .allMatch(reachable);
 
             }
-            
+
             return false;
 
         }
@@ -211,9 +211,6 @@ public final class Builder {
             connectivityConstraint = (from, to) -> true;
 
         constraint = constraint.and(connectivityConstraint);
-
-        if (nonNull(this.otherConstraints))
-            constraint = constraint.and(this.otherConstraints);
 
         ReductionFactory reductionFactory = this.mergeDuplicateClusterables ? REDUCE_ON_GEOCODE : NO_REDUCTION;
 
