@@ -53,6 +53,7 @@ public final class Builder {
     private int                               assignToNearest;
     private boolean                           mergeDuplicateClusterables;
     private BiPredicate<Cluster, Clusterable> otherConstraints;
+    private Double                            reverseThrow;
 
     private Builder(Collection<? extends Clusterable> clusterables) {
         this.clusterables = unmodifiableCollection(clusterables);
@@ -140,6 +141,11 @@ public final class Builder {
         return this;
     }
 
+    public Builder reverseThrow(double reverseThrow) {
+        this.reverseThrow = reverseThrow;
+        return this;
+    }
+
     private static Collection<Cluster> inDecreasingOrderOfWeight(Collection<Cluster> clusters) {
         List<Cluster> out = new ArrayList<>(clusters);
 
@@ -183,9 +189,9 @@ public final class Builder {
         }
     }
 
-    private BiPredicate<Cluster, Clusterable> createThrowConstraint() {
-        if (nonNull(this.throwDistance))
-            return new DistanceConstraint(distanceConstraint(this.throwDistance, distanceMeasure));
+    private BiPredicate<Cluster, Clusterable> createThrowConstraint(Double distance) {
+        if (nonNull(distance))
+            return new DistanceConstraint(distanceConstraint(distance, distanceMeasure));
 
         return (x, y) -> true;
     }
@@ -196,7 +202,7 @@ public final class Builder {
         if (isNull(this.throwDistance) && isNull(this.otherConstraints))
             throw new BuilderException("No constraint has been provided for clustering");
 
-        BiPredicate<Cluster, Clusterable> distanceConstraint = createThrowConstraint();
+        BiPredicate<Cluster, Clusterable> distanceConstraint = createThrowConstraint(this.throwDistance);
 
         BiPredicate<Cluster, Clusterable> constraint = distanceConstraint;
 
@@ -226,11 +232,18 @@ public final class Builder {
         }
 
         refinement = refinement.andThen(Builder::inDecreasingOrderOfWeight)::apply;
+        BiPredicate<Cluster, Clusterable> reverseStrategy = null;
+
+        if (nonNull(reverseThrow))
+            reverseStrategy = createThrowConstraint(reverseThrow);
+        else
+            reverseStrategy = (x, y) -> false;
 
         return LCBuilder.newInstance(clusterables)
                         .constraint(constraint)
                         .reductingClusterables(reductionFactory)
                         .refine(refinement)
+                        .reverseClusteringStrategy(reverseStrategy)
                         .build();
 
     }

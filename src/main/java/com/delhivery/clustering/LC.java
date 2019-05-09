@@ -50,6 +50,7 @@ public final class LC {
     private final Supplier<String>                   idFactory;
     private final Collection<Clusterable>            points;
     private final BiPredicate<Cluster, Clusterable>  fitForCluster;
+    private final BiPredicate<Cluster, Clusterable>  reverseStrategy;
     private final PreClusteringFactory               preClusterer;
     private final ReductionFactory                   reducerFactory;
     private final UnaryOperator<Collection<Cluster>> refineCluster;
@@ -58,6 +59,7 @@ public final class LC {
         this.idFactory = iDCreator();
         this.points = builder.clusterables;
         this.fitForCluster = builder.fitForCluster;
+        this.reverseStrategy = builder.reverseClusteringStrategy.and(this.fitForCluster);
         this.preClusterer = builder.preClustering;
         this.reducerFactory = builder.reducerFactory;
         this.refineCluster = builder.refineCluster;
@@ -124,7 +126,7 @@ public final class LC {
 
                 for (Integer r : remaining) {
                     Clusterable pt = toBeClustered.get(r);
-                    if (fitForCluster.test(fitCluster, pt)) {
+                    if (reverseStrategy.test(fitCluster, pt)) {
                         fitCluster.consumeClusterer(pt);
                         addedClusterables.add(r);
                     }
@@ -205,6 +207,7 @@ public final class LC {
         private UnaryOperator<Collection<Cluster>> refineCluster;
         private ReductionFactory                   reducerFactory;
         private PreClusteringFactory               preClustering;
+        private BiPredicate<Cluster, Clusterable>  reverseClusteringStrategy;
 
         private LCBuilder(Collection<? extends Clusterable> clusterables) {
             this.clusterables = unmodifiableCollection(clusterables);
@@ -221,6 +224,11 @@ public final class LC {
          */
         public LCBuilder constraint(BiPredicate<Cluster, Clusterable> fitForCluster) {
             this.fitForCluster = fitForCluster;
+            return this;
+        }
+
+        public LCBuilder reverseClusteringStrategy(BiPredicate<Cluster, Clusterable> reverseClusteringStrategy) {
+            this.reverseClusteringStrategy = reverseClusteringStrategy;
             return this;
         }
 
@@ -274,6 +282,9 @@ public final class LC {
 
             if (isNull(this.preClustering))
                 this.preClustering = NO_PRECLUSTERING;
+
+            if (isNull(this.reverseClusteringStrategy))
+                this.reverseClusteringStrategy = (x, y) -> false;// no reverse strategy
 
             return new LC(this).process();
         }
