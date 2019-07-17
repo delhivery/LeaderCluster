@@ -91,6 +91,17 @@ public final class Utils {
             throw new UncheckedIOException(e);
         }
     }
+    
+    public static <T>T loadFile(Path path,Class<T>clazz){
+        try (Reader reader = newBufferedReader(path)) {
+
+            return GSON.fromJson(reader, clazz);
+
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+
+        }
+    }
 
     public static DistanceMeasure getDistanceMeasure(String name) {
         name = name.toLowerCase();
