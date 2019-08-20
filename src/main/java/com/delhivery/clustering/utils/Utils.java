@@ -48,6 +48,7 @@ public final class Utils {
         AtomicLong idProvider = new AtomicLong(0);
         return () -> valueOf(idProvider.getAndIncrement());
     }
+    
 
     public static Geocode weightedGeocode(Clusterable a, Clusterable b) {
         double totalWeight = a.weight() + b.weight();

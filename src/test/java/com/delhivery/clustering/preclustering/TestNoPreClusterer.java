@@ -1,7 +1,6 @@
 package com.delhivery.clustering.preclustering;
 
 import static com.delhivery.clustering.preclustering.PreClusteringFactory.NO_PRECLUSTERING;
-import static com.delhivery.clustering.utils.Utils.iDCreator;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +39,7 @@ public class TestNoPreClusterer {
 
         PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
         PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
-        assertTrue(preClustering.preclusters(iDCreator()).isEmpty());
+        assertTrue(preClustering.preclusters(null).isEmpty());
     }
 
     @Test

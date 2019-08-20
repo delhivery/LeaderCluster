@@ -21,7 +21,7 @@ final class NoPreClusterer implements PreClustering {
     }
 
     @Override
-    public Collection<Cluster> preclusters(Supplier<String> idSupplier) {
+    public Collection<Cluster> preclusters(Supplier<Cluster> idSupplier) {
         return emptySet();
     }
 

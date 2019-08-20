@@ -12,7 +12,7 @@ import com.delhivery.clustering.elements.Clusterable;
 
 public interface PreClustering {
 
-    Collection<Cluster> preclusters(Supplier<String> idCreator);
+    Collection<Cluster> preclusters(Supplier<Cluster> idCreator);
 
     Collection<Clusterable> unclusteredPoints();
 
