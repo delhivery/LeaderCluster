@@ -34,131 +34,130 @@ import com.google.gson.JsonObject;
  */
 public final class Utils {
 
-    private Utils() {}
+	private Utils() {}
 
-    public static String formatNumber(double n) {
-        return LAT_LNG_FORMATTER.format(n);
-    }
+	public static String formatNumber(double n) {
+		return LAT_LNG_FORMATTER.format(n);
+	}
 
-    public static boolean isZero(double d) {
-        return abs(d) <= TOLERANCE;
-    }
+	public static boolean isZero(double d) {
+		return abs(d) <= TOLERANCE;
+	}
 
-    public static Supplier<String> iDCreator() {
-        AtomicLong idProvider = new AtomicLong(0);
-        return () -> valueOf(idProvider.getAndIncrement());
-    }
-    
+	public static Supplier<String> iDCreator() {
+		AtomicLong idProvider = new AtomicLong(0);
+		return () -> valueOf(idProvider.getAndIncrement());
+	}
 
-    public static Geocode weightedGeocode(Clusterable a, Clusterable b) {
-        double totalWeight = a.weight() + b.weight();
+	public static Geocode weightedGeocode(Clusterable a, Clusterable b) {
+		double totalWeight = a.weight() + b.weight();
 
-        if (isZero(totalWeight))
-            throw new IllegalArgumentException("sum of weight of clusterable=" + a + " and " + b + " is zero");
+		if (isZero(totalWeight))
+			throw new IllegalArgumentException("sum of weight of clusterable=" + a + " and " + b + " is zero");
 
-        Geocode from = a.geocode() , to = b.geocode();
-        double fromW = a.weight() , toW = b.weight();
+		Geocode from = a.geocode(), to = b.geocode();
+		double fromW = a.weight(), toW = b.weight();
 
-        double lat = (from.lat * fromW + to.lat * toW) / totalWeight;
-        double lng = (from.lng * fromW + to.lng * toW) / totalWeight;
+		double lat = (from.lat * fromW + to.lat * toW) / totalWeight;
+		double lng = (from.lng * fromW + to.lng * toW) / totalWeight;
 
-        return new Geocode(lat, lng);
-    }
+		return new Geocode(lat, lng);
+	}
 
-    // --------------------------------------------------------------
+	// --------------------------------------------------------------
 
-    public static BiPredicate<Geocode, Geocode> distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
-        return (from, to) -> distanceMeasure.distance(from, to) <= maxDistance;
-    }
+	public static BiPredicate<Geocode, Geocode> distanceConstraint(double maxDistance, DistanceMeasure distanceMeasure) {
+		return (from, to) -> distanceMeasure.distance(from, to) <= maxDistance;
+	}
 
-    // ------------------ Parser utility ----------------------------
-    public static JsonObject loadFile(Path path) {
-        try (Reader reader = newBufferedReader(path)) {
+	// ------------------ Parser utility ----------------------------
+	public static JsonObject loadFile(Path path) {
+		try (Reader reader = newBufferedReader(path)) {
 
-            return GSON.fromJson(reader, JsonObject.class);
+			return GSON.fromJson(reader, JsonObject.class);
 
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 
-        }
-    }
+		}
+	}
 
-    public static void dumpToFile(Object data, Path out) {
-        try (Writer writer = newBufferedWriter(out)) {
+	public static void dumpToFile(Object data, Path out) {
+		try (Writer writer = newBufferedWriter(out)) {
 
-            GSON.toJson(data, writer);
+			GSON.toJson(data, writer);
 
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-    
-    public static <T>T loadFile(Path path,Class<T>clazz){
-        try (Reader reader = newBufferedReader(path)) {
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
 
-            return GSON.fromJson(reader, clazz);
+	public static <T> T loadFile(Path path, Class<T> clazz) {
+		try (Reader reader = newBufferedReader(path)) {
 
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+			return GSON.fromJson(reader, clazz);
 
-        }
-    }
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 
-    public static DistanceMeasure getDistanceMeasure(String name) {
-        name = name.toLowerCase();
+		}
+	}
 
-        switch (name) {
-            case "google":
-                return GOOGLE_DISTANCE;
-            case "osrm":
-                return OSRM;
-            case "haversine":
-                return HAVERSINE;
-            default:
-                throw new IllegalArgumentException("distance measure name: '" + name + "' is not valid");
-        }
-    }
+	public static DistanceMeasure getDistanceMeasure(String name) {
+		name = name.toLowerCase();
 
-    public static Clusterable createClusterable(JsonObject point) {
-        Geocode geocode = new Geocode(point.get("lat").getAsDouble(), point.get("lng").getAsDouble());
+		switch (name) {
+		case "google":
+			return GOOGLE_DISTANCE;
+		case "osrm":
+			return OSRM;
+		case "haversine":
+			return HAVERSINE;
+		default:
+			throw new IllegalArgumentException("distance measure name: '" + name + "' is not valid");
+		}
+	}
 
-        double weight = point.has("weight") ? point.get("weight").getAsDouble() : 1;
+	public static Clusterable createClusterable(JsonObject point) {
+		Geocode geocode = new Geocode(point.get("lat").getAsDouble(), point.get("lng").getAsDouble());
 
-        ClusterableImpl out = new ClusterableImpl(point.get("id").getAsString(), geocode, weight);
+		double weight = point.has("weight") ? point.get("weight").getAsDouble() : 1;
 
-        out.userData(point);
+		ClusterableImpl out = new ClusterableImpl(point.get("id").getAsString(), geocode, weight);
 
-        return out;
-    }
+		out.userData(point);
 
-    public static JsonObject clusterData(Cluster cluster) {
-        JsonObject output = new JsonObject();
+		return out;
+	}
 
-        output.addProperty("lat", cluster.geocode().lat);
-        output.addProperty("lng", cluster.geocode().lng);
-        output.addProperty("weight", cluster.weight());
+	public static JsonObject clusterData(Cluster cluster) {
+		JsonObject output = new JsonObject();
 
-        JsonArray docs = new JsonArray();
-        output.add("points", docs);
+		output.addProperty("lat", cluster.geocode().lat);
+		output.addProperty("lng", cluster.geocode().lng);
+		output.addProperty("weight", cluster.weight());
 
-        for (Clusterable c : cluster.getMembers()) {
-            JsonObject member = null;
+		JsonArray docs = new JsonArray();
+		output.add("points", docs);
 
-            if (c instanceof ClusterableImpl && nonNull(((ClusterableImpl) c).userData()))
-                member = ((ClusterableImpl) c).userData();
-            else {
+		for (Clusterable c : cluster.getMembers()) {
+			JsonObject member = null;
 
-                member = new JsonObject();
-                member.addProperty("id", c.id());
-                member.addProperty("lat", c.geocode().lat);
-                member.addProperty("lng", c.geocode().lng);
-                member.addProperty("weight", c.weight());
+			if (c instanceof ClusterableImpl && nonNull(((ClusterableImpl) c).userData()))
+				member = ((ClusterableImpl) c).userData();
+			else {
 
-            }
+				member = new JsonObject();
+				member.addProperty("id", c.id());
+				member.addProperty("lat", c.geocode().lat);
+				member.addProperty("lng", c.geocode().lng);
+				member.addProperty("weight", c.weight());
 
-            docs.add(member);
-        }
+			}
 
-        return output;
-    }
+			docs.add(member);
+		}
+
+		return output;
+	}
 }
