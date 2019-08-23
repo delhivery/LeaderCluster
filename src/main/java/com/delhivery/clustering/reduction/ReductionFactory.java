@@ -9,14 +9,14 @@ import com.delhivery.clustering.elements.Clusterable;
  */
 @FunctionalInterface
 public interface ReductionFactory {
-    ReductionFactory NO_REDUCTION      = NoReduction::new;
-    ReductionFactory REDUCE_ON_GEOCODE = GeocodeReducer::new;
+	ReductionFactory NO_REDUCTION      = NoReduction::new;
+	ReductionFactory REDUCE_ON_GEOCODE = GeocodeReducer::new;
 
-    /**
-     * Creates Reducer object by consuming all clusterables.
-     * @param clusterables
-     * @return
-     */
-    Reducer createReducer(Collection<? extends Clusterable> clusterables);
+	/**
+	 * Creates Reducer object by consuming all clusterables.
+	 * @param clusterables
+	 * @return
+	 */
+	Reducer createReducer(Collection<? extends Clusterable> clusterables);
 
 }

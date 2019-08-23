@@ -25,139 +25,139 @@ import com.mashape.unirest.request.GetRequest;
  */
 public class UrlHandler {
 
-    private final static Logger LOGGER = getLogger(UrlHandler.class);
+	private final static Logger LOGGER = getLogger(UrlHandler.class);
 
-    static {
-        // connectionTimeout, socketTimeout in milliseconds
-        setTimeouts(90000, 30000);
-    }
+	static {
+		// connectionTimeout, socketTimeout in milliseconds
+		setTimeouts(90000, 30000);
+	}
 
-    /**
-     * Allows getting data from a HTTP API without authorization
-     *
-     * @param link HTTP URL link
-     * @return output of the API request
-     * @throws NullPointerException just in case of no output
-     */
-    public static Optional<String> processUrl(String link) throws NullPointerException {
+	/**
+	 * Allows getting data from a HTTP API without authorization
+	 *
+	 * @param link HTTP URL link
+	 * @return output of the API request
+	 * @throws NullPointerException just in case of no output
+	 */
+	public static Optional<String> processUrl(String link) throws NullPointerException {
 
-        GetRequest request = Unirest.get(link)
-                                    .header("content-type", "application/json")
-                                    .header("accept", "application/json")
-                                    .header("cache-control", "no-cache");
+		GetRequest request = Unirest.get(link)
+		                            .header("content-type", "application/json")
+		                            .header("accept", "application/json")
+		                            .header("cache-control", "no-cache");
 
-        return getUrlResponse(request);
-    }
+		return getUrlResponse(request);
+	}
 
-    /**
-     * Allows getting data from a HTTP API with apikey authorization
-     *
-     * @param link HTTP URL link
-     * @return output of the API request
-     * @throws NullPointerException just in case of no output
-     */
-    public static Optional<String> processUrl(String link, String username, String password)
-            throws NullPointerException {
+	/**
+	 * Allows getting data from a HTTP API with apikey authorization
+	 *
+	 * @param link HTTP URL link
+	 * @return output of the API request
+	 * @throws NullPointerException just in case of no output
+	 */
+	public static Optional<String> processUrl(String link, String username, String password)
+	throws NullPointerException {
 
-        GetRequest request = Unirest.get(link)
-                                    .header("content-type", "application/json")
-                                    .header("accept", "application/json")
-                                    .header("cache-control", "no-cache")
-                                    .basicAuth(username, password);
+		GetRequest request = Unirest.get(link)
+		                            .header("content-type", "application/json")
+		                            .header("accept", "application/json")
+		                            .header("cache-control", "no-cache")
+		                            .basicAuth(username, password);
 
-        return getUrlResponse(request);
-    }
+		return getUrlResponse(request);
+	}
 
-    private static Optional<String> getUrlResponse(GetRequest request) {
-        String output = null , error = null;
-        boolean UrlProcessed = false;
-        int attempts = 0;
+	private static Optional<String> getUrlResponse(GetRequest request) {
+		String output = null, error = null;
+		boolean UrlProcessed = false;
+		int attempts = 0;
 
-        while (!UrlProcessed) {
+		while (!UrlProcessed) {
 
-            try {
-                HttpResponse<String> response = request.asString();
+			try {
+				HttpResponse<String> response = request.asString();
 
-                if (response.getStatus() == HTTP_OK)
-                    output = response.getBody();
-                else if (response.getStatus() == HTTP_BAD_REQUEST)
-                    error = response.getBody();
+				if (response.getStatus() == HTTP_OK)
+					output = response.getBody();
+				else if (response.getStatus() == HTTP_BAD_REQUEST)
+					error = response.getBody();
 
-                UrlProcessed = true;
+				UrlProcessed = true;
 
-            } catch (UnirestException exception) {
+			} catch (UnirestException exception) {
 
-                LOGGER.error("UnirestException", exception);
+				LOGGER.error("UnirestException", exception);
 
-            } catch (Exception exception) {
+			} catch (Exception exception) {
 
-                LOGGER.error("IOException: ", exception);
+				LOGGER.error("IOException: ", exception);
 
-                if (!UrlHandler.testInet("google.com"))
-                    throw new RuntimeException("No Internet Connection!");
-            }
-            attempts++;
-            // Limit the number of attempts to 3
-            if (attempts > 3)
-                break;
-        }
+				if (!UrlHandler.testInet("google.com"))
+					throw new RuntimeException("No Internet Connection!");
+			}
+			attempts++;
+			// Limit the number of attempts to 3
+			if (attempts > 3)
+				break;
+		}
 
-        return ofNullable(output != null ? output : error);
-    }
+		return ofNullable(output != null ? output : error);
+	}
 
-    /**
-     * to check if internet is connected
-     *
-     * @param site any website
-     * @return True if internet is connected
-     */
-    private static boolean testInet(String site) {
+	/**
+	 * to check if internet is connected
+	 *
+	 * @param site any website
+	 * @return True if internet is connected
+	 */
+	private static boolean testInet(String site) {
 
-        Socket sock = new Socket();
-        InetSocketAddress addr = new InetSocketAddress(site, 80);
+		Socket sock = new Socket();
+		InetSocketAddress addr = new InetSocketAddress(site, 80);
 
-        try {
-            sock.connect(addr, 3000);
-            return true;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            try {
-                sock.close();
-            } catch (IOException exception) {
-                LOGGER.error("IOException: ", exception);
-            }
-        }
-    }
+		try {
+			sock.connect(addr, 3000);
+			return true;
+		} catch (IOException e) {
+			return false;
+		} finally {
+			try {
+				sock.close();
+			} catch (IOException exception) {
+				LOGGER.error("IOException: ", exception);
+			}
+		}
+	}
 
-    /**
-     * To check if a port is open
-     *
-     * @param host server
-     * @param port port of the server
-     * @return True if a server is listening on a specified port
-     */
-    public static boolean isServerListening(String host, int port) {
-        try (Socket s = new Socket(host, port)) {
-            return true;
-        } catch (Exception exception) {
-            return false;
-        }
-    }
+	/**
+	 * To check if a port is open
+	 *
+	 * @param host server
+	 * @param port port of the server
+	 * @return True if a server is listening on a specified port
+	 */
+	public static boolean isServerListening(String host, int port) {
+		try (Socket s = new Socket(host, port)) {
+			return true;
+		} catch (Exception exception) {
+			return false;
+		}
+	}
 
-    /**
-     * To check if server is up and running
-     * @param host server to be checked
-     * @return true or false
-     */
-    public static boolean isServerListening(String host) {
-        HttpResponse<String> response;
-        try {
-            response = Unirest.get(host).asString();
+	/**
+	 * To check if server is up and running
+	 * @param host server to be checked
+	 * @return true or false
+	 */
+	public static boolean isServerListening(String host) {
+		HttpResponse<String> response;
+		try {
+			response = Unirest.get(host).asString();
 
-            return response.getStatus() != HTTP_BAD_GATEWAY;
-        } catch (UnirestException exception) {
-            return false;
-        }
-    }
+			return response.getStatus() != HTTP_BAD_GATEWAY;
+		} catch (UnirestException exception) {
+			return false;
+		}
+	}
 }

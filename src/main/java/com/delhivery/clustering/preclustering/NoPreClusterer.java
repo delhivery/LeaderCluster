@@ -14,20 +14,20 @@ import com.delhivery.clustering.elements.Clusterable;
  */
 
 final class NoPreClusterer implements PreClustering {
-    private final Collection<Clusterable> points;
+	private final Collection<Clusterable> points;
 
-    public NoPreClusterer(Collection<? extends Clusterable> points) {
-        this.points = unmodifiableCollection(points);
-    }
+	public NoPreClusterer(Collection<? extends Clusterable> points) {
+		this.points = unmodifiableCollection(points);
+	}
 
-    @Override
-    public Collection<Cluster> preclusters(Supplier<Cluster> idSupplier) {
-        return emptySet();
-    }
+	@Override
+	public Collection<Cluster> preclusters(Supplier<Cluster> idSupplier) {
+		return emptySet();
+	}
 
-    @Override
-    public Collection<Clusterable> unclusteredPoints() {
-        return points;
-    }
+	@Override
+	public Collection<Clusterable> unclusteredPoints() {
+		return points;
+	}
 
 }

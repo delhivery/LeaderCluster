@@ -14,58 +14,58 @@ import com.delhivery.clustering.elements.Geocode;
  */
 final class GeocodeReducer extends Hasher<Geocode> {
 
-    GeocodeReducer(Collection<? extends Clusterable> points) {
-        super(points, Clusterable::geocode);
-    }
+	GeocodeReducer(Collection<? extends Clusterable> points) {
+		super(points, Clusterable::geocode);
+	}
 
-    /**
-     * Creates clusterable point with geocode of this entry and having weight 
-     * which is sum of weight of clusterables given by value of this entry.
-     */
-    @Override
-    public Clusterable createCompressedClusterable(Entry<Geocode, Collection<Clusterable>> e) {
+	/**
+	 * Creates clusterable point with geocode of this entry and having weight 
+	 * which is sum of weight of clusterables given by value of this entry.
+	 */
+	@Override
+	public Clusterable createCompressedClusterable(Entry<Geocode, Collection<Clusterable>> e) {
 
-        double weight = e.getValue()
-                         .stream()
-                         .mapToDouble(Clusterable::weight)
-                         .sum();
+		double weight = e.getValue()
+		                 .stream()
+		                 .mapToDouble(Clusterable::weight)
+		                 .sum();
 
-        String id = e.getValue()
-                     .stream()
-                     .map(Clusterable::id)
-                     .collect(joining(";"));
+		String id = e.getValue()
+		             .stream()
+		             .map(Clusterable::id)
+		             .collect(joining(";"));
 
-        return new CompressedClusterable(id, e.getKey(), weight);
-    }
+		return new CompressedClusterable(id, e.getKey(), weight);
+	}
 
-    private final static class CompressedClusterable extends ClusterableImpl {
+	private final static class CompressedClusterable extends ClusterableImpl {
 
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        CompressedClusterable(String id, Geocode geocode, double weight) {
-            super(id, geocode, weight);
-        }
+		CompressedClusterable(String id, Geocode geocode, double weight) {
+			super(id, geocode, weight);
+		}
 
-        @Override
-        public int hashCode() {
-            return geocode().hashCode();
-        }
+		@Override
+		public int hashCode() {
+			return geocode().hashCode();
+		}
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof CompressedClusterable)
-                return ((CompressedClusterable) obj).geocode().equals(geocode());
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof CompressedClusterable)
+				return ((CompressedClusterable) obj).geocode().equals(geocode());
 
-            return false;
-        }
+			return false;
+		}
 
-        @Override
-        public String toString() {
-            return "Clusterable compressed on Geocode:" + geocode();
-        }
+		@Override
+		public String toString() {
+			return "Clusterable compressed on Geocode:" + geocode();
+		}
 
-    }
+	}
 }

@@ -11,8 +11,8 @@ import com.delhivery.clustering.elements.Clusterable;
 @FunctionalInterface
 public interface PreClusteringFactory {
 
-    PreClusteringFactory NO_PRECLUSTERING = NoPreClusterer::new;
+	PreClusteringFactory NO_PRECLUSTERING = NoPreClusterer::new;
 
-    PreClustering createPreClusterer(Collection<? extends Clusterable> clusterables);
+	PreClustering createPreClusterer(Collection<? extends Clusterable> clusterables);
 
 }

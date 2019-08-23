@@ -6,10 +6,10 @@ package com.delhivery.clustering.exception;
 
 public final class DistanceFetchException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public DistanceFetchException(String message) {
-        super(message);
-    }
+	public DistanceFetchException(String message) {
+		super(message);
+	}
 
 }

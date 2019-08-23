@@ -11,21 +11,21 @@ import com.delhivery.clustering.elements.Clusterable;
  * @author Shiv Krishna Jaiswal
  */
 final class NoReduction extends Reducer {
-    private final Collection<Clusterable> clusterables;
+	private final Collection<Clusterable> clusterables;
 
-    public NoReduction(Collection<? extends Clusterable> clusterables) {
-        this.clusterables = unmodifiableCollection(clusterables);
-    }
+	public NoReduction(Collection<? extends Clusterable> clusterables) {
+		this.clusterables = unmodifiableCollection(clusterables);
+	}
 
-    @Override
-    public Collection<Clusterable> compressedClusterables() {
-        return clusterables;
-    }
+	@Override
+	public Collection<Clusterable> compressedClusterables() {
+		return clusterables;
+	}
 
-    @Override
-    public Collection<Clusterable> decompressClusterable(Clusterable clusterable) {
+	@Override
+	public Collection<Clusterable> decompressClusterable(Clusterable clusterable) {
 
-        return singletonList(clusterable);
-    }
+		return singletonList(clusterable);
+	}
 
 }

@@ -6,46 +6,46 @@ package com.delhivery.clustering.elements;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractClusterable implements Clusterable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private final String id;
+	private final String id;
 
-    protected AbstractClusterable(String id) {
-        this.id = requireNonNull(id);
-    }
+	protected AbstractClusterable(String id) {
+		this.id = requireNonNull(id);
+	}
 
-    @Override
-    public String id() {
-        return id;
-    }
+	@Override
+	public String id() {
+		return id;
+	}
 
-    @Override
-    public String toString() {
-        return id;
-    }
+	@Override
+	public String toString() {
+		return id;
+	}
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 
-        if (obj == null)
-            return false;
+		if (obj == null)
+			return false;
 
-        if (!(obj instanceof Clusterable))
-            return false;
+		if (!(obj instanceof Clusterable))
+			return false;
 
-        Clusterable other = (Clusterable) obj;
+		Clusterable other = (Clusterable) obj;
 
-        return other.id().equals(id);
-    }
+		return other.id().equals(id);
+	}
 
 }

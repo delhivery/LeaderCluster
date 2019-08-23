@@ -9,16 +9,16 @@ import com.delhivery.clustering.elements.Clusterable;
  */
 public abstract class Reducer {
 
-    /**
-     * @return clusterables which is distinct, for example, on geocode.
-     */
-    public abstract Collection<Clusterable> compressedClusterables();
+	/**
+	 * @return clusterables which is distinct, for example, on geocode.
+	 */
+	public abstract Collection<Clusterable> compressedClusterables();
 
-    /**
-     * @param compressedClusterable
-     * @return all clusterables point corresponding to this "compressedClusterable" clusterable.
-     */
+	/**
+	 * @param compressedClusterable
+	 * @return all clusterables point corresponding to this "compressedClusterable" clusterable.
+	 */
 
-    public abstract Collection<Clusterable> decompressClusterable(Clusterable compressedClusterable);
+	public abstract Collection<Clusterable> decompressClusterable(Clusterable compressedClusterable);
 
 }
