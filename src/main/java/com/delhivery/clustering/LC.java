@@ -118,11 +118,10 @@ public final class LC {
 			fitCluster.consumeClusterer(point);
 
 			if (goReverse) {
+				Comparator<Integer> comp = comparingDouble(j -> HAVERSINE.distance(point.geocode(), toBeClustered.get(j).geocode()));
+				
 				List<Integer> remaining = difference(allIndex, addedClusterables).stream()
-				                                                                 .sorted(comparingDouble(
-				                                                                                         j -> HAVERSINE.distance(point.geocode(),
-				                                                                                                                 toBeClustered.get(j)
-				                                                                                                                              .geocode())))
+				                                                                 .sorted(comp)
 				                                                                 .collect(toList());
 
 				for (Integer r : remaining) {
