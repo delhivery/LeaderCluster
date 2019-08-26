@@ -16,39 +16,39 @@ import com.delhivery.clustering.elements.ClusterableImpl;
 import com.delhivery.clustering.elements.Geocode;
 
 public class TestNoPreClusterer {
-    private Collection<Clusterable> clusterables;
+	private Collection<Clusterable> clusterables;
 
-    @Before
-    public void setUp() {
-        Geocode[] geocodes = new Geocode[] {
-            new Geocode(0, 0),
-            new Geocode(1, 0),
-            new Geocode(0, 1),
-            new Geocode(0, 0)
-        };
+	@Before
+	public void setUp() {
+		Geocode[] geocodes = new Geocode[] {
+		    new Geocode(0, 0),
+		    new Geocode(1, 0),
+		    new Geocode(0, 1),
+		    new Geocode(0, 0)
+		};
 
-        this.clusterables = asList(
-                new ClusterableImpl("1", geocodes[0], 1),
-                new ClusterableImpl("2", geocodes[1], 1),
-                new ClusterableImpl("3", geocodes[2], 1),
-                new ClusterableImpl("4", geocodes[3], 1));
-    }
+		this.clusterables = asList(
+		                           new ClusterableImpl("1", geocodes[0], 1),
+		                           new ClusterableImpl("2", geocodes[1], 1),
+		                           new ClusterableImpl("3", geocodes[2], 1),
+		                           new ClusterableImpl("4", geocodes[3], 1));
+	}
 
-    @Test
-    public void testPreclusters() {
+	@Test
+	public void testPreclusters() {
 
-        PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
-        PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
-        assertTrue(preClustering.preclusters(null).isEmpty());
-    }
+		PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
+		PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
+		assertTrue(preClustering.preclusters(null).isEmpty());
+	}
 
-    @Test
-    public void testUnclusteredPoints() {
-        PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
+	@Test
+	public void testUnclusteredPoints() {
+		PreClusteringFactory preClusteringFactory = NO_PRECLUSTERING;
 
-        PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
+		PreClustering preClustering = preClusteringFactory.createPreClusterer(clusterables);
 
-        assertEquals(new HashSet<>(preClustering.unclusteredPoints()), new HashSet<>(clusterables));
-    }
+		assertEquals(new HashSet<>(preClustering.unclusteredPoints()), new HashSet<>(clusterables));
+	}
 
 }

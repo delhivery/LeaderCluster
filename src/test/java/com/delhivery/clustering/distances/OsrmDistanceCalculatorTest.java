@@ -15,17 +15,17 @@ import com.delhivery.clustering.utils.UrlHandler;
  */
 public class OsrmDistanceCalculatorTest {
 
-    @Test
-    public void getDistanceTest() {
+	@Test
+	public void getDistanceTest() {
 
-        Geocode p1 = new Geocode(28.454812, 77.070350);
-        Geocode p2 = new Geocode(28.452029, 77.067657);
+		Geocode p1 = new Geocode(28.454812, 77.070350);
+		Geocode p2 = new Geocode(28.452029, 77.067657);
 
-        if (UrlHandler.isServerListening(OSRM_URL)) {
-            double distance = OSRM.distance(p1, p2);
+		if (UrlHandler.isServerListening(OSRM_URL)) {
+			double distance = OSRM.distance(p1, p2);
 
-            Assert.assertEquals(406, distance, 10.);
-        } else
-            System.out.println("Skipped OSRM test as server not available");
-    }
+			Assert.assertEquals(406, distance, 10.);
+		} else
+			System.out.println("Skipped OSRM test as server not available");
+	}
 }

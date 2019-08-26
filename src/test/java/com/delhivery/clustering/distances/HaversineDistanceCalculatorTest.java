@@ -30,14 +30,14 @@ import com.delhivery.clustering.elements.Geocode;
  */
 public class HaversineDistanceCalculatorTest {
 
-    @Test
-    public void getDistanceTest() {
+	@Test
+	public void getDistanceTest() {
 
-        Geocode p1 = new Geocode(28.234, 78.123);
-        Geocode p2 = new Geocode(29.123, 78.234);
+		Geocode p1 = new Geocode(28.234, 78.123);
+		Geocode p2 = new Geocode(29.123, 78.234);
 
-        double distance = HAVERSINE.distance(p1, p2);
+		double distance = HAVERSINE.distance(p1, p2);
 
-        Assert.assertEquals(99450, distance, 30.);
-    }
+		Assert.assertEquals(99450, distance, 30.);
+	}
 }

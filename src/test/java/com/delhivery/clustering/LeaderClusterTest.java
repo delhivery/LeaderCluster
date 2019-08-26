@@ -33,70 +33,67 @@ import com.delhivery.clustering.elements.Geocode;
 
 public class LeaderClusterTest {
 
-    @Test
-    public void leaderClusterTest() {
-        for (boolean generateWeight : new boolean[] { true, false }) {
+	@Test
+	public void leaderClusterTest() {
+		for (boolean generateWeight : new boolean[] { true, false }) {
 
-            int numPoints = 10;
-            double divisor = 1000;
+			int numPoints = 10;
+			double divisor = 1000;
 
-            Collection<Clusterable> data = new ArrayList<>(numPoints);
+			Collection<Clusterable> data = new ArrayList<>(numPoints);
 
-            for (double i = 0; i < numPoints; i++) {
-                double ratio = i / divisor;
+			for (double i = 0; i < numPoints; i++) {
+				double ratio = i / divisor;
 
-                double lat = i % 2 == 0 ? 28 + ratio : 28 - ratio;
-                double lng = i % 2 == 0 ? 77 - ratio : 77 + ratio;
-                double weight = generateWeight ? (i % 2 == 0 ? 2 * i + 1 : 3 * i - 2) : 1;
-                
-                data.add(new ClusterableImpl(i + "", new Geocode(lat, lng), weight));
-            }
+				double lat = i % 2 == 0 ? 28 + ratio : 28 - ratio;
+				double lng = i % 2 == 0 ? 77 - ratio : 77 + ratio;
+				double weight = generateWeight ? (i % 2 == 0 ? 2 * i + 1 : 3 * i - 2) : 1;
 
-            Assert.assertTrue(data.size() == numPoints);
+				data.add(new ClusterableImpl(i + "", new Geocode(lat, lng), weight));
+			}
 
-            int clusterRadius = 500;
-            DistanceMeasure distanceMeasure = HAVERSINE;
-            
-            Collection<Cluster> clusters = Builder.newInstance(data)
-                                                  .throwDistance(clusterRadius)
-                                                  .distanceMeasure(distanceMeasure)
-                                                  .refinementAfterClustering(5)
-                                                  .build();
+			Assert.assertTrue(data.size() == numPoints);
 
-            Cluster prevCluster = null;
+			int clusterRadius = 500;
+			DistanceMeasure distanceMeasure = HAVERSINE;
 
-            // check number of clusters
-            for (Cluster cluster : clusters) {
+			Collection<Cluster> clusters = Builder.newInstance(data)
+			                                      .throwDistance(clusterRadius)
+			                                      .distanceMeasure(distanceMeasure)
+			                                      .build();
 
-                // checks decreasing order
-                if (prevCluster == null)
-                    prevCluster = cluster;
-                else
-                    Assert.assertTrue(prevCluster.weight() >= cluster.weight());
+			Cluster prevCluster = null;
 
-                double sumWeight , lat , lng , ratio;
-                sumWeight = lat = lng = 0.0;
+			// check number of clusters
+			for (Cluster cluster : clusters) {
 
-                for (Clusterable member : cluster.getMembers()) {
-                    sumWeight += member.weight();
-                    ratio = member.weight() / cluster.weight();
-                    lat += ratio * member.geocode().lat;
-                    lng += ratio * member.geocode().lng;
+				// checks decreasing order
+				if (prevCluster == null)
+					prevCluster = cluster;
+				else
+					Assert.assertTrue(prevCluster.weight() >= cluster.weight());
 
-                    // checks if each member is within the specified radius from the cluster centroid
-                    Assert.assertTrue(clusterRadius >= distanceMeasure.distance(cluster.geocode(), member.geocode()));
-                }
+				double sumWeight, lat, lng, ratio;
+				sumWeight = lat = lng = 0.0;
 
-                // checks weight of cluster = sum of weights of its members
-                Assert.assertEquals(cluster.weight(), sumWeight, 0.0);
+				for (Clusterable member : cluster.getMembers()) {
+					sumWeight += member.weight();
+					ratio = member.weight() / cluster.weight();
+					lat += ratio * member.geocode().lat;
+					lng += ratio * member.geocode().lng;
+					Assert.assertTrue(clusterRadius >= distanceMeasure.distance(cluster.geocode(), member.geocode()));
+				}
 
-                // checks coordinate of cluster is weighted sum of the coordinates of its members
-                Assert.assertEquals(cluster.geocode().lat, lat, 10e-8);
-                Assert.assertEquals(cluster.geocode().lng, lng, 10e-8);
-            }
+				// checks weight of cluster = sum of weights of its members
+				Assert.assertEquals(cluster.weight(), sumWeight, 0.0);
+//
+				// checks coordinate of cluster is weighted sum of the coordinates of its members
+				Assert.assertEquals(cluster.geocode().lat, lat, 10e-8);
+				Assert.assertEquals(cluster.geocode().lng, lng, 10e-8);
+			}
 
-            // check if all data points were clustered
-            Assert.assertEquals(numPoints, clusters.stream().map(Cluster::getMembers).mapToInt(Collection::size).sum());
-        }
-    }
+			// check if all data points were clustered
+			Assert.assertEquals(numPoints, clusters.stream().map(Cluster::getMembers).mapToInt(Collection::size).sum());
+		}
+	}
 }
